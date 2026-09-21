@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS pos_restaurant_map, pos_user_map, suite_project_map, suite_organization_map, suite_user_map,
+    usage_events, audit_events, module_access, project_memberships, projects, organization_memberships, organizations, users CASCADE;

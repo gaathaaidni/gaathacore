@@ -1,0 +1,5 @@
+import Link from 'next/link';
+
+export default function TermsPage() {
+  return <main className="legal-page"><header className="legal-header"><Link href="/" className="brand">Sentira AI</Link></header><article className="legal-document"><p className="eyebrow">Terms and Conditions</p><h1>Use monitoring capabilities responsibly.</h1><p className="legal-meta">Last Updated: September 21, 2026</p><div className="legal-copy"><p>Use Sentira only for lawful monitoring and only with the authorization required for the cameras, sites, people, and content in your environment.</p><p>Keep accounts and connector credentials secure. Do not attempt unauthorized access, interfere with the service, misuse stored evidence, or use the platform to violate another person&apos;s rights.</p><p>Availability, integrations, and supported detection behavior may change. Questions about access should be directed through your organization administrator. This product information is not legal advice.</p></div></article></main>;
+}

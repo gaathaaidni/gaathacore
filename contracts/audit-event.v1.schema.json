@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gaatha.tech/contracts/audit-event.v1.schema.json",
+  "title": "GaathaCore Audit Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "occurred_at", "organization_id", "module", "action", "request_id"],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "organization_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "project_id": { "type": ["string", "null"], "maxLength": 128 },
+    "user_id": { "type": ["string", "null"], "maxLength": 128 },
+    "module": {
+      "type": "string",
+      "enum": ["business_suite", "pos", "sentira", "postpilot"]
+    },
+    "action": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "resource_type": { "type": ["string", "null"], "maxLength": 128 },
+    "resource_id": { "type": ["string", "null"], "maxLength": 128 },
+    "request_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "metadata": { "type": "object", "additionalProperties": true }
+  }
+}

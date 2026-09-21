@@ -112,8 +112,9 @@
 
     <footer class="text-center text-muted py-4 app-footer">
         {% block footer %}
-            <p>&copy; {{ current_year }} Gaatha Ventures SRL & Aidni Global LLP. All rights reserved.</p>
-            <p>Contact: <a href="mailto:aidni.tech@gmail.com">aidni.tech@gmail.com</a> | Beta Version</p>
+            <p>&copy; {{ current_year }} Gaatha POS. All rights reserved.</p>
+            <p><a href="{{ url_for('about') }}">About</a> · <a href="{{ url_for('contact') }}">Contact</a> · <a href="{{ url_for('terms') }}">Terms</a> · <a href="{{ url_for('privacy') }}">Privacy</a> · <a href="{{ url_for('user_policy') }}">User Policy</a></p>
+            <p>Architect, Developer, Owner, Founder — Hardikkumar Gajjar</p>
         {% endblock %}
     </footer>
 

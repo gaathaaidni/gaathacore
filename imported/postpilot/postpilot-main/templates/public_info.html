@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page == 'about' %}About{% elif page == 'contact' %}Contact{% elif page == 'terms' %}Terms and Conditions{% elif page == 'privacy' %}Privacy Policy{% else %}User Policy{% endif %} - PostPilot</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <main class="public-page" style="max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem;">
+        <nav aria-label="Public pages" style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:3rem;">
+            <a href="/">Home</a><a href="/about">About</a><a href="/contact">Contact</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/user-policy">User Policy</a>
+        </nav>
+        {% if page == 'about' %}
+            <p>ABOUT POSTPILOT</p>
+            <h1>Organize content workflows for publishing teams.</h1>
+            <p>PostPilot provides a workspace for managing post content, media, posting state, and configured social publishing workflows.</p>
+            <p>The product is developed and owned by:</p>
+            <p><strong>Architect, Developer, Owner, Founder — Hardikkumar Gajjar</strong></p>
+        {% elif page == 'contact' %}
+            <p>CONTACT</p>
+            <h1>Contact and support</h1>
+            <p>Use the support or administrator channel provided for your deployment.</p>
+            <p>No public contact address or message-delivery endpoint is configured in this application, so this page does not claim to send a message.</p>
+            <p>Administration identity: <strong>Admin — Jaygiri Gosai</strong></p>
+        {% elif page == 'terms' %}
+            <p>TERMS AND CONDITIONS</p>
+            <h1>Use publishing tools responsibly.</h1>
+            <p>Last Updated: September 21, 2026</p>
+            <p>Use PostPilot only for lawful content operations and only with the authorization required by your deployment and connected provider accounts. Review content, targets, and media before publishing.</p>
+            <p>Do not attempt unauthorized access, misuse provider credentials, interfere with the service, upload harmful content, or use the application to violate another person's rights. Features and provider availability may change.</p>
+            <p>Questions about access should be directed through your deployment administrator. This product information is not legal advice.</p>
+        {% elif page == 'privacy' %}
+            <p>PRIVACY POLICY</p>
+            <h1>Information used to operate content workflows.</h1>
+            <p>Last Updated: September 21, 2026</p>
+            <p>PostPilot can process post text, post categories, media files, posting status, configured intervals, logs, and technical information needed to run the application. When configured, it also interacts with external social or content providers using credentials supplied by the operator.</p>
+            <p>Information is used to store and manage content, process uploads, operate configured publishing tasks, and maintain the application. The repository does not establish retention periods, recipients, jurisdiction, or deletion procedures, so those details are intentionally not stated here.</p>
+        {% else %}
+            <p>USER POLICY</p>
+            <h1>Responsible use for publishing teams.</h1>
+            <p>Last Updated: September 21, 2026</p>
+            <p>Keep deployment and provider credentials secure. Publish only content you are authorized to use, respect platform rules and audience rights, and verify posts before enabling automated workflows.</p>
+            <p>Do not use PostPilot for unlawful activity, spam, impersonation, harassment, unauthorized automation, credential misuse, or attempts to bypass provider safeguards. Report suspected security or content-integrity issues to the deployment administrator.</p>
+        {% endif %}
+        <footer style="margin-top:4rem; padding-top:1rem; border-top:1px solid currentColor; opacity:.8;">PostPilot · Architect, Developer, Owner, Founder — Hardikkumar Gajjar</footer>
+    </main>
+</body>
+</html>

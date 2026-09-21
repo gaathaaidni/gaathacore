@@ -155,6 +155,26 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+
+@app.route('/health')
+@app.route('/api/v1/health')
+def health_check():
+    try:
+        with get_db_connection() as conn:
+            conn.execute('SELECT 1')
+        return jsonify({
+            'service': 'postpilot',
+            'status': 'healthy',
+            'dependencies': {'database': 'available'},
+        }), 200
+    except Exception:
+        logger.exception('Health check failed')
+        return jsonify({
+            'service': 'postpilot',
+            'status': 'unhealthy',
+            'dependencies': {'database': 'unavailable'},
+        }), 503
+
 def init_db():
     with get_db_connection() as conn: # Ensure this is called from the correct APP_ROOT
         conn.execute('''
@@ -219,6 +239,26 @@ def update_posting_status(post_type, is_running, message='', current_post=None):
 def index():
     """Render main page"""
     return render_template('index.html')
+
+@app.route('/about')
+def about():
+    return render_template('public_info.html', page='about')
+
+@app.route('/contact')
+def contact():
+    return render_template('public_info.html', page='contact')
+
+@app.route('/terms')
+def terms():
+    return render_template('public_info.html', page='terms')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('public_info.html', page='privacy')
+
+@app.route('/user-policy')
+def user_policy():
+    return render_template('public_info.html', page='user-policy')
 
 # Posts API endpoints
 @app.route('/api/posts/<post_type>', methods=['GET'])

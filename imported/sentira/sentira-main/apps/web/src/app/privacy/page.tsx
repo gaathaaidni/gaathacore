@@ -1,0 +1,5 @@
+import Link from 'next/link';
+
+export default function PrivacyPage() {
+  return <main className="legal-page"><header className="legal-header"><Link href="/" className="brand">Sentira AI</Link></header><article className="legal-document"><p className="eyebrow">Privacy Policy</p><h1>Information used for visual monitoring.</h1><p className="legal-meta">Last Updated: September 21, 2026</p><div className="legal-copy"><p>Sentira can process account and organization details, site and camera configuration, rules, events, notifications, audit activity, technical logs, connector information, and event evidence or media where enabled.</p><p>This information is used to authenticate users, provide organization-scoped monitoring, process events, deliver configured notifications, protect the service, and support audit and evidence workflows.</p><p>Specific retention periods, recipients, jurisdiction, and deletion procedures are not fully established by repository evidence and are intentionally not stated here. Camera operators remain responsible for providing any notices or permissions required in their environment.</p></div></article></main>;
+}

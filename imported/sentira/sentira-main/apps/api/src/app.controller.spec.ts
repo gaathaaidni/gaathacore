@@ -23,6 +23,11 @@ describe('AppController', () => {
       status: 'ok',
       name: 'Sentira AI API',
     });
+    expect(appController.getVersionedHealth()).toEqual({
+      service: 'sentira-api',
+      status: 'healthy',
+      dependencies: { database: 'unknown' },
+    });
   });
 
   it('should return ready status', () => {

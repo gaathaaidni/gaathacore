@@ -13,6 +13,9 @@ export class AppController {
   @Get('/api/health')
   getApiHealth() { return this.appService.getHealth(); }
 
+  @Get('/api/v1/health')
+  getVersionedHealth() { return this.appService.getVersionedHealth(); }
+
   @Get('/ready')
   getReady() { return this.appService.getReady(); }
 

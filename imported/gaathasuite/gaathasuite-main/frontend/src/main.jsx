@@ -226,10 +226,15 @@ const LandingPage = () => {
       </main>
 
       <footer className="bg-slate-50 py-12 text-center text-slate-500 text-sm">
-        <p>© 2026 Aidni Global LLP. All rights reserved.</p>
-        <div className="mt-4 flex justify-center gap-6">
+        <p>Gaatha Suite</p>
+        <p className="mt-2">Architect, Developer, Owner, Founder — Hardikkumar Gajjar</p>
+        <div className="mt-4 flex flex-wrap justify-center gap-6">
+          <Link to="/" className="hover:text-blue-600">Home</Link>
+          <Link to="/about" className="hover:text-blue-600">About</Link>
+          <Link to="/contact" className="hover:text-blue-600">Contact</Link>
+          <Link to="/terms" className="hover:text-blue-600">Terms and Conditions</Link>
           <Link to="/privacy" className="hover:text-blue-600">Privacy Policy</Link>
-          <Link to="/terms" className="hover:text-blue-600">Terms of Service</Link>
+          <Link to="/user-policy" className="hover:text-blue-600">User Policy</Link>
         </div>
       </footer>
     </>
@@ -5134,6 +5139,38 @@ const ModulePage = ({ moduleName }) => {
   );
 };
 
+const PublicInfoPage = ({ page }) => {
+  const content = {
+    about: {
+      label: 'About Gaatha Suite',
+      title: 'A practical workspace for growing organizations.',
+      paragraphs: ['Gaatha Suite brings organization-aware business workflows into one application, with supported surfaces for finance, CRM, inventory, people operations, vendors, invoices, approvals, and reporting.', 'The product is developed and owned by: Architect, Developer, Owner, Founder — Hardikkumar Gajjar.'],
+    },
+    contact: {
+      label: 'Contact',
+      title: 'Support for your Gaatha workspace.',
+      paragraphs: ['Use the support or administrator channel provided by your organization.', 'No public contact address or message-delivery endpoint is configured in this application, so this page does not claim to send a message. Administration identity: Admin — Jaygiri Gosai.'],
+    },
+    terms: {
+      label: 'Terms and Conditions',
+      title: 'Use the workspace responsibly.',
+      paragraphs: ['Last Updated: September 21, 2026', 'Use Gaatha Suite only for lawful business operations and only with the access granted to you. Keep account credentials private, review records before relying on them, and do not attempt to access another organization’s data.', 'Do not misuse the application, interfere with its operation, upload harmful content, or use it to violate another person’s rights. Availability and features may change. This product information is not legal advice.'],
+    },
+    privacy: {
+      label: 'Privacy Policy',
+      title: 'Information used to run business workflows.',
+      paragraphs: ['Last Updated: September 21, 2026', 'Gaatha Suite can process account and organization details, authentication information, business records, application activity, uploads, downloads, logs, and configured integration data needed to provide its enabled workflows.', 'This information supports authentication, organization-scoped access, business operations, notifications, audit activity, and application security. Specific retention periods, recipients, jurisdiction, and deletion procedures are not established by repository evidence and are intentionally not stated here.'],
+    },
+    'user-policy': {
+      label: 'User Policy',
+      title: 'Responsible use for every team member.',
+      paragraphs: ['Last Updated: September 21, 2026', 'Keep accounts secure, use only assigned permissions, and handle business, employee, customer, and financial information carefully.', 'Do not use Gaatha Suite for unlawful activity, unauthorized access, fraud, abusive behavior, destructive testing, or attempts to bypass access controls. Report suspected security, privacy, or data-integrity issues to your organization administrator.'],
+    },
+  };
+  const selected = content[page] || content.about;
+  return <main className="min-h-screen bg-slate-50 px-6 py-16"><article className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-white p-8 shadow-sm md:p-12"><p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-600">{selected.label}</p><h1 className="mt-4 text-4xl font-bold text-slate-900">{selected.title}</h1><div className="mt-8 space-y-5 text-lg leading-8 text-slate-600">{selected.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div><nav className="mt-10 flex flex-wrap gap-4 border-t border-slate-200 pt-6" aria-label="Public pages"><Link to="/">Home</Link><Link to="/about">About</Link><Link to="/contact">Contact</Link><Link to="/terms">Terms</Link><Link to="/privacy">Privacy</Link><Link to="/user-policy">User Policy</Link></nav></article></main>;
+};
+
 const ModulesPage = () => {
   return (
     <div className="max-w-6xl mx-auto px-6 py-20">
@@ -5568,8 +5605,11 @@ const App = () => {
             <Route path="/auth/login" element={<LoginPage />} />
             <Route path="/auth/register" element={<RegisterPage />} />
             <Route path="/auth/register/success" element={<SignupSuccessPage />} />
-            <Route path="/privacy" element={<ModulePage moduleName="Privacy Policy" />} />
-            <Route path="/terms" element={<ModulePage moduleName="Terms of Service" />} />
+            <Route path="/about" element={<PublicInfoPage page="about" />} />
+            <Route path="/contact" element={<PublicInfoPage page="contact" />} />
+            <Route path="/privacy" element={<PublicInfoPage page="privacy" />} />
+            <Route path="/terms" element={<PublicInfoPage page="terms" />} />
+            <Route path="/user-policy" element={<PublicInfoPage page="user-policy" />} />
             <Route path="/modules" element={<ModulesPage />} />
 
             <Route element={<ProtectedRoute />}>

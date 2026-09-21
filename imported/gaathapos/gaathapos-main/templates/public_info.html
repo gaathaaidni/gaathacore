@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{% if page == 'about' %}About{% elif page == 'contact' %}Contact{% elif page == 'terms' %}Terms and Conditions{% elif page == 'privacy' %}Privacy Policy{% else %}User Policy{% endif %} - Gaatha POS{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="dashboard-card p-4 p-md-5 mx-auto" style="max-width: 900px;">
+        {% if page == 'about' %}
+            <p class="text-uppercase small text-muted mb-2">About Gaatha POS</p>
+            <h1 class="mb-3">Restaurant operations, in one workspace.</h1>
+            <p class="lead">Gaatha POS supports restaurant teams with order entry, menu operations, kitchen workflows, payments, inventory, and operational reporting.</p>
+            <p>It is built for restaurants and their authorized staff. The product is developed and owned by:</p>
+            <p class="fw-semibold">Architect, Developer, Owner, Founder — Hardikkumar Gajjar</p>
+        {% elif page == 'contact' %}
+            <p class="text-uppercase small text-muted mb-2">Contact</p>
+            <h1 class="mb-3">Need help with Gaatha POS?</h1>
+            <p class="lead">Please use the support or administrator channel provided by your organization.</p>
+            <p>No public contact address or message-delivery endpoint is configured in this application, so this page does not claim to send a message.</p>
+            <p>Administration identity: <strong>Admin — Jaygiri Gosai</strong></p>
+        {% elif page == 'terms' %}
+            <p class="text-uppercase small text-muted mb-2">Terms and Conditions</p>
+            <h1 class="mb-3">Use the application responsibly.</h1>
+            <p class="text-muted">Last Updated: September 21, 2026</p>
+            <p>Use Gaatha POS only for lawful restaurant operations and only with the access granted to you. Keep account credentials private, review entries before relying on them, and do not attempt to access another restaurant's data.</p>
+            <p>Do not misuse the application, interfere with its operation, upload harmful content, or use it to violate another person's rights. Availability, integrations, and features may change as the application is maintained.</p>
+            <p>Questions about access or these product terms should be directed through your organization's administrator. This product information is not legal advice.</p>
+        {% elif page == 'privacy' %}
+            <p class="text-uppercase small text-muted mb-2">Privacy Policy</p>
+            <h1 class="mb-3">Information used to run restaurant operations.</h1>
+            <p class="text-muted">Last Updated: September 21, 2026</p>
+            <p>Gaatha POS can process account details, restaurant and menu records, orders, payments, inventory activity, audit activity, uploaded imports, and technical information needed to operate the application.</p>
+            <p>This information is used to authenticate users, provide authorized workflows, maintain records, protect the application, and support operational reporting. The application may also use configured email, payment, tax, exchange-rate, or monitoring integrations when enabled by an operator.</p>
+            <p>Specific retention periods, recipients, jurisdiction, and deletion processes are not established by the repository and are intentionally not stated here. Ask your organization administrator for the applicable operational details.</p>
+        {% else %}
+            <p class="text-uppercase small text-muted mb-2">User Policy</p>
+            <h1 class="mb-3">Responsible use for every team member.</h1>
+            <p class="text-muted">Last Updated: September 21, 2026</p>
+            <p>Keep your account secure, use only the permissions assigned to you, and handle customer, employee, payment, and restaurant information carefully.</p>
+            <p>Do not use Gaatha POS for unlawful activity, unauthorized access, harassment, fraud, destructive testing, or attempts to bypass access controls. Upload only content and records that your organization is authorized to use.</p>
+            <p>Report suspected security, privacy, or data-integrity issues to your organization administrator. Access may be restricted when misuse or a security risk is identified.</p>
+        {% endif %}
+        <nav class="mt-4 pt-3 border-top d-flex flex-wrap gap-3" aria-label="Public pages">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+            <a href="{{ url_for('terms') }}">Terms</a>
+            <a href="{{ url_for('privacy') }}">Privacy</a>
+            <a href="{{ url_for('user_policy') }}">User Policy</a>
+        </nav>
+    </div>
+</div>
+{% endblock %}

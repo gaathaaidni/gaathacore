@@ -21,7 +21,7 @@ const navItems = [
   { label: 'Features', href: '#features' },
   { label: 'Industries', href: '#industries' },
   { label: 'Security', href: '#security' },
-  { label: 'About', href: '#about' },
+  { label: 'About', href: '/about' },
 ];
 
 const steps = [

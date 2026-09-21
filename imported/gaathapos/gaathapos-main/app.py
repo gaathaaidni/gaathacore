@@ -1,5 +1,6 @@
 import logging
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+import uuid
+from flask import Flask, render_template, jsonify, request, redirect, url_for, g
 from extensions import db, migrate, login_manager, csrf, limiter
 from datetime import datetime
 from sqlalchemy import text
@@ -138,12 +139,19 @@ def create_app():
         app.logger.exception("Unhandled server error", exc_info=error)
         return generic_error_response("An unexpected error occurred. Please try again later.", 500)
 
+    @app.before_request
+    def attach_request_context():
+        request_id = request.headers.get("X-Request-ID") or f"pos-{uuid.uuid4()}"
+        g.request_id = request_id
+        g.current_module = "pos"
+
     @app.after_request
     def apply_security_headers(response):
         response.headers["X-Frame-Options"] = "SAMEORIGIN"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        response.headers["X-Request-ID"] = getattr(g, "request_id", request.headers.get("X-Request-ID") or "pos-request")
         if app.config.get("SESSION_COOKIE_SECURE"):
             response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
         return response
@@ -153,6 +161,26 @@ def create_app():
     def index():
         return render_template("index.html")
 
+    @app.route("/about")
+    def about():
+        return render_template("public_info.html", page="about")
+
+    @app.route("/contact")
+    def contact():
+        return render_template("public_info.html", page="contact")
+
+    @app.route("/terms")
+    def terms():
+        return render_template("public_info.html", page="terms")
+
+    @app.route("/privacy")
+    def privacy():
+        return render_template("public_info.html", page="privacy")
+
+    @app.route("/user-policy")
+    def user_policy():
+        return render_template("public_info.html", page="user-policy")
+
     @app.route("/health")
     def health_check():
         try:
@@ -161,6 +189,23 @@ def create_app():
         except Exception:
             app.logger.exception("Health check failed")
             return {"status": "unhealthy", "database": "disconnected"}, 503
+
+    @app.route("/api/v1/health")
+    def api_health_check():
+        try:
+            db.session.execute(text('SELECT 1'))
+            return {
+                "service": "gaatha-pos",
+                "status": "healthy",
+                "dependencies": {"database": "available"},
+            }, 200
+        except Exception:
+            app.logger.exception("API health check failed")
+            return {
+                "service": "gaatha-pos",
+                "status": "unhealthy",
+                "dependencies": {"database": "unavailable"},
+            }, 503
 
     @app.route("/ready")
     @app.route("/readyz")

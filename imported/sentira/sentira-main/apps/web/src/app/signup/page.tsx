@@ -86,8 +86,8 @@ export default function SignupPage() {
             Organization name
             <input type="text" required minLength={2} value={organizationName} onChange={(e) => setOrganizationName(e.target.value)} />
           </label>
-          <label className="consent-check"><input type="checkbox" required checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} /> I agree to the <Link href="/legal/terms" target="_blank">Terms of Service</Link>.</label>
-          <label className="consent-check"><input type="checkbox" required checked={privacyAcknowledged} onChange={(e) => setPrivacyAcknowledged(e.target.checked)} /> I acknowledge the <Link href="/legal/privacy" target="_blank">Privacy Policy</Link>.</label>
+          <label className="consent-check"><input type="checkbox" required checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} /> I agree to the <Link href="/terms" target="_blank">Terms and Conditions</Link>.</label>
+          <label className="consent-check"><input type="checkbox" required checked={privacyAcknowledged} onChange={(e) => setPrivacyAcknowledged(e.target.checked)} /> I acknowledge the <Link href="/privacy" target="_blank">Privacy Policy</Link>.</label>
           {(!legalDocuments.find((document) => document.documentType === 'TERMS_OF_SERVICE') || !legalDocuments.find((document) => document.documentType === 'PRIVACY_POLICY')) && <p className="auth-message">Signup is unavailable until the reviewed legal documents are published.</p>}
           <button type="submit" className="button submit-button" disabled={loading}>
             {loading ? 'Creating account…' : 'Create account'}

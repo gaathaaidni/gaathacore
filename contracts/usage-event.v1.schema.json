@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gaatha.tech/contracts/usage-event.v1.schema.json",
+  "title": "GaathaCore Usage Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "occurred_at",
+    "organization_id",
+    "module",
+    "feature",
+    "quantity",
+    "unit",
+    "source_service",
+    "idempotency_key"
+  ],
+  "properties": {
+    "event_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "organization_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "project_id": { "type": ["string", "null"], "maxLength": 128 },
+    "module": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "feature": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "user_id": { "type": ["string", "null"], "maxLength": 128 },
+    "quantity": { "type": "number", "exclusiveMinimum": 0 },
+    "unit": { "type": "string", "minLength": 1, "maxLength": 32 },
+    "source_service": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "idempotency_key": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "metadata": { "type": "object", "additionalProperties": true }
+  }
+}

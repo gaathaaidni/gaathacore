@@ -38,6 +38,8 @@ from blueprints.inventory.routes import router as inventory_router
 from blueprints.books.routes_refactored import router as books_router
 from blueprints.expenses.routes_refactored import router as expenses_router
 from app.routes.transactions import router as transactions_router
+from core.platform import GaathaCoreService
+from core.suite_adapter import SuiteCoreAdapter, suite_role_to_core_role
 
 logger = logging.getLogger(__name__)
 static_dir = Path(__file__).resolve().parents[1] / "static"
@@ -170,11 +172,103 @@ app.include_router(books_router)
 app.include_router(expenses_router)
 app.include_router(transactions_router)
 
+core_service = GaathaCoreService(database_path=str(Path(__file__).resolve().parents[3] / "gaathacore.db"))
+suite_adapter = SuiteCoreAdapter(service=core_service)
+
+
+@app.get("/api/core/identity")
+async def suite_core_identity(
+    current_user: User = Depends(get_current_user),
+    request: Request = None,
+):
+    # Keep Suite auth authoritative while mapping into the Core identity/tenant boundary.
+    suite_user_id = current_user.id
+    suite_org_id = getattr(current_user, "organization_id", None)
+    if suite_org_id is None:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Organization context is required")
+
+    mapped_user = core_service.resolve_core_user_for_suite_user(suite_user_id)
+    if mapped_user is None:
+        core_user = core_service.create_user(
+            email=current_user.email,
+            username=current_user.username,
+            display_name=getattr(current_user, "first_name", None) or current_user.username,
+            status="active",
+        )
+        core_service.map_suite_user(suite_user_id=suite_user_id, core_user_id=core_user["id"])
+        mapped_user = core_user["id"]
+
+    mapped_org = core_service.resolve_core_organization_for_suite_organization(suite_org_id)
+    if mapped_org is None:
+        org = core_service.get_organization_by_slug(str(suite_org_id))
+        if org is None:
+            org = core_service.create_organization(name=f"Suite Org {suite_org_id}", slug=f"suite-org-{suite_org_id}", status="active")
+        core_service.map_suite_organization(suite_organization_id=suite_org_id, core_organization_id=org["id"])
+        core_service.set_module_access(organization_id=org["id"], project_id=None, module_key="suite", enabled=True)
+        mapped_org = org["id"]
+
+    org_membership = core_service._get_organization_membership(mapped_user, mapped_org)
+    if org_membership is None:
+        core_service.add_organization_membership(
+            user_id=mapped_user,
+            organization_id=mapped_org,
+            role=suite_role_to_core_role(getattr(current_user, "role", "user")),
+            status="active",
+        )
+    if not core_service.module_access_enabled(organization_id=mapped_org, project_id=None, module_key="suite"):
+        core_service.set_module_access(organization_id=mapped_org, project_id=None, module_key="suite", enabled=True)
+
+    project_id = None
+    suite_project_id = getattr(current_user, "project_id", None)
+    if suite_project_id is not None:
+        project = suite_adapter.ensure_project_scope(
+            suite_organization_id=suite_org_id,
+            suite_project_id=suite_project_id,
+            core_project_name=f"Suite Project {suite_project_id}",
+            core_project_slug=f"suite-project-{suite_project_id}",
+        )
+        project_id = project["id"]
+
+    identity = suite_adapter.resolve_authenticated_request(
+        suite_user_id=suite_user_id,
+        suite_organization_id=suite_org_id,
+        suite_project_id=suite_project_id,
+        module_key="suite",
+        module_permissions={"suite": ["module.read", "project.read", "organization.read"]},
+        request_id=(request.headers.get("X-Request-ID") if request else None),
+    )
+
+    return {
+        "success": True,
+        "data": {
+            "current_user": identity["current_user"],
+            "current_organization": identity["current_organization"],
+            "current_project": identity["current_project"],
+            "current_module": identity["current_module"],
+            "permissions": identity["permissions"],
+            "organization": identity["organization"],
+            "project": identity["project"],
+            "request_id": identity["request_id"],
+            "user": identity["user"],
+        },
+        "error": None,
+        "meta": {"request_id": identity["request_id"], "scope": "suite"},
+    }
+
 
 @app.get("/health", include_in_schema=False)
 @app.get("/_health", include_in_schema=False)
 async def health_check():
     return {"status": "ok"}
+
+
+@app.get("/api/v1/health", include_in_schema=False)
+async def versioned_health_check():
+    return {
+        "service": "gaatha-suite",
+        "status": "healthy",
+        "dependencies": {"database": "unknown"},
+    }
 
 
 @app.get("/ready", include_in_schema=False)

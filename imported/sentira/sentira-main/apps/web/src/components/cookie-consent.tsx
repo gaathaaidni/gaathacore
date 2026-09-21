@@ -49,7 +49,7 @@ export function CookieConsent() {
         <p className="eyebrow">Privacy choices</p>
         <h2>Cookies and similar technologies</h2>
         <p>Necessary storage keeps Sentira secure and working. Optional choices help with preferences, analytics, or marketing only after you choose them.</p>
-        <Link href="/legal/cookies">Read the Cookie Policy</Link>
+        <Link href="/privacy">Read the Privacy Policy</Link>
       </div>
       {manage && <div className="cookie-options">
         {(['preferences', 'analytics', 'marketing'] as const).map((category) => (

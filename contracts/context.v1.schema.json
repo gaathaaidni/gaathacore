@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gaatha.tech/contracts/context.v1.schema.json",
+  "title": "GaathaCore Request Context v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["user_id", "organization_id", "module", "permissions", "available_modules"],
+  "properties": {
+    "user_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "organization_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "project_id": { "type": ["string", "null"], "maxLength": 128 },
+    "module": {
+      "type": "string",
+      "enum": ["business_suite", "pos", "sentira", "postpilot"]
+    },
+    "permissions": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$" },
+      "uniqueItems": true
+    },
+    "available_modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["module", "status"],
+        "properties": {
+          "module": {
+            "type": "string",
+            "enum": ["business_suite", "pos", "sentira", "postpilot"]
+          },
+          "status": { "type": "string", "enum": ["enabled", "trial", "disabled"] },
+          "project_id": { "type": ["string", "null"], "maxLength": 128 }
+        }
+      },
+      "uniqueItems": true
+    }
+  }
+}

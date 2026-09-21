@@ -1,5 +1,5 @@
 import Link from 'next/link';
 
 export function LegalFooter() {
-  return <footer className="legal-footer"><div className="footer-inner"><span>Sentira by Gaatha Ventures</span><nav aria-label="Legal"><Link href="/legal/terms">Terms</Link><Link href="/legal/privacy">Privacy</Link><Link href="/legal/cookies">Cookies</Link><Link href="/legal/acceptable-use">Acceptable use</Link><Link href="/legal/ai-transparency">AI transparency</Link><Link href="/legal/security">Security</Link><Link href="/legal/subprocessors">Subprocessors</Link></nav></div></footer>;
+  return <footer className="legal-footer"><div className="footer-inner"><span>Sentira AI</span><nav aria-label="Public pages"><Link href="/">Home</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link><Link href="/user-policy">User Policy</Link></nav><span>Architect, Developer, Owner, Founder — Hardikkumar Gajjar</span></div></footer>;
 }

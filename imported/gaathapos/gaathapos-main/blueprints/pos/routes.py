@@ -2,6 +2,7 @@ from flask import render_template, jsonify, request
 from flask_login import login_required, current_user
 from decorators import permission_required
 from extensions import db
+from core.pos_adapter import require_pos_core_scope
 from datetime import datetime, timezone
 from models import (
     Order, OrderItem, MenuItem, Product, ProductCategory, BarcodeMapping,
@@ -37,6 +38,7 @@ def pos_home():
 # ============================================================================
 @pos_bp.route("/products", methods=["GET"])
 @login_required
+@require_pos_core_scope("pos", required_permission="project.read")
 def list_products():
     """List all products with optional category filter"""
     try:

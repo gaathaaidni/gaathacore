@@ -10,6 +10,14 @@ export class AppService {
     };
   }
 
+  getVersionedHealth() {
+    return {
+      service: 'sentira-api',
+      status: 'healthy',
+      dependencies: { database: 'unknown' },
+    };
+  }
+
   getReady() {
     return {
       status: 'ready',
