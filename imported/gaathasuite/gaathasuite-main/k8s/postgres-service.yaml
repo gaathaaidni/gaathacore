@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gaatha-postgres
+spec:
+  selector:
+    app: gaatha-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

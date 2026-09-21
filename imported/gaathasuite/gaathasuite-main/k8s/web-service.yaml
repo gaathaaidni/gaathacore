@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gaatha-web
+spec:
+  type: LoadBalancer
+  selector:
+    app: gaatha-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000

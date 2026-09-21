@@ -1,0 +1,4 @@
+import http from 'k6/http'; import { check } from 'k6';
+export const options={scenarios:{cameras_10:{executor:'constant-vus',vus:10,duration:'30s'},cameras_50:{executor:'constant-vus',vus:50,duration:'30s',startTime:'35s'},cameras_100:{executor:'constant-vus',vus:100,duration:'30s',startTime:'70s'},cameras_500:{executor:'constant-vus',vus:500,duration:'30s',startTime:'105s'}},thresholds:{http_req_failed:['rate<0.01'],http_req_duration:['p(95)<1000']}};
+const base=__ENV.BASE_URL||'http://localhost:4000'; const headers=__ENV.TOKEN?{Authorization:`Bearer ${__ENV.TOKEN}`}:{ };
+export default function(){ for(const path of ['/health','/api/events','/api/analytics/overview','/api/system/health']) { const r=http.get(base+path,{headers});check(r,{'successful response':x=>x.status>=200&&x.status<300}); } }

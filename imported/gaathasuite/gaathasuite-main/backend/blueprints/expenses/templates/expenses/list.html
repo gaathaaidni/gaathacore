@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Expenses{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">Expenses</h4>
+                    <a href="{{ url_for('expenses.create_expense') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Expense
+                    </a>
+                </div>
+
+                <!-- Filters -->
+                <div class="card-body border-bottom">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-2">
+                            <select name="vendor_id" class="form-select">
+                                <option value="">All Vendors</option>
+                                {% for vendor in vendors %}
+                                <option value="{{ vendor.id }}" {{ 'selected' if request.args.get('vendor_id')|string == vendor.id|string }}>{{ vendor.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select name="category" class="form-select">
+                                <option value="">All Categories</option>
+                                <option value="office_supplies" {{ 'selected' if request.args.get('category') == 'office_supplies' }}>Office Supplies</option>
+                                <option value="travel" {{ 'selected' if request.args.get('category') == 'travel' }}>Travel</option>
+                                <option value="meals" {{ 'selected' if request.args.get('category') == 'meals' }}>Meals</option>
+                                <option value="software" {{ 'selected' if request.args.get('category') == 'software' }}>Software</option>
+                                <option value="hardware" {{ 'selected' if request.args.get('category') == 'hardware' }}>Hardware</option>
+                                <option value="marketing" {{ 'selected' if request.args.get('category') == 'marketing' }}>Marketing</option>
+                                <option value="utilities" {{ 'selected' if request.args.get('category') == 'utilities' }}>Utilities</option>
+                                <option value="other" {{ 'selected' if request.args.get('category') == 'other' }}>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select name="status" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="pending" {{ 'selected' if request.args.get('status') == 'pending' }}>Pending</option>
+                                <option value="approved" {{ 'selected' if request.args.get('status') == 'approved' }}>Approved</option>
+                                <option value="rejected" {{ 'selected' if request.args.get('status') == 'rejected' }}>Rejected</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" name="date_from" class="form-control" value="{{ request.args.get('date_from') }}" placeholder="From Date">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" name="date_to" class="form-control" value="{{ request.args.get('date_to') }}" placeholder="To Date">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-outline-primary me-2">Filter</button>
+                            <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-outline-secondary">Clear</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Expenses Table -->
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Vendor</th>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for expense in expenses.items %}
+                                <tr>
+                                    <td>{{ expense.date.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <div class="fw-bold">{{ expense.description[:50] }}{% if expense.description|length > 50 %}...{% endif %}</div>
+                                    </td>
+                                    <td>{{ expense.vendor.name if expense.vendor else 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ expense.category.replace('_', ' ')|title }}</span>
+                                    </td>
+                                    <td class="fw-bold">${{ "%.2f"|format(expense.amount) }}</td>
+                                    <td>
+                                        {% if expense.status == 'pending' %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% elif expense.status == 'approved' %}
+                                            <span class="badge bg-success">Approved</span>
+                                        {% elif expense.status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('expenses.edit_expense', id=expense.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            {% if expense.status == 'pending' %}
+                                            <form method="POST" action="{{ url_for('expenses.approve_expense', id=expense.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Approve this expense?')">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="{{ url_for('expenses.reject_expense', id=expense.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Reject this expense?')">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                            <form method="POST" action="{{ url_for('expenses.delete_expense', id=expense.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this expense?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                {% if expenses.pages > 1 %}
+                <div class="card-footer">
+                    <nav aria-label="Expense pagination">
+                        <ul class="pagination justify-content-center mb-0">
+                            {% if expenses.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('expenses.list_expenses', page=expenses.prev_num, **request.args) }}">Previous</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                            {% endif %}
+
+                            {% for page_num in expenses.iter_pages() %}
+                            {% if page_num %}
+                            <li class="page-item {{ 'active' if page_num == expenses.page }}">
+                                <a class="page-link" href="{{ url_for('expenses.list_expenses', page=page_num, **request.args) }}">{{ page_num }}</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if expenses.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('expenses.list_expenses', page=expenses.next_num, **request.args) }}">Next</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Vendors{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">Vendors</h4>
+                    <a href="{{ url_for('vendors.create_vendor') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Vendor
+                    </a>
+                </div>
+
+                <!-- Filters -->
+                <div class="card-body border-bottom">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" name="search" class="form-control" value="{{ request.args.get('search') }}" placeholder="Search vendors...">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="category" class="form-select">
+                                <option value="">All Categories</option>
+                                <option value="general" {{ 'selected' if request.args.get('category') == 'general' }}>General</option>
+                                <option value="office_supplies" {{ 'selected' if request.args.get('category') == 'office_supplies' }}>Office Supplies</option>
+                                <option value="software" {{ 'selected' if request.args.get('category') == 'software' }}>Software & IT</option>
+                                <option value="travel" {{ 'selected' if request.args.get('category') == 'travel' }}>Travel</option>
+                                <option value="marketing" {{ 'selected' if request.args.get('category') == 'marketing' }}>Marketing</option>
+                                <option value="utilities" {{ 'selected' if request.args.get('category') == 'utilities' }}>Utilities</option>
+                                <option value="maintenance" {{ 'selected' if request.args.get('category') == 'maintenance' }}>Maintenance</option>
+                                <option value="consulting" {{ 'selected' if request.args.get('category') == 'consulting' }}>Consulting</option>
+                                <option value="other" {{ 'selected' if request.args.get('category') == 'other' }}>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-outline-primary me-2">Filter</button>
+                            <a href="{{ url_for('vendors.list_vendors') }}" class="btn btn-outline-secondary">Clear</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Vendors Table -->
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Category</th>
+                                    <th>Expenses</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vendor in vendors.items %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">{{ vendor.name }}</div>
+                                    </td>
+                                    <td>{{ vendor.email or 'N/A' }}</td>
+                                    <td>{{ vendor.phone or 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ vendor.category.replace('_', ' ')|title }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ vendor.expenses|length }} expenses</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('vendors.edit_vendor', id=vendor.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="POST" action="{{ url_for('vendors.delete_vendor', id=vendor.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this vendor?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                {% if vendors.pages > 1 %}
+                <div class="card-footer">
+                    <nav aria-label="Vendor pagination">
+                        <ul class="pagination justify-content-center mb-0">
+                            {% if vendors.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('vendors.list_vendors', page=vendors.prev_num, **request.args) }}">Previous</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                            {% endif %}
+
+                            {% for page_num in vendors.iter_pages() %}
+                            {% if page_num %}
+                            <li class="page-item {{ 'active' if page_num == vendors.page }}">
+                                <a class="page-link" href="{{ url_for('vendors.list_vendors', page=page_num, **request.args) }}">{{ page_num }}</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if vendors.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('vendors.list_vendors', page=vendors.next_num, **request.args) }}">Next</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

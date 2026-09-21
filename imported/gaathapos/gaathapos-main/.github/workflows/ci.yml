@@ -1,0 +1,53 @@
+name: CI - Smoke Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  smoke-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Prepare DB and stamp baseline
+        env:
+          FLASK_APP: app.py
+          FLASK_ENV: development
+        run: |
+          # In CI, we should simulate a real deployment by running migrations
+          # This requires a database service. For simplicity in CI, we can use sqlite.
+          # Ensure your config uses a file-based sqlite DB for testing.
+          mkdir -p instance 
+          python -m flask db upgrade
+
+      - name: Run smoke verification script
+        env:
+          FLASK_APP: app.py
+          FLASK_ENV: development
+        run: |
+          PYTHONPATH=. python tests/verify_pos.py
+
+      - name: Run pytest
+        env:
+          FLASK_APP: app.py
+        run: |
+          python -m pip install pytest
+          PYTHONPATH=. python -m pytest -q
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: |
+            ./tests/*.log
+            ./.pytest_cache || true

@@ -1,0 +1,415 @@
+imported
+├── gaathapos
+│   └── gaathapos-main
+│       ├── .dockerignore
+│       ├── .env.example
+│       ├── .github
+│       │   └── workflows
+│       ├── .gitignore
+│       ├── API_REFERENCE.md
+│       ├── DEPLOY.sh
+│       ├── DEPLOYMENT_GUIDE.md
+│       ├── Dockerfile
+│       ├── MULTITENANT_LAUNCH.md
+│       ├── Makefile
+│       ├── README.md
+│       ├── README_BETA_LAUNCH.md
+│       ├── SESSION_SUMMARY.txt
+│       ├── app.py
+│       ├── babel.cfg
+│       ├── blueprints
+│       │   ├── __init__.py
+│       │   ├── admin
+│       │   ├── analytics
+│       │   ├── api
+│       │   ├── auth
+│       │   ├── inventory
+│       │   ├── kds
+│       │   ├── menu
+│       │   ├── payments
+│       │   └── pos
+│       ├── celery_app.py
+│       ├── celerybeat-schedule
+│       ├── config.py
+│       ├── conftest.py
+│       ├── decorators.py
+│       ├── docker-compose.yml
+│       ├── entrypoint.sh
+│       ├── error
+│       ├── export_sqlite_csv.py
+│       ├── extensions.py
+│       ├── i18n.py
+│       ├── migrations
+│       │   ├── README
+│       │   ├── alembic.ini
+│       │   ├── archived_versions
+│       │   ├── env.py
+│       │   ├── script.py.mako
+│       │   └── versions
+│       ├── models.py
+│       ├── pg_backup.sh
+│       ├── pythonanywhere_wsgi.py
+│       ├── requirements-production.txt
+│       ├── requirements.txt
+│       ├── routes.py
+│       ├── scripts
+│       │   ├── fix_pyotp.sh
+│       │   └── link_check.py
+│       ├── seed.py
+│       ├── seed_menu.py
+│       ├── services
+│       │   ├── exchange.py
+│       │   ├── payment_providers.py
+│       │   ├── tax.py
+│       │   └── totp.py
+│       ├── smoke_test.py
+│       ├── static
+│       │   ├── banner.svg
+│       │   ├── css
+│       │   └── nexora-pos.png
+│       ├── tasks.py
+│       ├── templates
+│       │   ├── admin_dashboard.html
+│       │   ├── base.html
+│       │   ├── index.html
+│       │   ├── kds.html
+│       │   ├── login.html
+│       │   ├── menu.html
+│       │   ├── pos.html
+│       │   ├── routes.py
+│       │   └── signup.html
+│       ├── test_currency.py
+│       ├── tests
+│       │   ├── login_debug.py
+│       │   ├── test_cash_register.py
+│       │   ├── test_checkout_flow.py
+│       │   ├── test_database_init.py
+│       │   ├── test_deployed_site.py
+│       │   ├── test_instance_dir.py
+│       │   ├── test_inventory_integrity.py
+│       │   ├── test_migration_008.py
+│       │   ├── test_migration_009.py
+│       │   ├── test_payment_integrity.py
+│       │   ├── test_security_foundation.py
+│       │   ├── test_tenant_isolation.py
+│       │   ├── ui_pages_test.py
+│       │   └── verify_pos.py
+│       ├── translations
+│       │   ├── es
+│       │   ├── hi
+│       │   └── pt
+│       └── wsgi.py
+├── gaathasuite
+│   └── gaathasuite-main
+│       ├── .env.bak
+│       ├── .env.example
+│       ├── .env.vps.example
+│       ├── .github
+│       │   ├── agents
+│       │   └── workflows
+│       ├── .gitignore
+│       ├── ACTIVE_ROUTE_INVENTORY.md
+│       ├── ARCHITECTURAL_REVIEW.md
+│       ├── ARCHITECT_SUGGESTIONS.md
+│       ├── CHANGELOG.md
+│       ├── DEPLOYMENT.md
+│       ├── DEPLOYMENT_VPS.md
+│       ├── Dockerfile
+│       ├── GAATHA_SUITE_24_HOUR_READINESS_REPORT.md
+│       ├── GAATHA_SUITE_BETA_RELEASE_READINESS_REPORT.md
+│       ├── GAATHA_SUITE_BETA_RELEASE_REPORT.md
+│       ├── GAATHA_SUITE_COMPLETE_PRODUCT_TRUTH_AUDIT.md
+│       ├── GAATHA_SUITE_CORE_ERP_READINESS_REPORT.md
+│       ├── GAATHA_SUITE_GREEN_RELEASE_PROGRAM.md
+│       ├── GAATHA_SUITE_MIGRATION_READINESS_REPORT.md
+│       ├── GAATHA_SUITE_PHASE_1_SECURITY_DATABASE_ACCOUNTING_REPORT.md
+│       ├── GAATHA_SUITE_PRODUCTION_READINESS_REPORT.md
+│       ├── GAATHA_SUITE_PRODUCT_DEVELOPMENT_REPORT.md
+│       ├── GAATHA_SUITE_PROFESSIONALIZATION_REPORT.md
+│       ├── GAATHA_SUITE_RELEASE_CANDIDATE_CHECKLIST.md
+│       ├── GAATHA_SUITE_TENANT_ISOLATION_REPORT.md
+│       ├── GAATHA_SUITE_VPS_DEPLOYMENT_REPORT.md
+│       ├── INSPECTION_REPORT.md
+│       ├── LEGACY_PRODUCTION_DEPENDENCY_MAP.md
+│       ├── PHASE_2_1_MIGRATION_RUNTIME_REPORT.md
+│       ├── PHASE_2_3_FINAL_REPORT.md
+│       ├── PHASE_2_4_IMPLEMENTATION_PLAN.md
+│       ├── PHASE_2_5_FINAL_GATE_REPORT.md
+│       ├── PHASE_2_6_FINAL_GATE_REPORT.md
+│       ├── README.md
+│       ├── SETUP.md
+│       ├── VaniAlerts.tsx
+│       ├── VaniWidget.css
+│       ├── __init__.py
+│       ├── audit.py
+│       ├── backend
+│       │   ├── .env.example
+│       │   ├── SuperadminDashboard.jsx
+│       │   ├── app
+│       │   ├── backups
+│       │   ├── blueprints
+│       │   ├── config.py
+│       │   ├── entrypoint.sh
+│       │   ├── extensions.py
+│       │   ├── init_db.py
+│       │   ├── main.py
+│       │   ├── migrations
+│       │   ├── models.py
+│       │   ├── requirements.txt
+│       │   └── tests
+│       ├── dependencies.py
+│       ├── deploy
+│       │   └── nginx
+│       ├── docker-compose.prod.yml
+│       ├── docker-compose.yml
+│       ├── docs
+│       │   ├── ARCHITECTURE.md
+│       │   ├── DEPLOYMENT.md
+│       │   ├── GAATHA_SUITE_BACKUP_RESTORE_RUNBOOK.md
+│       │   ├── GAATHA_SUITE_DEPLOYMENT_RUNBOOK.md
+│       │   ├── GAATHA_SUITE_ERP_COMPLETION_MATRIX.md
+│       │   ├── GAATHA_SUITE_PRODUCTION_ENVIRONMENT.md
+│       │   ├── GAATHA_SUITE_PRODUCTION_READINESS_BASELINE.md
+│       │   ├── MULTI_TENANCY.md
+│       │   ├── PRODUCTION_COMPLETION_AUDIT.md
+│       │   ├── README.md
+│       │   ├── SECURITY.md
+│       │   ├── TESTING.md
+│       │   ├── admin
+│       │   ├── developer
+│       │   ├── docker-build-troubleshooting.md
+│       │   ├── legal
+│       │   ├── operations
+│       │   ├── product
+│       │   ├── release
+│       │   ├── security
+│       │   └── user
+│       ├── frontend
+│       │   ├── index.html
+│       │   ├── node_modules
+│       │   ├── package-lock.json
+│       │   ├── package.json
+│       │   ├── public
+│       │   ├── src
+│       │   ├── static
+│       │   └── vite.config.js
+│       ├── gaatha_e2e.spec.js
+│       ├── k8s
+│       │   ├── README.md
+│       │   ├── postgres-deployment.yaml
+│       │   ├── postgres-service.yaml
+│       │   ├── secret.yaml
+│       │   ├── web-deployment.yaml
+│       │   └── web-service.yaml
+│       ├── node_modules
+│       │   ├── .bin
+│       │   ├── .package-lock.json
+│       │   ├── @playwright
+│       │   ├── playwright
+│       │   └── playwright-core
+│       ├── ops
+│       │   ├── ansible
+│       │   ├── fabric
+│       │   ├── gunicorn.service
+│       │   └── run_migrations_staging.sh
+│       ├── package-lock.json
+│       ├── package.json
+│       ├── playwright.config.js
+│       ├── render.prod.yaml
+│       ├── render.yaml
+│       ├── scripts
+│       │   ├── add_email_confirm_columns.py
+│       │   ├── apply_secret_via_ssh.sh
+│       │   ├── auto_signup_test.py
+│       │   ├── backup_database.py
+│       │   ├── check_secret.py
+│       │   ├── clear_cache.sh
+│       │   ├── create_tables.py
+│       │   ├── gaatha_release_gate.sh
+│       │   ├── generate_db_url.py
+│       │   ├── generate_secret.py
+│       │   ├── generate_seed_sql.py
+│       │   ├── generate_user_manual_pdf.sh
+│       │   ├── init_local.sh
+│       │   ├── migrate_sqlite_to_postgres.py
+│       │   ├── postdeploy_migrate.sh
+│       │   ├── render_postdeploy.sh
+│       │   ├── restore_database_test.py
+│       │   ├── restructure_project.sh
+│       │   ├── role_smoke_test.py
+│       │   ├── rollback_secret.sh
+│       │   ├── rotate_deploy_playbook.md
+│       │   ├── rotate_secret.py
+│       │   └── seed_permissions.py
+│       ├── tailwind.config.js
+│       ├── test-results
+│       │   └── .last-run.json
+│       ├── tools.py
+│       ├── useAiAlerts.ts
+│       └── useTaskPoller.ts
+├── postpilot
+│   └── postpilot-main
+│       ├── .env.example
+│       ├── Connected pages
+│       ├── DEPLOYMENT.md
+│       ├── Dockerfile
+│       ├── ERROR_ANALYSIS.md
+│       ├── FLASK_README.md
+│       ├── QUICKSTART.md
+│       ├── README.md
+│       ├── __pycache__
+│       │   ├── facebook_api.cpython-312.pyc
+│       │   ├── gaatha_loop.cpython-312.pyc
+│       │   ├── grahak_news_auto.cpython-312.pyc
+│       │   ├── grahak_uploader.cpython-312.pyc
+│       │   ├── grahakchetna.cpython-312.pyc
+│       │   ├── insta.cpython-312.pyc
+│       │   ├── nexora_by_phoenix_international.cpython-312.pyc
+│       │   ├── nexora_suite.cpython-312.pyc
+│       │   └── posting_utils.cpython-312.pyc
+│       ├── app.py
+│       ├── app_description.txt
+│       ├── config
+│       │   ├── automation_status.json
+│       │   └── rss_feeds.json
+│       ├── docker-compose.yml
+│       ├── facebook_api.py
+│       ├── fetch_fb_info.py
+│       ├── fetch_full_info.py
+│       ├── file.tmp
+│       ├── gaatha_loop.py
+│       ├── grahak_news_auto.py
+│       ├── grahak_uploader.py
+│       ├── grahak_video_factory.py
+│       ├── grahak_youtube_auto.py
+│       ├── grahakchetna.py
+│       ├── insta.py
+│       ├── logo.png
+│       ├── migrate_to_sqlite.py
+│       ├── news.log
+│       ├── nexora_by_phoenix_international.py
+│       ├── nexora_suite.py
+│       ├── posted.txt
+│       ├── posted_news.txt
+│       ├── posting_utils.py
+│       ├── posts
+│       │   ├── gaatha_posts.json
+│       │   ├── insta_posts.json
+│       │   ├── tour_posts.json
+│       │   └── visa_posts.json
+│       ├── posts.db
+│       ├── requirements.txt
+│       ├── run-production.sh
+│       ├── run.sh
+│       ├── script.js
+│       ├── setup.sh
+│       ├── smoke_test.py
+│       ├── static
+│       │   ├── bg.png
+│       │   ├── elegant.css
+│       │   ├── gclogo.jpg
+│       │   ├── logo.png
+│       │   ├── script.js
+│       │   └── style.css
+│       ├── structure.txt
+│       ├── temp_audio.mp3
+│       ├── temp_frame_1774324853.jpg
+│       ├── templates
+│       │   └── index.html
+│       ├── test.txt
+│       ├── token.txt
+│       ├── verify_token.py
+│       └── yt.log
+└── sentira
+    └── sentira-main
+        ├── .env.example
+        ├── .gitignore
+        ├── AI_PIPELINE.md
+        ├── AI_WORKER.md
+        ├── ANALYTICS.md
+        ├── API.md
+        ├── ARCHITECTURE.md
+        ├── CCTV_ARCHITECTURE.md
+        ├── CCTV_KNOWLEDGE_BASE.md
+        ├── CCTV_SUPPORT.md
+        ├── DATABASE.md
+        ├── DEMO.md
+        ├── DEPLOYMENT.md
+        ├── DISASTER_RECOVERY.md
+        ├── LEGAL_COMPLIANCE_PRODUCTION_SAFETY_REPORT.md
+        ├── MASTER_PROMPT.md
+        ├── OBSERVABILITY.md
+        ├── PHASE4_COMPLETION_REPORT.md
+        ├── PHASE5_COMPLETION_REPORT.md
+        ├── PHASE_10B_COMPLETION_REPORT.md
+        ├── PHASE_10C_COMPLETION_REPORT.md
+        ├── PHASE_10C_PLAN.md
+        ├── PHASE_10D_COMPLETION_REPORT.md
+        ├── PHASE_10E_COMPLETION_REPORT.md
+        ├── PHASE_10F_COMPLETION_REPORT.md
+        ├── PHASE_10G_COMPLETION_REPORT.md
+        ├── PHASE_10_COMPLETION_REPORT.md
+        ├── PHASE_11A_COMPLETION_REPORT.md
+        ├── PHASE_11B_COMPLETION_REPORT.md
+        ├── PHASE_11C_PRODUCTION_GATE_REPORT.md
+        ├── PHASE_11_COMPLETION_REPORT.md
+        ├── PHASE_11_DEPLOYMENT_CHECKLIST.md
+        ├── PHASE_11_FINAL_COMPLETION_REPORT.md
+        ├── PHASE_11_PLAN.md
+        ├── PHASE_11_RUNTIME_SECURITY_CLOSURE_REPORT.md
+        ├── PHASE_12_CCTV_ONBOARDING_CONNECTOR_PRODUCTION_GATE_REPORT.md
+        ├── PHASE_13_2_COMPLETION_REPORT.md
+        ├── PHASE_13_3_COMPLETION_REPORT.md
+        ├── PHASE_13_4_COMPLETION_REPORT.md
+        ├── PHASE_13_COMPLETION_REPORT.md
+        ├── PHASE_2B_COMPLETION.md
+        ├── PHASE_3_COMPLETION.md
+        ├── PHASE_6.md
+        ├── PHASE_6_COMPLETION_REPORT.md
+        ├── PHASE_7.md
+        ├── PHASE_7_COMPLETION_REPORT.md
+        ├── PHASE_8_COMPLETION_REPORT.md
+        ├── PHASE_9_COMPLETION_REPORT.md
+        ├── QUICKSTART_DEMO.md
+        ├── RBAC.md
+        ├── README.md
+        ├── RETENTION.md
+        ├── RULE_ENGINE.md
+        ├── SECURITY.md
+        ├── STREAMING.md
+        ├── VIDEO_PIPELINE.md
+        ├── VPS_DEPLOYMENT.md
+        ├── apps
+        │   ├── ai-worker
+        │   ├── api
+        │   ├── edge-connector
+        │   ├── stream-gateway
+        │   └── web
+        ├── backups
+        │   └── sentira-20260828T053156Z.dump
+        ├── common.module.ts
+        ├── dashboard.controller.ts
+        ├── deploy
+        │   └── nginx
+        ├── deploy.sh
+        ├── docker-compose.production.yml
+        ├── docker-compose.yml
+        ├── docs
+        │   ├── CCTV_CATALOG.md
+        │   ├── INDUSTRY_TEMPLATES.md
+        │   ├── OBSERVABILITY.md
+        │   ├── PERFORMANCE.md
+        │   ├── PHASE_13_HARDWARE_TEST_PLAN.md
+        │   ├── RULE_ENGINE.md
+        │   ├── SECURITY.md
+        │   ├── TRACKING.md
+        │   └── WEBRTC.md
+        ├── load-tests
+        │   └── operations.js
+        ├── package-lock.json
+        ├── package.json
+        └── scripts
+            ├── backup-postgres.sh
+            └── restore-postgres.sh
+
+87 directories, 326 files

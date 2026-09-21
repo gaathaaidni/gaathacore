@@ -1,0 +1,68 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gaatha:prod
+    ports:
+      - "127.0.0.1:${WEB_PORT:-5000}:5000"
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:?POSTGRES_USER is required}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:?POSTGRES_DB is required}
+      SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
+      REDIS_URL: redis://redis:6379/0
+      APP_ENV: production
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS is required}
+      BASE_URL: ${BASE_URL:?BASE_URL is required}
+    volumes:
+      - gaatha_uploads:/app/backend/static/uploads
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/ready')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    command: ["postgres", "-c", "listen_addresses=*"]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+    expose:
+      - "5432"
+    volumes:
+      - gaatha_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  gaatha_postgres_data:
+    # Keep the existing live VPS volume unless an operator explicitly chooses another one.
+    name: ${POSTGRES_VOLUME_NAME:-gaatha_postgres_data}
+  gaatha_uploads:
+    name: ${UPLOADS_VOLUME_NAME:-gaatha_uploads_prod}

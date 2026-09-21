@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Approval Request{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">{{ approval.title }}</h4>
+                    <div>
+                        {% if approval.status == 'pending' %}
+                        <form method="POST" action="{{ url_for('approvals.approve_approval', id=approval.id) }}" class="d-inline me-2">
+                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Approve this request?')">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('approvals.reject_approval', id=approval.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Reject this request?')">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6>Request Details</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Type:</strong></td>
+                                    <td>{{ approval.request_type.replace('_', ' ')|title }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Requester:</strong></td>
+                                    <td>{{ approval.requester.username if approval.requester else 'Unknown' }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Priority:</strong></td>
+                                    <td>
+                                        {% if approval.priority == 'urgent' %}
+                                            <span class="badge bg-danger">Urgent</span>
+                                        {% elif approval.priority == 'high' %}
+                                            <span class="badge bg-warning">High</span>
+                                        {% elif approval.priority == 'medium' %}
+                                            <span class="badge bg-info">Medium</span>
+                                        {% else %}
+                                            <span class="badge bg-light text-dark">Low</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td>
+                                        {% if approval.status == 'pending' %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% elif approval.status == 'approved' %}
+                                            <span class="badge bg-success">Approved</span>
+                                        {% elif approval.status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if approval.amount %}
+                                <tr>
+                                    <td><strong>Amount:</strong></td>
+                                    <td>${{ "%.2f"|format(approval.amount) }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td><strong>Created:</strong></td>
+                                    <td>{{ approval.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                </tr>
+                                {% if approval.due_date %}
+                                <tr>
+                                    <td><strong>Due Date:</strong></td>
+                                    <td>{{ approval.due_date.strftime('%Y-%m-%d') }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Description</h6>
+                            <p>{{ approval.description }}</p>
+
+                            {% if approval.status != 'pending' %}
+                            <h6>Decision</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Decision:</strong></td>
+                                    <td>{{ approval.status|title }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>By:</strong></td>
+                                    <td>
+                                        {% if approval.status == 'approved' %}
+                                            {{ approval.approver.username if approval.approver else 'Unknown' }}
+                                        {% else %}
+                                            {{ approval.rejector.username if approval.rejector else 'Unknown' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date:</strong></td>
+                                    <td>
+                                        {% if approval.status == 'approved' %}
+                                            {{ approval.approved_at.strftime('%Y-%m-%d %H:%M') if approval.approved_at else 'N/A' }}
+                                        {% else %}
+                                            {{ approval.rejected_at.strftime('%Y-%m-%d %H:%M') if approval.rejected_at else 'N/A' }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Workflow Progress -->
+            {% if approval.workflow %}
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Approval Workflow</h6>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-3">
+                        <div class="progress-bar" role="progressbar"
+                             style="width: {{ (approval.workflow.current_step / approval.workflow.total_steps) * 100 }}%"
+                             aria-valuenow="{{ approval.workflow.current_step }}"
+                             aria-valuemin="0"
+                             aria-valuemax="{{ approval.workflow.total_steps }}">
+                            Step {{ approval.workflow.current_step }} of {{ approval.workflow.total_steps }}
+                        </div>
+                    </div>
+                    <p class="text-muted small">
+                        Current step: {{ approval.workflow.current_step }}<br>
+                        Status: {{ approval.workflow.status.replace('_', ' ')|title }}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('approvals.list_approvals') }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                        <i class="fas fa-list"></i> Back to List
+                    </a>
+                    <a href="{{ url_for('approvals.create_approval') }}" class="btn btn-outline-secondary btn-sm w-100">
+                        <i class="fas fa-plus"></i> New Request
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

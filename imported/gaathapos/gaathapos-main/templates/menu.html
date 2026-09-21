@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Menu{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <span class="section-eyebrow">Catalog</span>
+    <h1>{{ _('Our Menu') }}</h1>
+    <p>{{ _('Browse the current product lineup and keep service moving.') }}</p>
+  </div>
+  <div class="header-status-badge"><span class="status-dot"></span> {{ _('Live availability') }}</div>
+</div>
+
+<div id="menu-container" class="row g-4">
+  {% if items %}
+    {% for item in items %}
+    <div class="col-md-6 col-xl-4">
+      <article class="card dashboard-card h-100">
+        <div class="card-body d-flex flex-column h-100">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <span class="section-eyebrow mb-2">Menu item</span>
+              <h5 class="card-title mb-0">{{ item.name }}</h5>
+            </div>
+            {% if item.available %}
+              <span class="badge bg-success-subtle text-success">{{ _('Available') }}</span>
+            {% else %}
+              <span class="badge bg-danger-subtle text-danger">{{ _('Out of stock') }}</span>
+            {% endif %}
+          </div>
+          <p class="card-text text-muted flex-grow-1">{{ item.description or _('No description provided.') }}</p>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="h4 mb-0">{{ "%.2f"|format(item.price) }}</span>
+            <span class="small text-muted">{{ item.unit_of_measure or 'Unit' }}</span>
+          </div>
+          {% if item.available %}
+            <button type="button" class="btn btn-primary mt-4 w-100" onclick="window.location.href='{{ url_for('pos.pos_home') }}'">
+              {{ _('Add to POS') }}
+            </button>
+          {% else %}
+            <button type="button" class="btn btn-secondary mt-4 w-100" disabled>
+              {{ _('Unavailable') }}
+            </button>
+          {% endif %}
+        </div>
+      </article>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="col-12">
+      <div class="alert alert-info" role="alert">
+        {{ _('No menu items available yet. Check back soon!') }}
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

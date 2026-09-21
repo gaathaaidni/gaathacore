@@ -1,0 +1,678 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block page_header %}
+<div class="page-heading">
+    <div>
+        <span class="section-eyebrow">Business overview</span>
+        <h1>{{ _('Dashboard') }}</h1>
+        <p>{{ _('Monitor service, sales, and operational status for the day.') }}</p>
+    </div>
+    <div class="header-status-badge"><span class="status-dot"></span> Live status</div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Currency Settings Card -->
+<div class="row">
+	<div class="col-lg-4 col-md-6 mb-4">
+		<div class="card dashboard-card">
+			<div class="card-header">{{ _('Display Settings') }}</div>
+			<div class="card-body">
+				<label for="currency-selector" class="form-label">{{ _('Preferred Currency') }}</label>
+				<select class="form-select" id="currency-selector">
+					<option value="USD">USD - US Dollar</option>
+					<option value="EUR">EUR - Euro</option>
+					<option value="GBP">GBP - British Pound</option>
+					<option value="INR">INR - Indian Rupee</option>
+					<option value="RON">RON - Romanian Leu</option>
+					<option value="CAD">CAD - Canadian Dollar</option>
+					<option value="AUD">AUD - Australian Dollar</option>
+					<option value="JPY">JPY - Japanese Yen</option>
+					<option value="CNY">CNY - Chinese Yuan</option>
+					<option value="AED">AED - UAE Dirham</option>
+				</select>
+				<small class="form-text text-muted mt-2 d-block">{{ _('All monetary values will display in your selected currency') }}</small>
+				<hr>
+				<label for="locale-selector" class="form-label mt-2">{{ _('Preferred Language') }}</label>
+				<select class="form-select" id="locale-selector">
+					<option value="">{{ _('Detect from browser') }}</option>
+					<option value="en">English</option>
+					<option value="es">Español</option>
+					<option value="pt">Português</option>
+					<option value="hi">हिन्दी</option>
+					<option value="ro">Română</option>
+				</select>
+				<small class="form-text text-muted mt-2 d-block">{{ _('Choose your UI language') }}</small>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-8 col-md-6 mb-4">
+		<div class="card dashboard-card">
+			<div class="card-header">{{ _('Manage Menu') }}</div>
+			<div class="card-body">
+				<form id="menu-form">
+					<div class="mb-2">
+						<input class="form-control" name="name" placeholder="Name" required>
+					</div>
+					<div class="mb-2">
+						<input class="form-control" name="price" placeholder="Price" type="number" step="0.01" required>
+					</div>
+					<div class="mb-2">
+						<input class="form-control" name="description" placeholder="Description">
+					</div>
+					<button class="btn btn-primary" type="submit">Add Menu Item</button>
+				</form>
+
+				<hr>
+				<h6>Menu Items</h6>
+				<div id="menu-list">Loading...</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6 mb-4" id="inventory">
+		<div class="card dashboard-card">
+			<div class="card-header">{{ _('Inventory Management') }}</div>
+			<div class="card-body">
+				<form id="inv-form">
+					<div class="mb-2">
+						<input class="form-control" name="name" placeholder="Ingredient name" required>
+					</div>
+					<div class="mb-2">
+						<input class="form-control" name="quantity" placeholder="Quantity" type="number" value="0">
+					</div>
+					<div class="mb-2">
+						<input class="form-control" name="unit" placeholder="Unit (e.g. kg, pcs)">
+					</div>
+					<button class="btn btn-primary" type="submit">Add Inventory</button>
+				</form>
+
+				<hr>
+				<h6>Inventory Items</h6>
+                <div class="mb-3">
+                    <input type="search" id="inv-search" class="form-control" placeholder="Search inventory...">
+                </div>
+				<div id="inv-list" style="min-height: 100px;">Loading...</div>
+                <div id="inv-pagination" class="d-flex justify-content-between align-items-center mt-3"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-6 mb-4" id="imports">
+		<div class="card dashboard-card">
+			<div class="card-header">{{ _('Imports / Exports') }}</div>
+			<div class="card-body">
+				<div class="mb-3">
+					<label class="form-label">Import Menu CSV</label>
+					<input id="menu-import-file" type="file" accept="text/csv" class="form-control">
+					<div id="menu-import-results" class="mt-2 small text-monospace"></div>
+					<div class="mt-2"><a class="btn btn-sm btn-outline-secondary" href="/admin/api/menu/export">Export Menu</a></div>
+				</div>
+				<hr>
+				<div class="mb-2">
+					<label class="form-label">Import Inventory CSV</label>
+					<input id="inv-import-file" type="file" accept="text/csv" class="form-control">
+					<div id="inv-import-results" class="mt-2 small text-monospace"></div>
+					<div class="mt-2"><a class="btn btn-sm btn-outline-secondary" href="/admin/api/inventory/export">Export Inventory</a></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : null;
+
+// Initialize currency selector with current user's currency
+async function initializeCurrencySelector(){
+	try{
+		const currencySelector = document.getElementById('currency-selector');
+		// Get current user ID and currency from page or fetch
+		const userIdMeta = document.querySelector('meta[name="user-id"]');
+		const currentCurrencyMeta = document.querySelector('meta[name="user-currency"]');
+		
+		if(currentCurrencyMeta){
+			currencySelector.value = currentCurrencyMeta.getAttribute('content');
+		}
+		const localeSelector = document.getElementById('locale-selector');
+		const currentLocaleMeta = document.querySelector('meta[name="user-locale"]');
+		if(currentLocaleMeta && localeSelector){
+			if(currentLocaleMeta.getAttribute('content')) localeSelector.value = currentLocaleMeta.getAttribute('content');
+		}
+		
+		// Add change event listener
+		currencySelector.addEventListener('change', async (e) => {
+			const newCurrency = e.target.value;
+			if(!userIdMeta) return alert('Unable to determine user ID');
+			
+			const userId = userIdMeta.getAttribute('content');
+			const res = await fetch('/admin/api/users/' + userId + '/currency', {
+				method: 'PUT',
+				headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken},
+				body: JSON.stringify({currency: newCurrency})
+			});
+			
+			if(res.ok){
+				const data = await res.json();
+				alert('Currency changed to ' + newCurrency);
+				// Refresh page to show amounts in new currency
+				location.reload();
+			} else {
+				const err = await res.json();
+				alert('Failed to change currency: ' + (err.error || 'Unknown error'));
+				// Reset selector to previous value
+				location.reload();
+			}
+		});
+
+		if(localeSelector){
+			localeSelector.addEventListener('change', async (e) => {
+				const newLocale = e.target.value;
+				if(!userIdMeta) return alert('Unable to determine user ID');
+				const userId = userIdMeta.getAttribute('content');
+				const res = await fetch('/admin/api/users/' + userId + '/locale', {
+					method: 'PUT',
+					headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken},
+					body: JSON.stringify({locale: newLocale})
+				});
+				if(res.ok){
+					alert('Language changed');
+					location.reload();
+				} else {
+					const err = await res.json();
+					alert('Failed to change language: ' + (err.error || 'Unknown'));
+					location.reload();
+				}
+			});
+		}
+	} catch(e){
+		console.warn('Currency selector initialization failed:', e);
+	}
+}
+
+async function fetchMenu(){
+	const res = await fetch('/admin/api/menu', {headers: {'X-CSRFToken': csrfToken}});
+	const items = await res.json();
+	const el = document.getElementById('menu-list');
+	if(!Array.isArray(items)) return el.innerText = 'Error loading menu';
+	if(items.length===0) return el.innerHTML = '<p>No items yet</p>';
+	el.innerHTML = '<table class="table table-sm"><thead><tr><th>Name</th><th>Price</th><th>Available</th><th></th></tr></thead><tbody>' +
+		items.map(i=>`<tr data-id="${i.id}"><td>${i.name}</td><td>${i.price.toFixed(2)}</td><td>${i.available? 'Yes':'No'}</td><td>
+			<button class="btn btn-sm btn-secondary me-1" onclick="editMenu(${i.id})">Edit</button>
+			<button class="btn btn-sm btn-info me-1" onclick="viewHistory(${i.id})">History</button>
+			<button class="btn btn-sm btn-danger" onclick="deleteMenu(${i.id})">Delete</button>
+		</td></tr>`).join('') +
+		'</tbody></table>';
+}
+
+let invState = {
+    page: 1,
+    search: '',
+    sort_by: 'name',
+    sort_dir: 'asc'
+};
+
+function renderInv(data) {
+    const { items, pagination } = data;
+    const el = document.getElementById('inv-list');
+    if (!Array.isArray(items)) {
+        el.innerText = 'Error loading inventory';
+        return;
+    }
+    if (items.length === 0 && invState.search === '') {
+        el.innerHTML = '<p>No inventory items yet.</p>';
+        document.getElementById('inv-pagination').innerHTML = '';
+        return;
+    }
+     if (items.length === 0 && invState.search !== '') {
+        el.innerHTML = '<p>No inventory items match your search.</p>';
+        document.getElementById('inv-pagination').innerHTML = '';
+        return;
+    }
+
+    const sortIndicator = (col) => {
+        if (invState.sort_by === col) {
+            return invState.sort_dir === 'asc' ? ' ▲' : ' ▼';
+        }
+        return '';
+    };
+
+    el.innerHTML = `<table class="table table-sm"><thead><tr>
+        <th style="cursor: pointer;" onclick="sortInv('name')">Name${sortIndicator('name')}</th>
+        <th style="cursor: pointer;" onclick="sortInv('quantity')">Qty${sortIndicator('quantity')}</th>
+        <th style="cursor: pointer;" onclick="sortInv('unit')">Unit${sortIndicator('unit')}</th>
+        <th></th></tr></thead><tbody>` +
+        items.map(i => `<tr data-id="${i.id}"><td>${i.name}</td><td>${i.quantity}</td><td>${i.unit || ''}</td><td>
+			<button class="btn btn-sm btn-secondary me-1" onclick="editInv(${i.id})">Edit</button>
+			<button class="btn btn-sm btn-danger" onclick="deleteInv(${i.id})">Delete</button>
+		</td></tr>`).join('') +
+        '</tbody></table>';
+
+    // Render pagination
+    const pagEl = document.getElementById('inv-pagination');
+    pagEl.innerHTML = `
+        <div><small>Page ${pagination.page} of ${pagination.total_pages}</small></div>
+        <div>
+            <button class="btn btn-sm btn-outline-secondary" ${pagination.has_prev ? `onclick="fetchInv(${pagination.page - 1})"` : 'disabled'}>Previous</button>
+            <button class="btn btn-sm btn-outline-secondary" ${pagination.has_next ? `onclick="fetchInv(${pagination.page + 1})"` : 'disabled'}>Next</button>
+        </div>
+    `;
+}
+
+function sortInv(column) {
+    const newDirection = (invState.sort_by === column && invState.sort_dir === 'asc') ? 'desc' : 'asc';
+    invState.sort_by = column;
+    invState.sort_dir = newDirection;
+    fetchInv(1); // Go back to page 1 on new sort
+}
+
+async function fetchInv(page = 1){
+    invState.page = page;
+    const params = new URLSearchParams(invState);
+	const res = await fetch(`/admin/api/inventory?${params.toString()}`, {headers: {'X-CSRFToken': csrfToken}});
+	const data = await res.json();
+    renderInv(data);
+}
+
+document.getElementById('inv-search').addEventListener('input', (e) => {
+    invState.search = e.target.value;
+    fetchInv(1); // Reset to page 1 on new search
+});
+
+document.getElementById('menu-form').addEventListener('submit', async (e)=>{
+	e.preventDefault();
+	const fd = new FormData(e.target);
+	const body = {name: fd.get('name'), price: fd.get('price'), description: fd.get('description')};
+	const res = await fetch('/admin/api/menu', {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken': csrfToken}, body: JSON.stringify(body)});
+	if(res.status===201){ e.target.reset(); fetchMenu(); } else { alert('Error adding menu item'); }
+});
+
+document.getElementById('inv-form').addEventListener('submit', async (e)=>{
+	e.preventDefault();
+	const fd = new FormData(e.target);
+	const body = {name: fd.get('name'), quantity: Number(fd.get('quantity')||0), unit: fd.get('unit')};
+	const res = await fetch('/admin/api/inventory', {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken': csrfToken}, body: JSON.stringify(body)});
+	if(res.status===201){ e.target.reset(); fetchInv(); } else { alert('Error adding inventory item'); }
+});
+
+async function deleteMenu(id){
+	if(!confirm('Delete this menu item?')) return;
+	const res = await fetch('/admin/api/menu/'+id, {method:'DELETE', headers:{'X-CSRFToken': csrfToken}});
+	if(res.ok) fetchMenu(); else alert('Delete failed');
+}
+
+async function deleteInv(id){
+		if(!confirm('Delete this inventory item?')) return;
+		const res = await fetch('/admin/api/inventory/'+id, {method:'DELETE', headers:{'X-CSRFToken': csrfToken}});
+		if(res.ok) fetchInv(invState.page); else alert('Delete failed');
+}
+
+async function editMenu(id){
+		// open modal and populate
+		try{
+			const res = await fetch('/admin/api/menu/' + id, {headers: {'X-CSRFToken': csrfToken}});
+			const item = await res.json();
+			document.getElementById('edit-menu-id').value = item.id;
+			document.getElementById('edit-menu-name').value = item.name || '';
+			document.getElementById('edit-menu-price').value = item.price || '';
+			document.getElementById('edit-menu-desc').value = item.description || '';
+			document.getElementById('edit-menu-available').checked = !!item.available;
+			var modal = new bootstrap.Modal(document.getElementById('editMenuModal'));
+			modal.show();
+		}catch(e){ alert('Unable to load item: '+e.message); }
+}
+
+async function viewHistory(id){
+		const res = await fetch('/admin/api/menu/'+id+'/history', {headers:{'X-CSRFToken': csrfToken}});
+		const rows = await res.json();
+		if(!Array.isArray(rows)) return alert('Error fetching history');
+		if(rows.length===0) return alert('No price history');
+		const text = rows.map(r=> `${r.changed_at} — ${r.changed_by || 'unknown'}: ${r.old_price} -> ${r.new_price}`).join('\n');
+		alert(text);
+}
+
+async function importMenuFile(file){
+		const fd = new FormData(); fd.append('file', file);
+		const res = await fetch('/admin/api/menu/import', {method:'POST', body: fd, headers:{'X-CSRFToken': csrfToken}});
+		const json = await res.json();
+		if(res.status===201){
+			// show results
+			const el = document.getElementById('menu-import-results');
+			el.innerHTML = '<pre>' + JSON.stringify(json.results || json, null, 2) + '</pre>';
+			fetchMenu();
+		} else { alert('Import failed: '+(json.error||'unknown')); }
+}
+
+async function importInvFile(file){
+		const fd = new FormData(); fd.append('file', file);
+		const res = await fetch('/admin/api/inventory/import', {method:'POST', body: fd, headers:{'X-CSRFToken': csrfToken}});
+		const json = await res.json();
+		if(res.status===201){
+			const el = document.getElementById('inv-import-results');
+			el.innerHTML = '<pre>' + JSON.stringify(json.results || json, null, 2) + '</pre>';
+			fetchInv();
+		} else { alert('Import failed: '+(json.error||'unknown')); }
+}
+
+async function editInv(id){
+    try{
+        const res = await fetch('/admin/api/inventory/' + id, {headers: {'X-CSRFToken': csrfToken}});
+        const item = await res.json();
+        document.getElementById('edit-inv-id').value = item.id;
+        document.getElementById('edit-inv-name').value = item.name || '';
+        document.getElementById('edit-inv-quantity').value = item.quantity || 0;
+        document.getElementById('edit-inv-unit').value = item.unit || '';
+        document.getElementById('edit-inv-threshold').value = item.low_stock_threshold || 10;
+        var modal = new bootstrap.Modal(document.getElementById('editInvModal'));
+        modal.show();
+    }catch(e){ alert('Unable to load inventory item: '+e.message); }
+}
+
+async function fetchLogs(){
+		const res = await fetch('/admin/api/logs', {headers:{'X-CSRFToken': csrfToken}});
+		renderLogs(await res.json());
+}
+
+async function fetchLogsFiltered(){
+		const action = document.getElementById('log-filter-action').value;
+		const objType = document.getElementById('log-filter-object').value;
+		const user = document.getElementById('log-filter-user').value;
+		let url = '/admin/api/logs?';
+		if(action) url += 'action=' + encodeURIComponent(action) + '&';
+		if(objType) url += 'object_type=' + encodeURIComponent(objType) + '&';
+		if(user) url += 'user=' + encodeURIComponent(user) + '&';
+		const res = await fetch(url, {headers:{'X-CSRFToken': csrfToken}});
+		renderLogs(await res.json());
+}
+
+function resetLogFilters(){
+		document.getElementById('log-filter-action').value = '';
+		document.getElementById('log-filter-object').value = '';
+		document.getElementById('log-filter-user').value = '';
+		fetchLogs();
+}
+
+function renderLogs(rows){
+		const el = document.getElementById('logs-list');
+		if(!Array.isArray(rows)) return el.innerText = 'Error loading logs';
+		if(rows.length===0) return el.innerHTML = '<p>No matching logs</p>';
+		el.innerHTML = '<ul class="list-group">' + rows.map(r=> `<li class="list-group-item"><strong>${r.action}</strong> on ${r.object_type} #${r.object_id||''} by ${r.username||'system'} at ${r.created_at}<br><small>${r.details||''}</small></li>`).join('') + '</ul>';
+}
+
+function setupImportHandlers(){
+		const menuInput = document.getElementById('menu-import-file');
+		if(menuInput){ menuInput.addEventListener('change', e=>{ const f = e.target.files[0]; if(f) importMenuFile(f); }); }
+		const invInput = document.getElementById('inv-import-file');
+		if(invInput){ invInput.addEventListener('change', e=>{ const f = e.target.files[0]; if(f) importInvFile(f); }); }
+}
+
+async function initAll(){ fetchMenu(); fetchInv(); fetchLogs(); setupImportHandlers(); fetchAccountingSummary(); fetchCollections(); }
+
+initAll();
+</script>
+<!-- Edit Menu Modal -->
+<div class="modal fade" id="editMenuModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Edit Menu Item</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" id="edit-menu-id">
+				<div class="mb-2"><label class="form-label">Name</label><input id="edit-menu-name" class="form-control"></div>
+				<div class="mb-2"><label class="form-label">Price</label><input id="edit-menu-price" class="form-control" type="number" step="0.01"></div>
+				<div class="mb-2"><label class="form-label">Description</label><textarea id="edit-menu-desc" class="form-control"></textarea></div>
+				<div class="form-check mb-2"><input id="edit-menu-available" class="form-check-input" type="checkbox"><label class="form-check-label">Available</label></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button id="save-menu-btn" type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Edit Inventory Modal -->
+<div class="modal fade" id="editInvModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Edit Inventory Item</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" id="edit-inv-id">
+				<div class="mb-2"><label class="form-label">Name</label><input id="edit-inv-name" class="form-control"></div>
+				<div class="mb-2"><label class="form-label">Quantity</label><input id="edit-inv-quantity" class="form-control" type="number"></div>
+				<div class="mb-2"><label class="form-label">Unit</label><input id="edit-inv-unit" class="form-control"></div>
+				<div class="mb-2">
+					<label for="edit-inv-threshold" class="form-label">Low Stock Threshold</label>
+					<input id="edit-inv-threshold" class="form-control" type="number" min="0">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button id="save-inv-btn" type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+document.getElementById('save-menu-btn').addEventListener('click', async ()=>{
+	const id = document.getElementById('edit-menu-id').value;
+	const body = {
+		name: document.getElementById('edit-menu-name').value,
+		price: Number(document.getElementById('edit-menu-price').value),
+		description: document.getElementById('edit-menu-desc').value,
+		available: document.getElementById('edit-menu-available').checked
+	};
+	const res = await fetch('/admin/api/menu/' + id, {method: 'PUT', headers: {'Content-Type':'application/json','X-CSRFToken': csrfToken}, body: JSON.stringify(body)});
+	if(res.ok){
+		bootstrap.Modal.getInstance(document.getElementById('editMenuModal')).hide();
+		fetchMenu();
+	} else { alert('Save failed'); }
+});
+
+document.getElementById('save-inv-btn').addEventListener('click', async ()=>{
+	const id = document.getElementById('edit-inv-id').value;
+	const body = {
+		name: document.getElementById('edit-inv-name').value,
+		quantity: Number(document.getElementById('edit-inv-quantity').value),
+		unit: document.getElementById('edit-inv-unit').value,
+		low_stock_threshold: Number(document.getElementById('edit-inv-threshold').value)
+	};
+	const res = await fetch('/admin/api/inventory/' + id, {method: 'PUT', headers: {'Content-Type':'application/json','X-CSRFToken': csrfToken}, body: JSON.stringify(body)});
+	if(res.ok){ bootstrap.Modal.getInstance(document.getElementById('editInvModal')).hide(); fetchInv(invState.page); } else { alert('Save failed'); }
+});
+</script>
+<script>
+// Accounting & Collections JS
+async function fetchAccountingSummary(){
+	try{
+		const res = await fetch('/admin/api/accounting/summary', {headers:{'X-CSRFToken': csrfToken}});
+		if(!res.ok) return;
+		const json = await res.json();
+		document.getElementById('acc-income').innerText = (json.income||0).toFixed(2);
+		document.getElementById('acc-expenses').innerText = (json.expenses||0).toFixed(2);
+		document.getElementById('acc-net').innerText = ((json.income||0)-(json.expenses||0)).toFixed(2);
+	}catch(e){ console.warn('acct summary', e); }
+}
+
+async function fetchTransactions(){
+	try{
+		const res = await fetch('/admin/api/transactions', {headers:{'X-CSRFToken': csrfToken}});
+		const rows = await res.json();
+		const el = document.getElementById('txn-list');
+		if(!Array.isArray(rows)) return el.innerText = 'Error loading transactions';
+		if(rows.length===0) return el.innerHTML = '<p>No transactions yet</p>';
+		el.innerHTML = '<table class="table table-sm"><thead><tr><th>When</th><th>Type</th><th>Category</th><th>Amount</th><th>By</th><th></th></tr></thead><tbody>' +
+			rows.map(r=>`<tr data-id="${r.id}"><td>${r.created_at||''}</td><td>${r.transaction_type}</td><td>${r.category||''}</td><td>${(r.amount||0).toFixed(2)}</td><td>${r.recorded_by||''}</td><td><button class="btn btn-sm btn-danger" onclick="deleteTransaction(${r.id})">Del</button></td></tr>`).join('') + '</tbody></table>';
+	}catch(e){ console.warn(e); }
+}
+
+document.getElementById('txn-form').addEventListener('submit', async (e)=>{
+	e.preventDefault();
+	const body = {transaction_type: document.getElementById('txn-type').value, amount: Number(document.getElementById('txn-amount').value||0), category: document.getElementById('txn-category').value, description: document.getElementById('txn-desc').value};
+	const res = await fetch('/admin/api/transactions', {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken': csrfToken}, body: JSON.stringify(body)});
+	if(res.status===201){ e.target.reset(); fetchTransactions(); fetchAccountingSummary(); } else { alert('Failed to record transaction'); }
+});
+
+async function deleteTransaction(id){
+	if(!confirm('Delete transaction?')) return;
+	const res = await fetch('/admin/api/transactions/' + id, {method:'DELETE', headers:{'X-CSRFToken': csrfToken}});
+	if(res.ok){ fetchTransactions(); fetchAccountingSummary(); } else alert('Delete failed');
+}
+
+// Collections
+async function fetchCollections(){
+	try{
+		const res = await fetch('/admin/api/collections', {headers:{'X-CSRFToken': csrfToken}});
+		const cols = await res.json();
+		const el = document.getElementById('collections-list');
+		if(!Array.isArray(cols)) return el.innerText = 'Error loading collections';
+		if(cols.length===0) return el.innerHTML = '<p>No collections yet</p>';
+		el.innerHTML = '<table class="table table-sm"><thead><tr><th>Customer</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th></th></tr></thead><tbody>' +
+			cols.map(c=>`<tr data-id="${c.id}"><td>${c.customer||''}</td><td>${(c.total||0).toFixed(2)}</td><td>${(c.paid||0).toFixed(2)}</td><td>${(c.balance||0).toFixed(2)}</td><td>${c.status||''}</td><td><button class="btn btn-sm btn-primary me-1" onclick="openCollection(${c.id})">Open</button><button class="btn btn-sm btn-danger" onclick="deleteCollection(${c.id})">Del</button></td></tr>`).join('') + '</tbody></table>';
+		// update summary
+		const sumRes = await fetch('/admin/api/collection/summary', {headers:{'X-CSRFToken': csrfToken}});
+		if(sumRes.ok){ const s = await sumRes.json(); document.getElementById('col-outstanding').innerText = (s.outstanding||0).toFixed(2); document.getElementById('col-collected').innerText = (s.collected||0).toFixed(2); }
+	}catch(e){ console.warn(e); }
+}
+
+document.getElementById('collection-form').addEventListener('submit', async (e)=>{
+	e.preventDefault();
+	const body = {customer: document.getElementById('col-customer').value, phone: document.getElementById('col-phone').value, total: Number(document.getElementById('col-amount').value||0)};
+	const res = await fetch('/admin/api/collections', {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken': csrfToken}, body: JSON.stringify(body)});
+	if(res.status===201){ e.target.reset(); fetchCollections(); } else { alert('Failed to create collection'); }
+});
+
+async function openCollection(id){
+	try{
+		const res = await fetch('/admin/api/collections/' + id, {headers:{'X-CSRFToken': csrfToken}});
+		if(!res.ok) return alert('Unable to load');
+		const c = await res.json();
+		// show simple prompt to add payment and view payments
+		let msg = `Collection for ${c.customer}\nTotal: ${c.total}\nPaid: ${c.paid}\nBalance: ${c.balance}\nStatus: ${c.status}\n\nPayments:\n`;
+		(c.payments||[]).forEach(p=> msg += `${p.created_at||''} - ${p.amount} (${p.method}) by ${p.received_by||''}\n`);
+		const add = confirm(msg + '\n\nWould you like to add a payment?');
+		if(!add) return;
+		const amount = prompt('Payment amount', c.balance||0);
+		if(!amount) return;
+		const method = prompt('Payment method (cash/card/other)', 'cash');
+		const payRes = await fetch('/admin/api/collections/' + id + '/payment', {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken': csrfToken}, body: JSON.stringify({amount: Number(amount), method: method})});
+		if(payRes.ok){ alert('Payment recorded'); fetchCollections(); fetchAccountingSummary(); } else { alert('Payment failed'); }
+	}catch(e){ console.warn(e); }
+}
+
+async function deleteCollection(id){ if(!confirm('Delete collection?')) return; const res = await fetch('/admin/api/collections/' + id, {method:'DELETE', headers:{'X-CSRFToken': csrfToken}}); if(res.ok) fetchCollections(); else alert('Delete failed'); }
+
+</script>
+
+<!-- Invoices Panel (Enhanced) -->
+<div class="row mt-3">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">Invoices</div>
+      <div class="card-body">
+        <div class="row g-2 mb-2">
+          <div class="col-md-3"><select id="invoice-from-collection" class="form-select form-select-sm"><option value="">Create from collection...</option></select></div>
+          <div class="col-md-2"><button id="create-invoice-btn" class="btn btn-sm btn-primary">Create Invoice</button></div>
+          <div class="col-md-2"><input id="invoice-search" class="form-control form-control-sm" placeholder="Search..."></div>
+          <div class="col-md-2">
+            <select id="invoice-filter-status" class="form-select form-select-sm">
+              <option value="">All Status</option>
+              <option value="draft">Draft</option>
+              <option value="issued">Issued</option>
+              <option value="paid">Paid</option>
+            </select>
+          </div>
+          <div class="col-md-2"><button class="btn btn-sm btn-outline-secondary" onclick="filterInvoices()">Filter</button></div>
+        </div>
+        <div id="invoices-list">Loading invoices...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let allInvoices = [];
+
+async function fetchInvoices(){
+  try{
+    const res = await fetch('/admin/api/invoices', {headers:{'X-CSRFToken': csrfToken}});
+    allInvoices = await res.json() || [];
+    renderInvoices(allInvoices);
+  }catch(e){ console.warn(e); document.getElementById('invoices-list').innerText = 'Error loading'; }
+}
+
+function renderInvoices(invs){
+  const el = document.getElementById('invoices-list');
+  if(!Array.isArray(invs) || invs.length===0) return el.innerHTML = '<p>No invoices yet</p>';
+  el.innerHTML = '<table class="table table-sm"><thead><tr><th>#</th><th>Invoice</th><th>Customer</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>' + invs.map(i=>{
+    const badge = i.status==='paid' ? '<span class="badge bg-success">Paid</span>' : i.status==='issued' ? '<span class="badge bg-warning">Issued</span>' : '<span class="badge bg-secondary">Draft</span>';
+    return `<tr><td>${i.id}</td><td>${i.invoice_number}</td><td>${i.customer||''}</td><td>${(i.total||0).toFixed(2)}</td><td>${badge}</td><td>
+      <button class="btn btn-xs btn-outline-primary me-1" onclick="printInvoice(${i.id})" title="Print">🖨️</button>
+      ${i.status!=='paid' ? `<button class="btn btn-xs btn-outline-success me-1" onclick="markInvoicePaid(${i.id})" title="Mark Paid">✓</button>` : ''}
+      <button class="btn btn-xs btn-outline-danger" onclick="deleteInvoice(${i.id})" title="Delete">✕</button>
+    </td></tr>`;
+  }).join('') + '</tbody></table>';
+}
+
+function filterInvoices(){
+  const search = (document.getElementById('invoice-search').value||'').toLowerCase();
+  const status = document.getElementById('invoice-filter-status').value;
+  const filtered = allInvoices.filter(i=> (search==='' || i.invoice_number.toLowerCase().includes(search) || (i.customer||'').toLowerCase().includes(search)) && (status==='' || i.status===status));
+  renderInvoices(filtered);
+}
+
+document.getElementById('invoice-search').addEventListener('keyup', filterInvoices);
+
+function printInvoice(id){ window.open('/invoices/' + id + '/print', '_blank'); }
+
+async function markInvoicePaid(id){
+  if(!confirm('Mark invoice as paid?')) return;
+  const res = await fetch('/admin/api/invoices/' + id + '/mark-paid', {method:'PUT', headers:{'X-CSRFToken': csrfToken}});
+  if(res.ok){ alert('Invoice marked as paid'); fetchInvoices(); } else { alert('Failed'); }
+}
+
+async function deleteInvoice(id){
+  if(!confirm('Delete invoice?')) return;
+  const res = await fetch('/admin/api/invoices/' + id, {method:'DELETE', headers:{'X-CSRFToken': csrfToken}});
+  if(res.ok){ alert('Invoice deleted'); fetchInvoices(); } else { alert('Failed'); }
+}
+
+async function loadCollectionsForInvoice(){
+  try{
+    const res = await fetch('/admin/api/collections', {headers:{'X-CSRFToken': csrfToken}});
+    const cols = await res.json();
+    const sel = document.getElementById('invoice-from-collection');
+    sel.innerHTML = '<option value="">Create from collection...</option>' + (Array.isArray(cols)? cols.map(c=>`<option value="${c.id}" data-total="${c.total}">${c.id} - ${c.customer||c.customer_name||'Customer'} - ${(c.total||0).toFixed(2)}</option>`).join('') : '');
+  }catch(e){ console.warn(e); }
+}
+
+document.getElementById('create-invoice-btn').addEventListener('click', async ()=>{
+  const sel = document.getElementById('invoice-from-collection');
+  const colId = sel.value;
+  if(!colId) return alert('Select a collection to create an invoice from');
+  const res = await fetch('/admin/api/collections/' + colId, {headers:{'X-CSRFToken': csrfToken}});
+  if(!res.ok) return alert('Failed to load collection');
+  const c = await res.json();
+  const body = {collection_id: c.id, customer: c.customer||c.customer_name, phone: c.phone||c.customer_phone, items: JSON.stringify([]), total: c.total||c.total_amount};
+  const r2 = await fetch('/admin/api/invoices', {method:'POST', headers: {'Content-Type':'application/json','X-CSRFToken': csrfToken}, body: JSON.stringify(body)});
+  if(r2.status===201){ alert('Invoice created'); fetchInvoices(); sel.value=''; } else { alert('Failed to create invoice'); }
+});
+
+fetchInvoices(); loadCollectionsForInvoice();
+
+// Initialize currency selector
+initializeCurrencySelector();
+</script>
+{% endblock %}

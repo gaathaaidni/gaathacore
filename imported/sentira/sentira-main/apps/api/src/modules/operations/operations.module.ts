@@ -1,0 +1,2 @@
+import { Module } from '@nestjs/common'; import { TypeOrmModule } from '@nestjs/typeorm'; import { AuditLog, Camera, Event, Notification, Role, Rule } from '../../entities'; import { OperationsController } from './operations.controller'; import { PermissionGuard } from '../../auth/guards/permission.guard';
+@Module({ imports:[TypeOrmModule.forFeature([Event,Camera,Rule,AuditLog,Notification,Role])], controllers:[OperationsController], providers:[PermissionGuard] }) export class OperationsModule {}

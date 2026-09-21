@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="page-title">
+    <i class="fas fa-project-diagram"></i>
+    <span>{{ title }}</span>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <form method="post">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+              {{ form.name.label(class="form-label") }}
+              {{ form.name(class="form-control") }}
+              {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                  <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+              {% endif %}
+            </div>
+
+            <div class="form-group">
+              {{ form.description.label(class="form-label") }}
+              {{ form.description(class="form-control", rows=3) }}
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.status.label(class="form-label") }}
+                  {{ form.status(class="form-control") }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.priority.label(class="form-label") }}
+                  {{ form.priority(class="form-control") }}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.start_date.label(class="form-label") }}
+                  {{ form.start_date(class="form-control", type="date") }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.end_date.label(class="form-label") }}
+                  {{ form.end_date(class="form-control", type="date") }}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.budget.label(class="form-label") }}
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">$</span>
+                    </div>
+                    {{ form.budget(class="form-control") }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {{ form.customer_id.label(class="form-label") }}
+                  {{ form.customer_id(class="form-control") }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              {{ form.manager_id.label(class="form-label") }}
+              {{ form.manager_id(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Save Project
+              </button>
+              <a href="{{ url_for('projects.projects') }}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,908 @@
+=> => unpacking to docker.io/library/gaathapos-worker:latest       20.1s
+ => [beat] exporting to image                                       39.9s
+[+] Building 94.8s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       20.3s
+ => [web] exporting to image                                        40.1s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          20.3s
+ => [worker] exporting to image                                     40.0s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       20.3s
+ => [beat] exporting to image                                       40.0s
+[+] Building 95.0s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       20.4s
+ => [web] exporting to image                                        40.2s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          20.4s
+ => [worker] exporting to image                                     40.2s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       20.4s
+ => [beat] exporting to image                                       40.2s
+[+] Building 95.1s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       20.6s
+ => [web] exporting to image                                        40.4s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          20.6s
+ => [worker] exporting to image                                     40.3s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       20.6s
+ => [beat] exporting to image                                       40.3s
+[+] Building 95.3s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       20.7s
+ => [web] exporting to image                                        40.5s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          20.7s
+ => [worker] exporting to image                                     40.5s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       20.7s
+ => [beat] exporting to image                                       40.5s
+[+] Building 95.4s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       20.9s
+ => [web] exporting to image                                        40.7s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          20.9s
+ => [worker] exporting to image                                     40.6s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       20.9s
+ => [beat] exporting to image                                       40.6s
+[+] Building 95.6s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       21.0s
+ => [web] exporting to image                                        40.8s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          21.0s
+ => [worker] exporting to image                                     40.8s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       21.0s
+ => [beat] exporting to image                                       40.8s
+[+] Building 95.7s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       21.2s
+ => [web] exporting to image                                        41.0s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          21.2s
+ => [worker] exporting to image                                     40.9s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       21.2s
+ => [beat] exporting to image                                       40.9s
+[+] Building 95.9s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       21.3s
+ => [web] exporting to image                                        41.1s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          21.3s
+ => [worker] exporting to image                                     41.1s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       21.3s
+ => [beat] exporting to image                                       41.1s
+[+] Building 96.0s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       21.5s
+ => [web] exporting to image                                        41.3s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          21.5s
+ => [worker] exporting to image                                     41.2s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       21.5s
+ => [beat] exporting to image                                       41.2s
+[+] Building 96.2s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       21.6s
+ => [web] exporting to image                                        41.4s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          21.6s
+ => [worker] exporting to image                                     41.4s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       21.6s
+ => [beat] exporting to image                                       41.4s
+[+] Building 96.3s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       21.8s
+ => [web] exporting to image                                        41.6s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          21.8s
+ => [worker] exporting to image                                     41.5s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       21.8s
+ => [beat] exporting to image                                       41.5s
+[+] Building 96.5s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       21.9s
+ => [web] exporting to image                                        41.7s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          21.9s
+ => [worker] exporting to image                                     41.7s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       21.9s
+ => [beat] exporting to image                                       41.7s
+[+] Building 96.6s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       22.1s
+ => [web] exporting to image                                        41.9s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          22.1s
+ => [worker] exporting to image                                     41.8s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       22.1s
+ => [beat] exporting to image                                       41.8s
+[+] Building 96.8s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       22.2s
+ => [web] exporting to image                                        42.0s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          22.2s
+ => [worker] exporting to image                                     42.0s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       22.2s
+ => [beat] exporting to image                                       42.0s
+[+] Building 96.9s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       22.4s
+ => [web] exporting to image                                        42.2s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          22.4s
+ => [worker] exporting to image                                     42.1s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       22.4s
+ => [beat] exporting to image                                       42.1s
+[+] Building 97.1s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       22.5s
+ => [web] exporting to image                                        42.3s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          22.5s
+ => [worker] exporting to image                                     42.3s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       22.5s
+ => [beat] exporting to image                                       42.3s
+[+] Building 97.2s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       22.7s
+ => [web] exporting to image                                        42.5s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          22.7s
+ => [worker] exporting to image                                     42.4s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       22.7s
+ => [beat] exporting to image                                       42.4s
+[+] Building 97.4s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       22.8s
+ => [web] exporting to image                                        42.6s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          22.8s
+ => [worker] exporting to image                                     42.6s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       22.8s
+ => [beat] exporting to image                                       42.6s
+[+] Building 97.5s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       23.0s
+ => [web] exporting to image                                        42.8s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          23.0s
+ => [worker] exporting to image                                     42.7s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       23.0s
+ => [beat] exporting to image                                       42.7s
+[+] Building 97.7s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       23.1s
+ => [web] exporting to image                                        42.9s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          23.1s
+ => [worker] exporting to image                                     42.9s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       23.1s
+ => [beat] exporting to image                                       42.9s
+[+] Building 97.8s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       23.3s
+ => [web] exporting to image                                        43.1s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          23.3s
+ => [worker] exporting to image                                     43.0s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       23.3s
+ => [beat] exporting to image                                       43.0s
+[+] Building 98.0s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       23.4s
+ => [web] exporting to image                                        43.2s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          23.4s
+ => [worker] exporting to image                                     43.2s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       23.4s
+ => [beat] exporting to image                                       43.2s
+[+] Building 98.1s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       23.6s
+ => [web] exporting to image                                        43.4s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          23.6s
+ => [worker] exporting to image                                     43.3s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       23.6s
+ => [beat] exporting to image                                       43.3s
+[+] Building 98.3s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       23.7s
+ => [web] exporting to image                                        43.5s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          23.7s
+ => [worker] exporting to image                                     43.5s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       23.7s
+ => [beat] exporting to image                                       43.5s
+[+] Building 98.4s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       23.9s
+ => [web] exporting to image                                        43.7s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          23.9s
+ => [worker] exporting to image                                     43.6s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       23.9s
+ => [beat] exporting to image                                       43.6s
+[+] Building 98.6s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       24.0s
+ => [web] exporting to image                                        43.8s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          24.0s
+ => [worker] exporting to image                                     43.8s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       24.0s
+ => [beat] exporting to image                                       43.8s
+[+] Building 98.7s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       24.2s
+ => [web] exporting to image                                        44.0s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          24.2s
+ => [worker] exporting to image                                     44.0s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       24.2s
+ => [beat] exporting to image                                       44.0s
+[+] Building 98.9s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       24.3s
+ => [web] exporting to image                                        44.1s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          24.3s
+ => [worker] exporting to image                                     44.1s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       24.3s
+ => [beat] exporting to image                                       44.1s
+[+] Building 99.0s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       24.5s
+ => [web] exporting to image                                        44.3s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          24.5s
+ => [worker] exporting to image                                     44.2s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       24.5s
+ => [beat] exporting to image                                       44.2s
+[+] Building 99.2s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       24.6s
+ => [web] exporting to image                                        44.4s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          24.6s
+ => [worker] exporting to image                                     44.4s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       24.6s
+ => [beat] exporting to image                                       44.4s
+[+] Building 99.3s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       24.8s
+ => [web] exporting to image                                        44.6s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          24.8s
+ => [worker] exporting to image                                     44.5s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       24.8s
+ => [beat] exporting to image                                       44.5s
+[+] Building 99.5s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       24.9s
+ => [web] exporting to image                                        44.7s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          24.9s
+ => [worker] exporting to image                                     44.7s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       24.9s
+ => [beat] exporting to image                                       44.7s
+[+] Building 99.6s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       25.1s
+ => [web] exporting to image                                        44.9s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          25.1s
+ => [worker] exporting to image                                     44.8s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       25.1s
+ => [beat] exporting to image                                       44.8s
+[+] Building 99.8s (12/16)                                                
+ => => unpacking to docker.io/library/gaathapos-flower:latest       25.2s
+ => [web] exporting to image                                        45.0s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          25.2s
+ => [worker] exporting to image                                     45.0s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       25.2s
+ => [beat] exporting to image                                       45.0s
+[+] Building 121.8s (20/20) FINISHED                                      
+ => [internal] load local bake definitions                           0.0s
+ => => reading from stdin 1.72kB                                     0.0s
+ => [worker internal] load build definition from Dockerfile          0.0s
+ => => transferring dockerfile: 1.17kB                               0.0s
+ => [web internal] load metadata for docker.io/library/python:3.12-  2.0s
+ => [auth] library/python:pull token for registry-1.docker.io        0.0s
+ => [worker internal] load .dockerignore                             0.0s
+ => => transferring context: 441B                                    0.0s
+ => [flower 1/6] FROM docker.io/library/python:3.12-slim@sha256:423  3.6s
+ => => resolve docker.io/library/python:3.12-slim@sha256:423ed6ab25  0.0s
+ => => sha256:df79d931cd67092e2b8e48d8f6369922571 12.11MB / 12.11MB  0.5s
+ => => sha256:b32430367bf08f32c23778909985ac645d1794f0a 248B / 248B  0.5s
+ => => sha256:aff2d9f8dc87f4c10bbb7f438f3a325169379 1.29MB / 1.29MB  0.7s
+ => => sha256:e95a6c7ea7d49b37920899b023ecd0e3279 29.79MB / 29.79MB  1.3s
+ => => extracting sha256:e95a6c7ea7d49b37920899b023ecd0e32796c976c1  1.4s
+ => => extracting sha256:aff2d9f8dc87f4c10bbb7f438f3a325169379776bd  0.1s
+ => => extracting sha256:df79d931cd67092e2b8e48d8f6369922571efe4ee0  0.6s
+ => => extracting sha256:b32430367bf08f32c23778909985ac645d1794f0ae  0.0s
+ => [beat internal] load build context                               0.0s
+ => => transferring context: 23.17kB                                 0.0s
+ => [beat 2/6] WORKDIR /app                                          2.4s
+ => [beat 3/6] RUN apt-get update && apt-get install -y --no-insta  14.5s
+ => [worker 4/6] COPY requirements*.txt ./                           0.2s
+ => [worker 5/6] RUN pip install --no-cache-dir --upgrade pip &&    31.3s
+ => [flower 6/6] COPY . .                                            0.4s
+ => [flower] exporting to image                                     66.6s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:2d797869b1658f9d6c742715150967b5f8  0.1s
+ => => exporting config sha256:453caded477948c8bcd50d7093282fb3b428  0.1s
+ => => exporting attestation manifest sha256:53b32b5ff7ca72ec712080  0.1s
+ => => exporting manifest list sha256:43b738bde869d55a211965802b7f4  0.1s
+ => => naming to docker.io/library/gaathapos-flower:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-flower:latest       46.6s
+ => [web] exporting to image                                        66.5s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:b7494e4044b045436493aa82cca754553b  0.1s
+ => => exporting config sha256:fc52dc26e5c24759d6d7c15c23297faf5701  0.1s
+ => => exporting attestation manifest sha256:778f7b15c87342c12a1698  0.1s
+ => => exporting manifest list sha256:71ef1e786aea5504b0c5ef7ebb70a  0.1s
+ => => naming to docker.io/library/gaathapos-web:latest              0.0s
+ => => unpacking to docker.io/library/gaathapos-web:latest          46.6s
+ => [worker] exporting to image                                     66.5s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:f82f4842118059128cf385725cb9f4c175  0.1s
+ => => exporting config sha256:6511fb51047ba4a622724876714affd8e3e2  0.1s
+ => => exporting attestation manifest sha256:91e14e235b59a142a7b329  0.1s
+ => => exporting manifest list sha256:6c426a7be482b644372cee1e831a6  0.1s
+ => => naming to docker.io/library/gaathapos-worker:latest           0.0s
+ => => unpacking to docker.io/library/gaathapos-worker:latest       46.6s
+ => [beat] exporting to image                                       66.6s
+ => => exporting layers                                             19.4s
+ => => exporting manifest sha256:1915be987e1992f42f405c5fa4a8ab3291  0.1s
+ => => exporting config sha256:8d595c211e7016a4826bda7981aeaa58b0ce  0.1s
+ => => exporting attestation manifest sha256:6907e7f6493d88429aacd5  0.1s
+ => => exporting manifest list sha256:4f620eb7dbdca51a6627212d607c2  0.1s
+ => => naming to docker.io/library/gaathapos-beat:latest             0.0s
+ => => unpacking to docker.io/library/gaathapos-beat:latest         46.6s
+ => [web] resolving provenance for metadata file                     0.1s
+ => [worker] resolving provenance for metadata file                  0.1s
+ => [flower] resolving provenance for metadata file                  0.1s
+ => [beat] resolving provenance for metadata file                    0.0s
+[+] Running 10/10
+ ✔ gaathapos-flower         Built                                    0.0s 
+ ✔ gaathapos-web            Built                                    0.0s 
+ ✔ gaathapos-worker         Built                                    0.0s 
+ ✔ gaathapos-beat           Built                                    0.0s 
+ ✔ Container gaatha_redis   Running                                  0.0s 
+ ✔ Container gaatha_db      Running                                  0.0s 
+ ✔ Container gaatha_worker  Recreated                               11.7s 
+ ✔ Container gaatha_beat    Recreated                               11.7s 
+ ✔ Container gaatha_flower  Recreated                               11.7s 
+ ✔ Container gaatha_web     Recreated                               11.7s 
+Attaching to gaatha_beat, gaatha_db, gaatha_flower, gaatha_redis, gaatha_web, gaatha_worker
+gaatha_web  | [2026-07-03 01:54:58 +0000] [1] [INFO] Starting gunicorn 26.0.0
+gaatha_web  | [2026-07-03 01:54:58 +0000] [1] [INFO] Listening at: http://0.0.0.0:5000 (1)
+gaatha_web  | [2026-07-03 01:54:58 +0000] [1] [INFO] Using worker: sync
+gaatha_web  | [2026-07-03 01:54:58 +0000] [7] [INFO] Booting worker with pid: 7
+gaatha_web  | [2026-07-03 01:54:58 +0000] [8] [INFO] Booting worker with pid: 8
+gaatha_web  | [2026-07-03 01:54:58 +0000] [9] [INFO] Booting worker with pid: 9
+gaatha_web  | [2026-07-03 01:54:58 +0000] [10] [INFO] Booting worker with pid: 10
+gaatha_beat  | celery beat v5.4.0 (opalescent) is starting.
+gaatha_web   | [2026-07-03 01:55:00 +0000] [1] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+gaatha_flower  | /usr/local/lib/python3.12/site-packages/flask_limiter/_extension.py:364: UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+gaatha_flower  |   warnings.warn(
+gaatha_worker  | /usr/local/lib/python3.12/site-packages/flask_limiter/_extension.py:364: UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+gaatha_worker  |   warnings.warn(
+gaatha_beat    | /usr/local/lib/python3.12/site-packages/flask_limiter/_extension.py:364: UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+gaatha_beat    |   warnings.warn(
+gaatha_beat    | __    -    ... __   -        _
+gaatha_beat    | LocalTime -> 2026-07-03 01:55:03
+gaatha_beat    | Configuration ->
+gaatha_beat    |     . broker -> redis://redis:6379/1
+gaatha_beat    |     . loader -> celery.loaders.app.AppLoader
+gaatha_beat    |     . scheduler -> celery.beat.PersistentScheduler
+gaatha_beat    |     . db -> celerybeat-schedule
+gaatha_beat    |     . logfile -> [stderr]@%INFO
+gaatha_beat    |     . maxinterval -> 5.00 minutes (300s)
+gaatha_beat    | [2026-07-03 01:55:03,387: INFO/MainProcess] beat: Starting...
+gaatha_web     | /usr/local/lib/python3.12/site-packages/flask_limiter/_extension.py:364: UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+gaatha_web     |   warnings.warn(
+gaatha_flower  | [I 260703 01:55:04 command:168] Visit me at http://0.0.0.0:5555
+gaatha_worker  | /usr/local/lib/python3.12/site-packages/celery/platforms.py:829: SecurityWarning: You're running the worker with superuser privileges: this is
+gaatha_worker  | absolutely not recommended!
+gaatha_worker  | 
+gaatha_worker  | Please specify a different user using the --uid option.
+gaatha_worker  | 
+gaatha_worker  | User information: uid=0 euid=0 gid=0 egid=0
+gaatha_worker  | 
+gaatha_worker  |   warnings.warn(SecurityWarning(ROOT_DISCOURAGED.format(
+gaatha_flower  | [I 260703 01:55:04 command:176] Broker: redis://redis:6379/1
+gaatha_flower  | [I 260703 01:55:04 command:177] Registered tasks: 
+gaatha_flower  |     ['celery.accumulate',
+gaatha_flower  |      'celery.backend_cleanup',
+gaatha_flower  |      'celery.chain',
+gaatha_flower  |      'celery.chord',
+gaatha_flower  |      'celery.chord_unlock',
+gaatha_flower  |      'celery.chunks',
+gaatha_flower  |      'celery.group',
+gaatha_flower  |      'celery.map',
+gaatha_flower  |      'celery.starmap',
+gaatha_flower  |      'tasks.generate_daily_sales_report',
+gaatha_flower  |      'tasks.send_async_email']
+gaatha_flower  | [I 260703 01:55:04 mixins:228] Connected to redis://redis:6379/1
+gaatha_worker  |  
+gaatha_worker  |  -------------- celery@c9cde81e9f59 v5.4.0 (opalescent)
+gaatha_worker  | --- ***** ----- 
+gaatha_worker  | -- ******* ---- Linux-6.8.0-1052-azure-x86_64-with-glibc2.41 2026-07-03 01:55:04
+gaatha_worker  | - *** --- * --- 
+gaatha_worker  | - ** ---------- [config]
+gaatha_worker  | - ** ---------- .> app:         gaatha_tasks:0x791909ecfa10
+gaatha_worker  | - ** ---------- .> transport:   redis://redis:6379/1
+gaatha_worker  | - ** ---------- .> results:     redis://redis:6379/2
+gaatha_worker  | - *** --- * --- .> concurrency: 2 (prefork)
+gaatha_worker  | -- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+gaatha_worker  | --- ***** ----- 
+gaatha_worker  |  -------------- [queues]
+gaatha_worker  |                 .> celery           exchange=celery(direct) key=celery
+gaatha_worker  |                 
+gaatha_worker  | 
+gaatha_worker  | [tasks]
+gaatha_worker  |   . tasks.generate_daily_sales_report
+gaatha_worker  |   . tasks.send_async_email
+gaatha_worker  | 
+gaatha_worker  | [2026-07-03 01:55:04,736: WARNING/MainProcess] /usr/local/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:508: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+gaatha_worker  | whether broker connection retries are made during startup in Celery 6.0 and above.
+gaatha_worker  | If you wish to retain the existing behavior for retrying connections on startup,
+gaatha_worker  | you should set broker_connection_retry_on_startup to True.
+gaatha_worker  |   warnings.warn(
+gaatha_worker  | 
+gaatha_worker  | [2026-07-03 01:55:04,770: INFO/MainProcess] Connected to redis://redis:6379/1
+gaatha_worker  | [2026-07-03 01:55:04,778: WARNING/MainProcess] /usr/local/lib/python3.12/site-packages/celery/worker/consumer/consumer.py:508: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+gaatha_worker  | whether broker connection retries are made during startup in Celery 6.0 and above.
+gaatha_worker  | If you wish to retain the existing behavior for retrying connections on startup,
+gaatha_worker  | you should set broker_connection_retry_on_startup to True.
+gaatha_worker  |   warnings.warn(
+gaatha_worker  | 
+gaatha_worker  | [2026-07-03 01:55:04,813: INFO/MainProcess] mingle: searching for neighbors
+gaatha_web     | /usr/local/lib/python3.12/site-packages/flask_limiter/_extension.py:364: UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+gaatha_web     |   warnings.warn(
+gaatha_flower  | [W 260703 01:55:05 inspector:44] Inspect method active failed
+gaatha_flower  | [W 260703 01:55:05 inspector:44] Inspect method stats failed
+gaatha_flower  | [W 260703 01:55:05 inspector:44] Inspect method active_queues failed
+gaatha_flower  | [W 260703 01:55:05 inspector:44] Inspect method registered failed
+gaatha_flower  | [W 260703 01:55:05 inspector:44] Inspect method scheduled failed
+gaatha_flower  | [W 260703 01:55:05 inspector:44] Inspect method reserved failed
+gaatha_web     | /usr/local/lib/python3.12/site-packages/flask_limiter/_extension.py:364: UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+gaatha_web     |   warnings.warn(
+gaatha_web     | /usr/local/lib/python3.12/site-packages/flask_limiter/_extension.py:364: UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+gaatha_web     |   warnings.warn(
+gaatha_worker  | [2026-07-03 01:55:05,861: INFO/MainProcess] mingle: all alone
+gaatha_worker  | [2026-07-03 01:55:05,887: INFO/MainProcess] celery@c9cde81e9f59 ready.
+gaatha_flower  | [W 260703 01:55:06 inspector:44] Inspect method revoked failed
+gaatha_flower  | [W 260703 01:55:06 inspector:44] Inspect method conf failed
+gaatha_worker  | [2026-07-03 01:55:09,154: INFO/MainProcess] Events of group {task} enabled by remote.
+gaatha_db      | 2026-07-03 01:57:44.622 UTC [559] ERROR:  relation "user" does not exist at character 455
+gaatha_db      | 2026-07-03 01:57:44.622 UTC [559] STATEMENT:  SELECT "user".id AS user_id, "user".username AS user_username, "user".password_hash AS user_password_hash, "user".role AS user_role, "user".restaurant_id AS user_restaurant_id, "user".currency AS user_currency, "user".locale AS user_locale, "user".is_super_admin AS user_is_super_admin, "user".created_at AS user_created_at, "user".totp_secret AS user_totp_secret, "user".totp_enabled AS user_totp_enabled, "user".backup_codes AS user_backup_codes 
+gaatha_db      |        FROM "user" 
+gaatha_db      |        WHERE "user".username = 'gaatha' 
+gaatha_db      |         LIMIT 1
+gaatha_web     | [2026-07-03 01:57:44,623] ERROR in app: Exception on /auth/signup [POST]
+gaatha_web     | Traceback (most recent call last):
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+gaatha_web     |     self.dialect.do_execute(
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+gaatha_web     |     cursor.execute(statement, parameters)
+gaatha_web     | psycopg2.errors.UndefinedTable: relation "user" does not exist
+gaatha_web     | LINE 2: FROM "user" 
+gaatha_web     |              ^
+gaatha_web     | 
+gaatha_web     | 
+gaatha_web     | The above exception was the direct cause of the following exception:
+gaatha_web     | 
+gaatha_web     | Traceback (most recent call last):
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+gaatha_web     |     response = self.full_dispatch_request()
+gaatha_web     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+gaatha_web     |     rv = self.handle_user_exception(e)
+gaatha_web     |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+gaatha_web     |     rv = self.dispatch_request()
+gaatha_web     |          ^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+gaatha_web     |     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+gaatha_web     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/flask_limiter/_limits.py", line 326, in __inner
+gaatha_web     |     return cast(R, flask.current_app.ensure_sync(obj)(*a, **k))
+gaatha_web     |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/app/blueprints/auth/routes.py", line 61, in signup
+gaatha_web     |     if User.query.filter_by(username=username).first():
+gaatha_web     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2759, in first
+gaatha_web     |     return self.limit(1)._iter().first()  # type: ignore
+gaatha_web     |            ^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/query.py", line 2857, in _iter
+gaatha_web     |     result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+gaatha_web     |                                                   ^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+gaatha_web     |     return self._execute_internal(
+gaatha_web     |            ^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+gaatha_web     |     result: Result[Any] = compile_state_cls.orm_execute_statement(
+gaatha_web     |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+gaatha_web     |     result = conn.execute(
+gaatha_web     |              ^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+gaatha_web     |     return meth(
+gaatha_web     |            ^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+gaatha_web     |     return connection._execute_clauseelement(
+gaatha_web     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+gaatha_web     |     ret = self._execute_context(
+gaatha_web     |           ^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+gaatha_web     |     return self._exec_single_context(
+gaatha_web     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+gaatha_web     |     self._handle_dbapi_exception(
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+gaatha_web     |     raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+gaatha_web     |     self.dialect.do_execute(
+gaatha_web     |   File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+gaatha_web     |     cursor.execute(statement, parameters)
+gaatha_web     | sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedTable) relation "user" does not exist
+gaatha_web     | LINE 2: FROM "user" 
+gaatha_web     |              ^
+gaatha_web     | 
+gaatha_web     | [SQL: SELECT "user".id AS user_id, "user".username AS user_username, "user".password_hash AS user_password_hash, "user".role AS user_role, "user".restaurant_id AS user_restaurant_id, "user".currency AS user_currency, "user".locale AS user_locale, "user".is_super_admin AS user_is_super_admin, "user".created_at AS user_created_at, "user".totp_secret AS user_totp_secret, "user".totp_enabled AS user_totp_enabled, "user".backup_codes AS user_backup_codes 
+gaatha_web     | FROM "user" 
+gaatha_web     | WHERE "user".username = %(username_1)s 
+gaatha_web     |  LIMIT %(param_1)s]
+gaatha_web     | [parameters: {'username_1': 'gaatha', 'param_1': 1}]
+gaatha_web     | (Background on this error at: https://sqlalche.me/e/20/f405)
+
+
+w Enable Watch

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Coupons - Superadmin{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="page-title">Coupons</div>
+  <div class="mb-3"><a class="btn btn-primary" href="{{ url_for('superadmin.coupon_new') }}">Create Coupon</a></div>
+  <div class="card p-3">
+    <table class="table">
+      <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Org</th><th>Active</th><th>Uses</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for c in coupons %}
+        <tr>
+          <td>{{ c.code }}</td>
+          <td>{{ c.discount_type }}</td>
+          <td>{{ c.value }}</td>
+          <td>{{ c.organization.name if c.organization_id and c.organization else 'Global' }}</td>
+          <td>{{ 'Yes' if c.active else 'No' }}</td>
+          <td>{{ c.used_count }}{% if c.usage_limit %}/{{ c.usage_limit }}{% endif %}</td>
+          <td>
+            <a class="btn btn-sm btn-secondary" href="{{ url_for('superadmin.coupon_edit', coupon_id=c.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('superadmin.coupon_toggle', coupon_id=c.id) }}" style="display:inline">
+              <button class="btn btn-sm btn-{{ 'warning' if c.active else 'success' }}">{{ 'Disable' if c.active else 'Enable' }}</button>
+            </form>
+            <form method="post" action="{{ url_for('superadmin.coupon_delete', coupon_id=c.id) }}" style="display:inline" onsubmit="return confirm('Delete coupon?')">
+              <button class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7">No coupons found</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

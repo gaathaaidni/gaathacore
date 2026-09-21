@@ -1,0 +1,11 @@
+{
+  "restaurant": [
+    { "name": "kitchen animal detected", "requiredModelCapabilities": ["animal_detection"], "rule": { "trigger": "object_detected", "conditions": { "type": "object_present", "objectType": "animal", "zoneId": "kitchen" } } },
+    { "name": "waiter response delay", "requiredModelCapabilities": ["person_detection"], "rule": { "sequence": [{ "condition": { "type": "zone_entry", "objectType": "person", "zoneId": "table" } }, { "condition": { "type": "proximity", "objectType": "person" }, "withinSeconds": 120 }] } }
+  ],
+  "warehouse": [ { "name": "restricted zone", "requiredModelCapabilities": ["person_detection"], "rule": { "conditions": { "type": "zone_entry", "objectType": "person", "zoneId": "restricted" } } } ],
+  "hotel": [ { "name": "crowding", "requiredModelCapabilities": ["person_detection"], "rule": { "conditions": { "type": "count", "count": { "objectType": "person", "operator": ">", "value": 10 } } } } ],
+  "retail": [ { "name": "entrance counting", "requiredModelCapabilities": ["person_detection"], "rule": { "conditions": { "type": "line_crossing", "objectType": "person" } } } ],
+  "factory": [ { "name": "smoke/fire", "requiredModelCapabilities": ["smoke_fire_detection"], "rule": { "conditions": { "logic": "OR", "children": [{ "type": "object_detected", "objectType": "smoke" }, { "type": "object_detected", "objectType": "fire" }] } } } ],
+  "office": [ { "name": "after-hours movement", "requiredModelCapabilities": ["person_detection"], "rule": { "trigger": "object_detected", "schedule": { "afterHours": true } } } ]
+}

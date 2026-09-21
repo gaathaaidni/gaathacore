@@ -1,0 +1,77 @@
+.kds-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+    padding: 8px 0 0;
+}
+
+.kds-ticket {
+    background: rgba(255,255,255,0.96);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 12px 28px rgba(17, 30, 27, 0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.kds-ticket:hover { transform: translateY(-2px); }
+
+.kds-ticket-header {
+    background: linear-gradient(135deg, #0f2d2a 0%, #0b4d42 100%);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    padding: 14px 16px;
+}
+.kds-ticket-header.urgent {
+    background: linear-gradient(135deg, #b24747 0%, #d75f5f 100%);
+    animation: pulse 1.8s infinite;
+}
+.kds-ticket-body {
+    padding: 14px 16px;
+    flex-grow: 1;
+}
+.kds-item {
+    align-items: center;
+    border-bottom: 1px dashed var(--line);
+    display: flex;
+    font-size: 1rem;
+    padding: 10px 0;
+}
+.kds-item:last-child { border-bottom: none; }
+.kds-item-qty {
+    align-items: center;
+    background: rgba(18, 107, 90, 0.08);
+    border-radius: 9px;
+    color: var(--brand);
+    display: inline-flex;
+    font-weight: 800;
+    justify-content: center;
+    margin-right: 14px;
+    min-width: 52px;
+    padding: 6px 8px;
+}
+.kds-ticket-footer {
+    padding: 14px 16px 16px;
+    border-top: 1px solid var(--line);
+    background: rgba(18,107,90,0.02);
+}
+.kds-btn {
+    background: linear-gradient(180deg, #2fa56e 0%, #237d57 100%);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 700;
+    padding: .8rem 1rem;
+    width: 100%;
+}
+.kds-btn:hover { box-shadow: 0 10px 18px rgba(47, 165, 110, 0.2); }
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(215, 95, 95, 0.28); }
+    70% { box-shadow: 0 0 0 10px rgba(215, 95, 95, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(215, 95, 95, 0); }
+}

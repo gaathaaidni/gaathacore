@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostPilot Enterprise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>PostPilot</span>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-item active" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </button>
+                <div class="nav-label">Modules</div>
+                <button class="nav-item" data-tab="tour">
+                    <i class="fa-solid fa-earth-americas"></i> Nexora Suite
+                </button>
+                <button class="nav-item" data-tab="nz">
+                    <i class="fa-solid fa-passport"></i> Phoenix Intl
+                </button>
+                <button class="nav-item" data-tab="gaatha">
+                    <i class="fa-solid fa-scroll"></i> Gaatha AI
+                </button>
+                <button class="nav-item" data-tab="insta">
+                    <i class="fa-brands fa-instagram"></i> Instagram Sync
+                </button>
+                <div class="nav-label">Automation</div>
+                <button class="nav-item" data-tab="grahak">
+                    <i class="fa-solid fa-robot"></i> Grahak Chetna
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="status-indicator" id="global-status-indicator">
+                    <span class="dot"></span> System Ready
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="global-actions">
+                    <button class="btn btn-outline-danger" onclick="controlAll('stop')">
+                        <i class="fa-solid fa-stop"></i> Stop All
+                    </button>
+                    <button class="btn btn-primary" onclick="controlAll('start')">
+                        <i class="fa-solid fa-play"></i> Run All
+                    </button>
+                </div>
+            </header>
+
+            <div id="content-area">
+                <!-- Content injected via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Add/Edit Post -->
+    <div id="post-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Manage Post</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="post-form">
+                    <input type="hidden" id="post-index">
+                    <input type="hidden" id="post-type">
+                    
+                    <div class="form-group">
+                        <label>Caption / Message</label>
+                        <textarea id="post-message" rows="4" class="form-control" placeholder="Enter post content..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Image</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="post-file" accept="image/*,video/*" onchange="handleFileSelect(this)">
+                            <div class="file-upload-label">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span id="file-name">Choose file or drag here</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="current-image-filename">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="savePost()">Save Post</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Confirm Action</h3>
+                <button class="close-btn" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-msg" style="margin-bottom: 0; line-height: 1.5;"></p>
+            </div>
+            <div class="modal-footer" style="padding-top: 1rem;">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+                <button id="confirm-yes-btn" class="btn btn-danger">
+                    <i class="fa-solid fa-trash-can"></i> Confirm Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

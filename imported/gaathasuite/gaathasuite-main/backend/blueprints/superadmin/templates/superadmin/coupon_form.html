@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Coupon Form - Superadmin{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="page-title">{% if coupon %}Edit Coupon{% else %}Create Coupon{% endif %}</div>
+  <div class="card p-4">
+    <form method="post">
+      <div class="mb-3">
+        <label class="form-label">Code</label>
+        <input class="form-control" name="code" value="{{ coupon.code if coupon else '' }}" {% if coupon %}readonly{% endif %} required />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <input class="form-control" name="description" value="{{ coupon.description if coupon else '' }}" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Type</label>
+        <select class="form-select" name="discount_type">
+          <option value="percentage" {% if coupon and coupon.discount_type=='percentage' %}selected{% endif %}>Percentage</option>
+          <option value="fixed" {% if coupon and coupon.discount_type=='fixed' %}selected{% endif %}>Fixed</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Value</label>
+        <input class="form-control" name="value" value="{{ coupon.value if coupon else '' }}" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Organization (optional)</label>
+        <select class="form-select" name="organization_id">
+          <option value="">Global</option>
+          {% for o in orgs %}
+          <option value="{{ o.id }}" {% if coupon and coupon.organization_id==o.id %}selected{% endif %}>{{ o.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Usage limit (optional)</label>
+        <input class="form-control" name="usage_limit" value="{{ coupon.usage_limit if coupon else '' }}" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Active</label>
+        <select class="form-select" name="active">
+          <option value="1" {% if coupon and coupon.active %}selected{% endif %}>Yes</option>
+          <option value="0" {% if coupon and not coupon.active %}selected{% endif %}>No</option>
+        </select>
+      </div>
+      <button class="btn btn-primary">Save</button>
+      <a class="btn btn-secondary" href="{{ url_for('superadmin.coupons') }}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

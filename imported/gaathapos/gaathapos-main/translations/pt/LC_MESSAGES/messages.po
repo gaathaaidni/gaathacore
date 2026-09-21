@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: nexorapos\n"
+"POT-Creation-Date: 2025-12-03 00:00+0000\n"
+"PO-Revision-Date: 2025-12-03 00:00+0000\n"
+"Last-Translator: Gaatha POS Bot <bot@example.com>\n"
+"Language-Team: Portuguese\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Admin"
+msgstr "Administração"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "POS"
+msgstr "PDV"
+
+msgid "Logout"
+msgstr "Sair"
+
+msgid "Admin Dashboard"
+msgstr "Painel de Administração"
+
+msgid "User Settings"
+msgstr "Configurações do Usuário"
+
+msgid "Preferred Currency"
+msgstr "Moeda preferida"
+
+msgid "All monetary values will display in your selected currency"
+msgstr "Todos os valores monetários serão exibidos na moeda selecionada"
+
+msgid "Preferred Language"
+msgstr "Idioma preferido"
+
+msgid "Detect from browser"
+msgstr "Detectar pelo navegador"
+
+msgid "Choose your UI language"
+msgstr "Escolha o idioma da interface"

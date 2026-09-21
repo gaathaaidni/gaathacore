@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: gaatha-web
+    env: python
+    plan: free
+    branch: main
+    buildCommand: "cd backend && pip install -r requirements.txt"
+    startCommand: "cd backend && alembic -c migrations/alembic.ini upgrade head && gunicorn -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:$PORT app.main:app"
+    healthCheckPath: "/ready"
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+    autoDeploy: true

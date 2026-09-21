@@ -1,0 +1,18 @@
+Modification Summary - June 23, 2026
+
+This document summarizes the codebase modifications made to rebrand the Gaatha Suite AI assistant to "Vani" and implement new user engagement copy.
+
+1.  **Codebase-wide Rebranding:**
+    *   The internal codename for the AI assistant has been changed from "Nora" to "Vani".
+    *   This includes variable names, function names, comments, and user-facing strings across the backend and frontend.
+
+2.  **Backend Persona Update (`flask_routes.py`):**
+    *   The system prompt function was renamed to `get_vani_system_prompt`.
+    *   The prompt itself was rewritten to establish Vani's new persona as an authoritative, proactive "enterprise intelligence layer," capable of assisting with complex executive tasks.
+
+3.  **Frontend UI/UX Enhancements:**
+    *   **`VaniWidget.tsx`**: A new React component was created to serve as the chat interface. It now displays one of several dynamic, engaging welcome messages on load to drive user interaction.
+    *   **`useAiAlerts.ts`**: The custom hook for handling WebSocket messages was updated. The `AiAlert` interface now supports structured payloads with `type` and `icon` fields, enabling richer, branded toast notifications (e.g., [⚡ Vani Insight], [✅ Vani Update]).
+
+4.  **Documentation (`ARCHITECTURAL_REVIEW.md`):**
+    *   The architectural review document was updated to reflect the rebranding from "Nora" to "Vani" and to mention the new, more sophisticated persona and UI/UX copy as a project strength.

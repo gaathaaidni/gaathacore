@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    {% if current_user.is_authenticated %}
+        <meta name="user-id" content="{{ current_user.id }}">
+        <meta name="user-currency" content="{{ current_user.currency or 'USD' }}">
+        <meta name="user-locale" content="{{ current_user.locale or '' }}">
+    {% endif %}
+    <title>{% block title %}Gaatha POS{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Product type and UI font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block head_styles %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+    <header>
+        {% block header %}
+            {% if current_user.is_authenticated %}
+            <div class="app-shell">
+                <aside class="app-sidebar" id="appSidebar">
+                    <a class="brand-mark" href="{{ url_for('index') }}" aria-label="Gaatha POS home">
+                        <span class="brand-symbol">G</span>
+                        <span><strong>Gaatha</strong><small>POS platform</small></span>
+                    </a>
+                    <div class="sidebar-label">Workspace</div>
+                    <nav class="sidebar-nav" aria-label="Main navigation">
+                        {% if current_user.role in ['super_admin', 'restaurant_admin', 'manager'] %}
+                            <a class="sidebar-link" href="{{ url_for('admin.dashboard') }}"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+                        {% endif %}
+                        {% if current_user.role in ['super_admin', 'restaurant_admin', 'manager', 'waiter'] %}
+                            <a class="sidebar-link" href="{{ url_for('pos.pos_home') }}"><i class="bi bi-basket2"></i><span>POS</span><kbd>F2</kbd></a>
+                        {% endif %}
+                        {% if current_user.role in ['super_admin', 'restaurant_admin', 'kitchen'] %}
+                            <a class="sidebar-link" href="{{ url_for('kds.kds_home') }}"><i class="bi bi-display"></i><span>Kitchen / KDS</span></a>
+                        {% endif %}
+                        <a class="sidebar-link" href="{{ url_for('menu.show_menu') }}"><i class="bi bi-journal-text"></i><span>Menu</span></a>
+                    </nav>
+                    {% if current_user.role in ['super_admin', 'restaurant_admin', 'manager'] %}
+                    <div class="sidebar-label sidebar-label-secondary">Management</div>
+                    <nav class="sidebar-nav" aria-label="Management navigation">
+                        <a class="sidebar-link" href="{{ url_for('admin.dashboard') }}#inventory"><i class="bi bi-box-seam"></i><span>Inventory</span></a>
+                        <a class="sidebar-link" href="{{ url_for('admin.dashboard') }}#imports"><i class="bi bi-sliders2"></i><span>Settings</span></a>
+                    </nav>
+                    {% endif %}
+                    <div class="sidebar-spacer"></div>
+                    <div class="sidebar-status"><span class="status-dot"></span><span>Workspace online</span></div>
+                </aside>
+                <div class="app-main">
+                    <header class="app-topbar">
+                        <button class="mobile-menu-button" type="button" data-sidebar-toggle aria-label="Open navigation"><i class="bi bi-list"></i></button>
+                        <div class="context-switcher"><span class="context-kicker">Workspace</span><strong>{{ current_user.restaurant.name if current_user.restaurant else 'Gaatha POS' }}</strong></div>
+                        <div class="topbar-actions">
+                            <button id="darkModeToggle" class="icon-button" type="button" title="Toggle theme" aria-label="Toggle theme"><i class="bi bi-moon-stars"></i></button>
+                            <span class="topbar-divider"></span>
+                            <div class="user-chip"><span class="avatar">{{ current_user.username[:1]|upper }}</span><span class="user-chip-copy"><strong>{{ current_user.username }}</strong><small>{{ current_user.role|replace('_', ' ')|title }}</small></span></div>
+                            <a class="icon-button" href="{{ url_for('auth.logout') }}" title="Sign out" aria-label="Sign out"><i class="bi bi-box-arrow-right"></i></a>
+                        </div>
+                    </header>
+                    <div class="app-content">
+                        {% block page_header %}
+                            <div class="page-heading page-heading-shell">
+                                <div>
+                                    <span class="section-eyebrow">Operations</span>
+                                    <h1>{% block page_title %}Gaatha POS{% endblock %}</h1>
+                                </div>
+                                <div class="header-status-badge"><span class="status-dot"></span> Live</div>
+                            </div>
+                        {% endblock %}
+                        {% block shell_content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        {% endblock %}
+    </header>
+
+    <main class="container-fluid main-content {% if current_user.is_authenticated %}authenticated-content{% endif %}">
+        {# Flash messages for notifications #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="text-center text-muted py-4 app-footer">
+        {% block footer %}
+            <p>&copy; {{ current_year }} Gaatha Ventures SRL & Aidni Global LLP. All rights reserved.</p>
+            <p>Contact: <a href="mailto:aidni.tech@gmail.com">aidni.tech@gmail.com</a> | Beta Version</p>
+        {% endblock %}
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Dark Mode Logic -->
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        const icon = darkModeToggle ? darkModeToggle.querySelector('i') : null;
+
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            if(icon) { icon.classList.remove('bi-moon-stars'); icon.classList.add('bi-sun-fill'); }
+        }
+
+        darkModeToggle?.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                if(icon) { icon.classList.remove('bi-moon-stars'); icon.classList.add('bi-sun-fill'); }
+            } else {
+                localStorage.setItem('theme', 'light');
+                if(icon) { icon.classList.remove('bi-sun-fill'); icon.classList.add('bi-moon-stars'); }
+            }
+        });
+
+        document.querySelector('[data-sidebar-toggle]')?.addEventListener('click', () => {
+            document.body.classList.toggle('sidebar-open');
+        });
+
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            if (link.pathname === window.location.pathname) link.classList.add('active');
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

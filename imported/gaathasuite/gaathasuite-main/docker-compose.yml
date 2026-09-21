@@ -1,0 +1,60 @@
+services:
+  web:
+    container_name: gaatha-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_HOST=${DATABASE_HOST:-db}
+      - DATABASE_PORT=${DATABASE_PORT:-5432}
+      - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://gaatha:${POSTGRES_PASSWORD:-gaatha}@db:5432/${POSTGRES_DB:-gaatha}}
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-me}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - APP_ENV=${APP_ENV:-development}
+    # Note: Remove volumes for production; use volumes only in development
+    # volumes:
+    #   - ./backend:/app/backend
+    #   - ./frontend/static/dist:/app/backend/static/dist:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/ready')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    container_name: gaatha-db
+    image: postgres:15
+    restart: always
+    command: ["postgres", "-c", "listen_addresses=*"]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-gaatha}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gaatha}
+      POSTGRES_DB: ${POSTGRES_DB:-gaatha}
+    # Expose Postgres to the host for local verification and host-side tests.
+    ports:
+      - "5432:5432"
+    volumes:
+      - gaatha_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gaatha -d gaatha"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    container_name: gaatha-redis
+    image: redis:7-alpine
+    restart: always
+
+volumes:
+  gaatha_postgres_data:
+    name: gaatha_postgres_data

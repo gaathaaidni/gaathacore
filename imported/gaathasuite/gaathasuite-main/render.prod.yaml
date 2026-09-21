@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: gaatha-web-prod
+    env: python
+    plan: starter
+    branch: main
+    buildCommand: "cd backend && pip install -r requirements.txt"
+    startCommand: "cd backend && alembic -c migrations/alembic.ini upgrade head && gunicorn -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:$PORT app.main:app"
+    healthCheckPath: "/ready"
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+    autoDeploy: true
+
+# Notes:
+# - Set DATABASE_URL as a secret in the Render dashboard (connects to managed Postgres or your Supabase pooler URI).
+# - Migrations run explicitly before the ASGI server starts.
+# - For production use a managed Postgres and ensure you do not use SQLite on multi-instance hosts.

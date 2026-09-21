@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+redis
+ffmpeg-python
+opencv-python-headless
+pydantic
+python-dotenv
+requests
+aiohttp
