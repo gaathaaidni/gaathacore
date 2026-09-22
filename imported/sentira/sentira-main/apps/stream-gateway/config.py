@@ -6,7 +6,8 @@ load_dotenv()
 class Settings:
     REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
     API_URL = os.getenv("SENTIRA_API_URL", "http://localhost:4000/api")
-    STREAM_GATEWAY_INTERNAL_TOKEN = os.getenv("STREAM_GATEWAY_INTERNAL_TOKEN", "dev_internal_token")
+    STREAM_GATEWAY_INTERNAL_TOKEN = os.getenv("STREAM_GATEWAY_INTERNAL_TOKEN", "")
+    AI_WORKER_INGEST_TOKEN = os.getenv("AI_WORKER_INGEST_TOKEN", "")
 
     # AI Frame Pipeline settings
     AI_FRAME_RATE = int(os.getenv("AI_FRAME_RATE", "2"))

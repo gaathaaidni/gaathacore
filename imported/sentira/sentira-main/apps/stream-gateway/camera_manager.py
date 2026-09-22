@@ -82,7 +82,7 @@ class CameraStreamManager:
 
     async def _publish_frame(self, camera: dict, jpeg: bytes):
         payload = {'organizationId': camera['organizationId'], 'siteId': camera['siteId'], 'cameraId': camera['id'], 'frameId': str(uuid.uuid4()), 'timestamp': __import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(), 'jpegBase64': base64.b64encode(jpeg).decode()}
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(headers={"X-AI-Worker-Token": settings.AI_WORKER_INGEST_TOKEN}) as session:
             async with session.post(f"{settings.AI_WORKER_URL}/frames", json=payload, timeout=aiohttp.ClientTimeout(total=10)) as response:
                 if response.status >= 300: raise RuntimeError(f'ai worker rejected frame: {response.status}')
 

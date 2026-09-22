@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import base64
+import hmac
 import json
 import logging
 import os
@@ -13,7 +14,7 @@ try:
     import pika
 except ModuleNotFoundError:  # Allows pure model tests on hosts without worker dependencies.
     pika = None
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
 from models import ConfigurableModelProvider
@@ -29,6 +30,12 @@ class Frame(BaseModel):
     timestamp: str
     jpegBase64: str = Field(min_length=1)
     correlationId: str | None = None
+
+
+def require_ingest_auth(token: str | None = Header(default=None, alias="X-AI-Worker-Token")) -> None:
+    expected = os.getenv("AI_WORKER_INGEST_TOKEN", "")
+    if not expected or not token or not hmac.compare_digest(token, expected):
+        raise HTTPException(status_code=401, detail="Invalid worker authentication")
 
 class RabbitPublisher:
     def __init__(self) -> None:
@@ -86,13 +93,21 @@ def health() -> dict[str, str]:
     return {"status": "HEALTHY", "provider": os.getenv("AI_PROVIDER", "deterministic")}
 
 @app.post("/frames", status_code=202)
-def infer(frame: Frame) -> dict[str, Any]:
+def infer(frame: Frame, _auth: None = Depends(require_ingest_auth)) -> dict[str, Any]:
+    max_frame_bytes = int(os.getenv("AI_MAX_FRAME_BYTES", "10485760"))
+    max_encoded_length = (max_frame_bytes * 4 // 3) + 4
+    if len(frame.jpegBase64) > max_encoded_length:
+        raise HTTPException(413, "JPEG frame exceeds configured size limit")
+    if not all((frame.organizationId, frame.siteId, frame.cameraId, frame.frameId, frame.timestamp)):
+        raise HTTPException(422, "Tenant and frame identifiers are required")
     try:
         raw_frame = base64.b64decode(frame.jpegBase64, validate=True)
     except ValueError as exc:
         raise HTTPException(422, "jpegBase64 is not valid base64") from exc
     if not raw_frame.startswith(b'\xff\xd8') or not raw_frame.endswith(b'\xff\xd9'):
         raise HTTPException(422, "jpegBase64 does not contain a JPEG frame")
+    if len(raw_frame) > max_frame_bytes:
+        raise HTTPException(413, "JPEG frame exceeds configured size limit")
     started = time.perf_counter()
     objects = deterministic_objects(frame)
     metadata = provider.metadata()

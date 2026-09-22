@@ -84,3 +84,9 @@ VPS impact: **NONE**. Production readiness impact: **improved local API hardenin
 ## Phase 13 decision
 
 **Do not begin yet.** Close and validate the worker/gateway service-auth boundary, selected permission gaps, and explicit Core mapping lifecycle before implementing a Sentira adapter. Do not begin PostPilot integration or billing in Phase 12 or its immediate follow-up.
+
+## Phase 13 handoff addendum - 2026-09-22
+
+Phase 13 added and locally validated a dedicated fail-closed AI Worker token, bounded frame ingress, removal of the worker host port, fail-closed gateway token configuration, and clear existing permission guards for dashboard stats, user listing, and demo mutations. The full results are documented in `GAATHACORE_PHASE_13_REPORT.md` and `GAATHACORE_SENTIRA_SECURITY_ASSESSMENT.md`.
+
+The Stream Gateway still has no tenant-scoped control credential and `/api/cameras/internal/all` still returns all-tenant decrypted camera configuration. MediaMTX/WebRTC authorization and ambiguous rules/zones/sites permission vocabulary remain unresolved. Core mapping and production readiness remain blocked.

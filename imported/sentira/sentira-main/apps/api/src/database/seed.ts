@@ -72,6 +72,8 @@ export async function seedDatabase(dataSource: DataSource) {
     name: 'Admin',
     description: 'Administrator role',
     permissions: {
+      'system.admin': true,
+      'analytics.view': true,
       'cameras:read': true,
       'cameras:write': true,
       'rules:read': true,

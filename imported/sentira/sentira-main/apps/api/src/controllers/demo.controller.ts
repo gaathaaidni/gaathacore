@@ -8,9 +8,11 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CurrentUserDto } from '../auth/auth.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { EventsGateway } from '../events.gateway';
+import { PermissionGuard } from '../auth/guards/permission.guard';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 
 @Controller('api/demo')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
 export class DemoController {
   constructor(
     private eventGeneratorService: EventGeneratorService,
@@ -22,6 +24,7 @@ export class DemoController {
   ) {}
 
   @Post('generate-event')
+  @RequirePermission('system.admin')
   async generateEvent(
     @Body() body: { cameraId: string; ruleId: string },
     @CurrentUser() user: CurrentUserDto,
@@ -70,6 +73,7 @@ export class DemoController {
   }
 
   @Post('trigger-all-rules')
+  @RequirePermission('system.admin')
   async triggerAllRules(@CurrentUser() user: CurrentUserDto) {
     try {
       const rules = await this.rulesService.findByOrganization(user.organizationId);

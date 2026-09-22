@@ -69,6 +69,7 @@ import { OperationsModule } from './modules/operations/operations.module';
 import { CctvModule } from './modules/cctv/cctv.module';
 import { LegalModule } from './modules/legal/legal.module';
 import { getJwtSecret } from './config/jwt-secret';
+import { PermissionGuard } from './auth/guards/permission.guard';
 
 const jwtSecret = getJwtSecret();
 
@@ -150,6 +151,7 @@ const jwtSecret = getJwtSecret();
     MediaRetentionService,
     DetectionProcessorService,
     DetectionConsumerService,
+    PermissionGuard,
   ],
   exports: [EventsGateway],
 })
