@@ -143,3 +143,16 @@ def test_media_auth_rejects_cross_tenant_expired_and_disabled_requests(monkeypat
         assert error.status_code == 403
     else:
         raise AssertionError('disabled camera media request was accepted')
+
+
+def test_media_auth_accepts_only_configured_publication_token(monkeypatch):
+    monkeypatch.setattr(module.settings, 'SENTIRA_MEDIA_PUBLISH_TOKEN', 'local-publish-token')
+    request = MediaAuthRequest(token='local-publish-token', action='publish', protocol='rtsp', path='sentira/org-a/site-a/camera-a')
+    assert asyncio.run(authorize_media(request)) is None
+
+    try:
+        asyncio.run(authorize_media(request.model_copy(update={'token': 'wrong-token'})))
+    except HTTPException as error:
+        assert error.status_code == 403
+    else:
+        raise AssertionError('invalid publication token was accepted')

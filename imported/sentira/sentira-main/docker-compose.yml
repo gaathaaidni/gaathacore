@@ -124,6 +124,8 @@ services:
       STREAM_GATEWAY_INTERNAL_TOKEN: "${STREAM_GATEWAY_INTERNAL_TOKEN:?set STREAM_GATEWAY_INTERNAL_TOKEN}"
       STREAM_GATEWAY_AUTH_SECRET: "${STREAM_GATEWAY_AUTH_SECRET:?set STREAM_GATEWAY_AUTH_SECRET}"
       AI_WORKER_INGEST_TOKEN: "${AI_WORKER_INGEST_TOKEN:?set AI_WORKER_INGEST_TOKEN}"
+      SENTIRA_MEDIA_PUBLISH_TOKEN: "${SENTIRA_FIXTURE_PUBLISH_TOKEN:-local-fixture-publisher-token}"
+      MEDIAMTX_RTSP_URL: rtsp://mediamtx:8554
       BUFFER_ROOT: /var/lib/sentira/buffer
     volumes: [stream_buffer:/var/lib/sentira/buffer]
     ports: ["8001:8001"]
@@ -140,6 +142,8 @@ services:
     build:
       context: ./apps/stream-gateway
     command: ["python", "fixture_publisher.py", "--host", "mediamtx", "--organization-id", "fixture-org", "--site-id", "fixture-site", "--camera-id", "fixture-camera"]
+    environment:
+      SENTIRA_MEDIA_PUBLISH_TOKEN: "${SENTIRA_FIXTURE_PUBLISH_TOKEN:-local-fixture-publisher-token}"
     restart: unless-stopped
     depends_on:
       mediamtx: { condition: service_healthy }

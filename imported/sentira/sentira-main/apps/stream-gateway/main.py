@@ -85,7 +85,7 @@ async def authorize_media(request: MediaAuthRequest):
 
     organization_id, site_id, camera_id = parts
     if request.action == 'publish':
-        if not settings.SENTIRA_FIXTURE_PUBLISH_TOKEN or request.token != settings.SENTIRA_FIXTURE_PUBLISH_TOKEN:
+        if not settings.SENTIRA_MEDIA_PUBLISH_TOKEN or request.token != settings.SENTIRA_MEDIA_PUBLISH_TOKEN:
             raise HTTPException(status_code=403, detail='Media publication is not authorized')
         return None
     if request.action != 'read' or request.protocol not in {'hls', 'webrtc'} or not request.token:

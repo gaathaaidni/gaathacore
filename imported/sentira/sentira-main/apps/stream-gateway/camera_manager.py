@@ -9,6 +9,7 @@ from typing import Dict, Optional
 import aiohttp
 
 from config import settings
+from media_paths import media_path
 from rolling_buffer import RollingBuffer
 
 logger = logging.getLogger(__name__)
@@ -60,17 +61,30 @@ class CameraStreamManager:
         camera = self.camera_configs[camera_id]; source = camera.get('streamUrl')
         if not source: raise RuntimeError("camera has no stream URL")
         buffer = RollingBuffer(settings.BUFFER_ROOT, camera_id, settings.SEGMENT_SECONDS, settings.BUFFER_RETENTION_SECONDS)
+        self.processes[camera_id] = []
         frame_proc = await asyncio.create_subprocess_exec('ffmpeg', '-nostdin', '-loglevel', 'error', '-rtsp_transport', 'tcp', '-i', source, '-vf', f'fps={settings.AI_FRAME_RATE}', '-f', 'image2pipe', '-vcodec', 'mjpeg', 'pipe:1', stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+        self.processes[camera_id].append(frame_proc)
         segment_proc = await asyncio.create_subprocess_exec('ffmpeg', '-nostdin', '-loglevel', 'error', '-rtsp_transport', 'tcp', '-i', source, '-c', 'copy', '-f', 'segment', '-segment_time', str(settings.SEGMENT_SECONDS), '-strftime', '1', '-reset_timestamps', '1', buffer.pattern(), stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.PIPE)
-        self.processes[camera_id] = [frame_proc, segment_proc]; status = self.statuses[camera_id]; status.state = 'ONLINE'; status.health_score = 100
+        self.processes[camera_id].append(segment_proc)
+        publication_proc = await asyncio.create_subprocess_exec(*self._media_publication_command(camera), stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.PIPE)
+        self.processes[camera_id].append(publication_proc)
+        status = self.statuses[camera_id]; status.state = 'ONLINE'; status.health_score = 100
         started, frames, last_cleanup = time.monotonic(), 0, time.monotonic()
         while True:
-            if frame_proc.returncode is not None or segment_proc.returncode is not None: raise RuntimeError('ffmpeg exited')
+            if any(proc.returncode is not None for proc in self.processes[camera_id]): raise RuntimeError('ffmpeg exited')
             jpeg = await self._read_jpeg(frame_proc.stdout)
             if not jpeg: raise RuntimeError('ffmpeg frame stream ended')
             now = time.monotonic(); frames += 1; status.last_frame_at = now; status.last_heartbeat_at = now; status.fps = frames / max(now - started, .001)
             await self._publish_frame(camera, jpeg)
             if now - last_cleanup >= settings.SEGMENT_SECONDS: await buffer.cleanup(); last_cleanup = now
+
+    def _media_publication_command(self, camera: dict) -> list[str]:
+        path = media_path(camera['organizationId'], camera['siteId'], camera['id'])
+        target = f"{settings.MEDIAMTX_RTSP_URL.rstrip('/')}/{path}"
+        token = settings.SENTIRA_MEDIA_PUBLISH_TOKEN
+        if token:
+            target = f"{target}?token={token}"
+        return ['ffmpeg', '-nostdin', '-loglevel', 'error', '-rtsp_transport', 'tcp', '-i', camera['streamUrl'], '-c', 'copy', '-f', 'rtsp', '-rtsp_transport', 'tcp', target]
 
     async def _read_jpeg(self, stream):
         data = bytearray()

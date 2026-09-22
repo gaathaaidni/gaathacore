@@ -5,6 +5,7 @@ Run inside the Compose network with the server-generated default path, or pass
 It uses FFmpeg's generated test pattern; no camera or downloaded media is used.
 """
 import argparse
+import os
 import subprocess
 
 from media_paths import media_path
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     parser.add_argument('--site-id', default='fixture-site')
     parser.add_argument('--camera-id', default='fixture-camera')
     parser.add_argument('--host', default='mediamtx')
-    parser.add_argument('--publish-token', default='')
+    parser.add_argument('--publish-token', default=os.getenv('SENTIRA_MEDIA_PUBLISH_TOKEN', ''))
     args = parser.parse_args()
     path = args.path or media_path(args.organization_id, args.site_id, args.camera_id)
     raise SystemExit(subprocess.call(command(path, args.host, args.publish_token)))
