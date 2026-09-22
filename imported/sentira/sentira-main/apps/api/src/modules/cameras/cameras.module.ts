@@ -13,10 +13,11 @@ import { CamerasController } from './cameras.controller';
 import { CommonModule } from '../common/common.module';
 import { CameraEntitlementService } from './camera-entitlement.service';
 import { CameraOnboardingService } from './camera-onboarding.service';
+import { StreamAuthorizationService } from './stream-authorization.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Camera, Organization, Role, Site, Connector, DiscoveredCamera, CameraOnboardingSession, AuditLog]), CommonModule],
-  providers: [CamerasService, CameraEntitlementService, CameraOnboardingService],
+  providers: [CamerasService, CameraEntitlementService, CameraOnboardingService, StreamAuthorizationService],
   controllers: [CamerasController],
   exports: [CamerasService],
 })

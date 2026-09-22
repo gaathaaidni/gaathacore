@@ -10,6 +10,7 @@ import { PermissionGuard } from '../../auth/guards/permission.guard';
 import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
 import { CameraOnboardingService } from './camera-onboarding.service';
 import { CreateOnboardingSessionDto, PairConnectorDto, ClaimDiscoveredCameraBodyDto, RegisterConnectorDto, ReportDiscoveredCameraDto } from './dto/onboarding.dto';
+import { StreamAuthorizationService } from './stream-authorization.service';
 
 @Controller('api/cameras')
 export class CamerasController {
@@ -17,6 +18,7 @@ export class CamerasController {
     private readonly camerasService: CamerasService,
     private readonly configService: ConfigService,
     private readonly onboardingService?: CameraOnboardingService,
+    private readonly streamAuthorization?: StreamAuthorizationService,
   ) {}
 
   @Post('onboarding/sessions')
@@ -110,6 +112,34 @@ export class CamerasController {
     const camera = await this.camerasService.findById(id, user.organizationId);
     if (!camera) throw new NotFoundException('Camera not found');
     return camera;
+  }
+
+  @Post(':id/stream-authorizations/playback')
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('camera.view')
+  issuePlaybackAuthorization(@Param('id') id: string, @Headers('x-request-id') requestId: string | undefined, @CurrentUser() user: CurrentUserDto) {
+    return this.streamAuthorization!.issue(user, id, 'playback', requestId);
+  }
+
+  @Post(':id/stream-authorizations/status')
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('camera.view')
+  issueStatusAuthorization(@Param('id') id: string, @Headers('x-request-id') requestId: string | undefined, @CurrentUser() user: CurrentUserDto) {
+    return this.streamAuthorization!.issue(user, id, 'status', requestId);
+  }
+
+  @Post(':id/stream-authorizations/start')
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('camera.create')
+  issueStartAuthorization(@Param('id') id: string, @Headers('x-request-id') requestId: string | undefined, @CurrentUser() user: CurrentUserDto) {
+    return this.streamAuthorization!.issue(user, id, 'start', requestId);
+  }
+
+  @Post(':id/stream-authorizations/stop')
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('camera.create')
+  issueStopAuthorization(@Param('id') id: string, @Headers('x-request-id') requestId: string | undefined, @CurrentUser() user: CurrentUserDto) {
+    return this.streamAuthorization!.issue(user, id, 'stop', requestId);
   }
 
   @Get('internal/all')

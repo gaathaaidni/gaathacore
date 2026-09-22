@@ -8,6 +8,7 @@ class Settings:
     API_URL = os.getenv("SENTIRA_API_URL", "http://localhost:4000/api")
     STREAM_GATEWAY_INTERNAL_TOKEN = os.getenv("STREAM_GATEWAY_INTERNAL_TOKEN", "")
     AI_WORKER_INGEST_TOKEN = os.getenv("AI_WORKER_INGEST_TOKEN", "")
+    STREAM_GATEWAY_AUTH_SECRET = os.getenv("STREAM_GATEWAY_AUTH_SECRET", "")
 
     # AI Frame Pipeline settings
     AI_FRAME_RATE = int(os.getenv("AI_FRAME_RATE", "2"))

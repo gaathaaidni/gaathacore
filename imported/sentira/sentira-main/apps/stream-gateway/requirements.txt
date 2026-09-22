@@ -7,3 +7,4 @@ pydantic
 python-dotenv
 requests
 aiohttp
+PyJWT==2.10.1

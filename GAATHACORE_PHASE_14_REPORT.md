@@ -14,12 +14,16 @@ Local inspection and narrowly scoped hardening only. No VPS access, deployment, 
 - Removed internal credential decryption from the gateway configuration retrieval path.
 - Added a regression test proving credentials are neither selected in the projection nor decrypted.
 - Added `AI_WORKER_INGEST_TOKEN` requirements to `docker-compose.production.yml` for the already-hardened AI Worker boundary.
+- Added guarded API issuance endpoints for playback, status, start, and stop operations.
+- Added 60-second camera/organization/site/operation-scoped HS256 tokens signed with `STREAM_GATEWAY_AUTH_SECRET`.
+- Added gateway validation for token issuer, audience, expiry, subject, token ID, camera, organization, site, and requested operation.
+- Kept the shared gateway token limited to internal camera loading and aggregate monitoring.
 
 ## Actual architecture findings
 
 - The gateway startup contract still loads all enabled cameras for all organizations.
-- Gateway start, stop, status, and playback metadata use one shared token and a camera ID only.
-- Gateway control does not perform organization/site ownership checks.
+- Gateway start, stop, status, and playback metadata now require short-lived scoped tokens and a matching camera ID.
+- Gateway control validates token organization/site claims against cached camera ownership metadata.
 - FFmpeg reads camera `streamUrl` directly; credentials are not used by the gateway.
 - MediaMTX is declared but not connected to a verified publishing or authorization path.
 - WebRTC/HLS URLs are metadata only; no authenticated browser playback route or MediaMTX authorization hook exists.
@@ -32,12 +36,13 @@ Improved:
 - Internal gateway responses no longer expose encrypted or decrypted camera credentials.
 - The gateway still requires its configured service token.
 - The AI Worker service token remains separate and required.
+- User-facing stream control now follows the API-issued scoped authorization flow.
+- Cross-organization, cross-site, wrong-operation, incomplete, invalid, and expired gateway scopes are rejected by focused tests.
 
 Unresolved:
 
-- Shared gateway credentials remain all-tenant.
-- Internal retrieval remains broad by camera count, even though secret fields are minimized.
-- Cross-organization stream control is not verifiable with the current protocol.
+- The shared internal loading contract remains broad by camera count, although secret fields are minimized.
+- Scoped control tokens can be replayed within their 60-second lifetime because no shared nonce store exists.
 - Playback authorization is absent/unverified.
 - Connector token expiry and brute-force controls remain undefined.
 
@@ -49,7 +54,9 @@ Not proven: cross-organization gateway control and playback isolation. The gatew
 
 ## Exact tests and results
 
-- `cd imported/sentira/sentira-main/apps/api && npm test -- --runInBand src/modules/cameras/cameras.service.spec.ts` -> **5 passed**.
+- Final API focused suite -> **20 passed**.
+- Final API TypeScript check -> **passed**.
+- Final Stream Gateway focused suite -> **9 passed, 1 warning**.
 - `cd imported/sentira/sentira-main/apps/api && npm run lint` -> **passed**.
 - Focused API authorization/tenant suite from Phase 13 -> **12 passed**.
 - `cd imported/sentira/sentira-main/apps/ai-worker && PYTHONPATH=. pytest -q tests/test_auth.py tests/test_worker.py tests/test_phase7_models.py tests/test_tracking.py` -> **8 passed, 3 warnings**.
@@ -65,6 +72,15 @@ Not proven: cross-organization gateway control and playback isolation. The gatew
 
 - `imported/sentira/sentira-main/apps/api/src/modules/cameras/cameras.service.ts`
 - `imported/sentira/sentira-main/apps/api/src/modules/cameras/cameras.service.spec.ts`
+- `imported/sentira/sentira-main/apps/api/src/modules/cameras/stream-authorization.service.ts`
+- `imported/sentira/sentira-main/apps/api/src/modules/cameras/stream-authorization.service.spec.ts`
+- `imported/sentira/sentira-main/apps/api/src/modules/cameras/cameras.controller.ts`
+- `imported/sentira/sentira-main/apps/stream-gateway/main.py`
+- `imported/sentira/sentira-main/apps/stream-gateway/config.py`
+- `imported/sentira/sentira-main/apps/stream-gateway/requirements.txt`
+- `imported/sentira/sentira-main/apps/stream-gateway/tests/test_stream_gateway.py`
+- `imported/sentira/sentira-main/.env.example`
+- `imported/sentira/sentira-main/docker-compose.yml`
 - `imported/sentira/sentira-main/docker-compose.production.yml`
 - `GAATHACORE_SENTIRA_STREAM_SECURITY_ASSESSMENT.md`
 - `GAATHACORE_PHASE_14_REPORT.md`
@@ -72,7 +88,7 @@ Not proven: cross-organization gateway control and playback isolation. The gatew
 
 ## Remaining blockers and next phase
 
-Core mapping cannot begin. The next phase should define and implement an API-authorized, short-lived, camera-specific gateway operation contract, then connect actual MediaMTX/WebRTC playback through that authorization path. Connector token expiry/rate-limit decisions should be made in the same security design. No PostPilot or billing work is permitted.
+Core mapping cannot begin. The next phase should connect actual MediaMTX/WebRTC playback through the scoped authorization path, define token replay policy, and run live two-organization stream tests. Connector token expiry/rate-limit decisions should be made in the same security design. No PostPilot or billing work is permitted.
 
 ## Impact
 
