@@ -9,6 +9,7 @@ class Settings:
     STREAM_GATEWAY_INTERNAL_TOKEN = os.getenv("STREAM_GATEWAY_INTERNAL_TOKEN", "")
     AI_WORKER_INGEST_TOKEN = os.getenv("AI_WORKER_INGEST_TOKEN", "")
     STREAM_GATEWAY_AUTH_SECRET = os.getenv("STREAM_GATEWAY_AUTH_SECRET", "")
+    SENTIRA_FIXTURE_PUBLISH_TOKEN = os.getenv("SENTIRA_FIXTURE_PUBLISH_TOKEN", "")
 
     # AI Frame Pipeline settings
     AI_FRAME_RATE = int(os.getenv("AI_FRAME_RATE", "2"))

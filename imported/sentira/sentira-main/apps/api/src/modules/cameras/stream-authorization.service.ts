@@ -20,7 +20,7 @@ export class StreamAuthorizationService {
 
   async issue(user: CurrentUserDto, cameraId: string, operation: StreamOperation, requestId?: string) {
     const camera = await this.cameras.findOne({ where: { id: cameraId, organizationId: user.organizationId } });
-    if (!camera) throw new NotFoundException('Camera not found');
+    if (!camera || !camera.isEnabled) throw new NotFoundException('Camera not found');
     const site = await this.sites.findOne({ where: { id: camera.siteId, organizationId: user.organizationId } });
     if (!site) throw new NotFoundException('Camera site not found');
 

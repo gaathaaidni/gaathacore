@@ -91,6 +91,19 @@ export class CamerasService {
     return cameras.map(({ id, organizationId, siteId, streamUrl, isEnabled }) => ({ id, organizationId, siteId, streamUrl, isEnabled }));
   }
 
+  async findInternalById(id: string): Promise<Pick<Camera, 'id' | 'organizationId' | 'siteId' | 'streamUrl' | 'isEnabled'> | null> {
+    return this.camerasRepository.findOne({
+      where: { id },
+      select: {
+        id: true,
+        organizationId: true,
+        siteId: true,
+        streamUrl: true,
+        isEnabled: true,
+      },
+    });
+  }
+
   /**
    * Secure method for internal services to get full camera config, including decrypted password.
    */

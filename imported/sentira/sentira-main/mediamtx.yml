@@ -1,0 +1,12 @@
+authMethod: http
+authHTTPAddress: http://stream-gateway:8001/media/auth
+authHTTPExclude: []
+hls: true
+hlsAddress: :8888
+webrtc: true
+webrtcAddress: :8889
+rtsp: true
+rtspAddress: :8554
+paths:
+  all_others:
+    source: publisher

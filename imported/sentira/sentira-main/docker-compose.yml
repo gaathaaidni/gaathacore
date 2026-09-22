@@ -47,8 +47,10 @@ services:
       retries: 20
   mediamtx:
     image: bluenviron/mediamtx:latest
+    command: ["/mediamtx.yml"]
     restart: unless-stopped
     ports: ["8554:8554", "8888:8888", "8889:8889"]
+    volumes: ["./mediamtx.yml:/mediamtx.yml:ro"]
     healthcheck:
       # The upstream image has no shell or HTTP client; verify the native binary
       # can execute rather than invoking a missing /bin/sh.
@@ -81,6 +83,7 @@ services:
       CAMERA_CREDENTIAL_ENCRYPTION_KEY: "${CAMERA_CREDENTIAL_ENCRYPTION_KEY:?set CAMERA_CREDENTIAL_ENCRYPTION_KEY}"
       STREAM_GATEWAY_INTERNAL_TOKEN: "${STREAM_GATEWAY_INTERNAL_TOKEN:?set STREAM_GATEWAY_INTERNAL_TOKEN}"
       STREAM_GATEWAY_AUTH_SECRET: "${STREAM_GATEWAY_AUTH_SECRET:?set STREAM_GATEWAY_AUTH_SECRET}"
+      SENTIRA_FIXTURE_PUBLISH_TOKEN: "${SENTIRA_FIXTURE_PUBLISH_TOKEN:-local-fixture-publisher-token}"
       CORS_ORIGINS: http://localhost:3000
     ports: ["4000:4000"]
     depends_on:

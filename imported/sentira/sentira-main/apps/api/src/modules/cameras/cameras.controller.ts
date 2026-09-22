@@ -151,4 +151,16 @@ export class CamerasController {
 
     return this.camerasService.findAllInternal();
   }
+
+  @Get('internal/:id')
+  async findInternalById(@Param('id') id: string, @Headers('x-internal-token') internalToken?: string) {
+    const expectedToken = this.configService.get<string>('STREAM_GATEWAY_INTERNAL_TOKEN');
+    if (!expectedToken || internalToken !== expectedToken) {
+      throw new ForbiddenException('Invalid internal token');
+    }
+
+    const camera = await this.camerasService.findInternalById(id);
+    if (!camera) throw new NotFoundException('Camera not found');
+    return camera;
+  }
 }

@@ -11,6 +11,8 @@ spec.loader.exec_module(module)
 playback = module.playback
 verify_internal_token = module.verify_internal_token
 scoped_authorization = module.scoped_authorization
+authorize_media = module.authorize_media
+MediaAuthRequest = module.MediaAuthRequest
 
 def test_playback_prefers_webrtc_with_hls_fallback():
     body = playback('cam1')
@@ -108,3 +110,36 @@ def test_gateway_accepts_only_matching_camera_and_tenant_scope(monkeypatch):
         assert error.status_code == 403
     else:
         raise AssertionError('wrong-camera scope was accepted')
+
+
+def test_media_auth_rejects_cross_tenant_expired_and_disabled_requests(monkeypatch):
+    monkeypatch.setattr(module.settings, 'STREAM_GATEWAY_AUTH_SECRET', 'stream-authorization-secret-that-is-long-enough')
+    monkeypatch.setattr(module, '_current_camera', lambda camera_id: asyncio.sleep(0, result={
+        'id': camera_id,
+        'organizationId': 'org-a',
+        'siteId': 'site-a',
+        'isEnabled': camera_id == 'camera-a',
+    }))
+
+    valid = make_scoped_token()
+    assert asyncio.run(authorize_media(MediaAuthRequest(token=valid, action='read', protocol='hls', path='sentira/org-a/site-a/camera-a'))) is None
+
+    for token, path in (
+        (make_scoped_token(organizationId='org-b'), 'sentira/org-b/site-b/camera-b'),
+        (make_scoped_token(exp=datetime.now(timezone.utc) - timedelta(seconds=1)), 'sentira/org-a/site-a/camera-a'),
+        (valid, 'sentira/org-a/site-a/camera-b'),
+    ):
+        try:
+            asyncio.run(authorize_media(MediaAuthRequest(token=token, action='read', protocol='hls', path=path)))
+        except HTTPException as error:
+            assert error.status_code in (401, 403)
+        else:
+            raise AssertionError('unauthorized media request was accepted')
+
+    disabled_token = make_scoped_token(cameraId='camera-b', organizationId='org-a', siteId='site-a')
+    try:
+        asyncio.run(authorize_media(MediaAuthRequest(token=disabled_token, action='read', protocol='hls', path='sentira/org-a/site-a/camera-b')))
+    except HTTPException as error:
+        assert error.status_code == 403
+    else:
+        raise AssertionError('disabled camera media request was accepted')

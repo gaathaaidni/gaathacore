@@ -1,12 +1,15 @@
 import logging
 import asyncio
 import jwt
-from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi import FastAPI, HTTPException, Depends, Header, status
 from contextlib import asynccontextmanager
 from typing import Annotated, Callable
+from pydantic import BaseModel
+import aiohttp
 
 from config import settings
 from camera_manager import CameraStreamManager
+from media_paths import media_path_parts
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -19,6 +22,20 @@ metrics = {
     "queue_depth": 0,
     "stream_reconnects": 0,
 }
+
+class MediaAuthRequest(BaseModel):
+    token: str = ''
+    action: str
+    path: str
+    protocol: str = ''
+
+async def _current_camera(camera_id: str):
+    try:
+        async with aiohttp.ClientSession(headers={"X-Internal-Token": settings.STREAM_GATEWAY_INTERNAL_TOKEN}) as session:
+            async with session.get(f"{settings.API_URL}/cameras/internal/{camera_id}") as response:
+                return await response.json() if response.status == 200 else None
+    except aiohttp.ClientError:
+        return None
 
 async def verify_internal_token(x_internal_token: Annotated[str, Header()]):
     if x_internal_token != settings.STREAM_GATEWAY_INTERNAL_TOKEN:
@@ -59,6 +76,33 @@ async def lifespan(app: FastAPI):
     await stream_manager.stop_all_streams()
 
 app = FastAPI(title="Sentira AI - Stream Gateway", lifespan=lifespan)
+
+@app.post('/media/auth', status_code=status.HTTP_204_NO_CONTENT)
+async def authorize_media(request: MediaAuthRequest):
+    parts = media_path_parts(request.path)
+    if not parts:
+        raise HTTPException(status_code=403, detail='Invalid media path')
+
+    organization_id, site_id, camera_id = parts
+    if request.action == 'publish':
+        if not settings.SENTIRA_FIXTURE_PUBLISH_TOKEN or request.token != settings.SENTIRA_FIXTURE_PUBLISH_TOKEN:
+            raise HTTPException(status_code=403, detail='Media publication is not authorized')
+        return None
+    if request.action != 'read' or request.protocol not in {'hls', 'webrtc'} or not request.token:
+        raise HTTPException(status_code=401, detail='Media authorization required')
+
+    try:
+        claims = jwt.decode(request.token, settings.STREAM_GATEWAY_AUTH_SECRET, algorithms=['HS256'], audience='sentira-stream-gateway', issuer='sentira-api')
+    except (jwt.InvalidTokenError, ValueError):
+        raise HTTPException(status_code=401, detail='Invalid media authorization')
+
+    if claims.get('operation') != 'playback' or claims.get('organizationId') != organization_id or claims.get('siteId') != site_id or claims.get('cameraId') != camera_id or not claims.get('sub') or not claims.get('jti'):
+        raise HTTPException(status_code=403, detail='Media authorization scope mismatch')
+
+    camera = await _current_camera(camera_id)
+    if not camera or not camera.get('isEnabled') or camera.get('organizationId') != organization_id or camera.get('siteId') != site_id:
+        raise HTTPException(status_code=403, detail='Camera is not currently authorized')
+    return None
 
 @app.get("/health", status_code=200)
 async def health_check():

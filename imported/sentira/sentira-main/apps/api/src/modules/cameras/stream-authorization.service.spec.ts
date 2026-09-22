@@ -32,6 +32,13 @@ describe('StreamAuthorizationService', () => {
     expect(sites.findOne).not.toHaveBeenCalled();
   });
 
+  it('rejects a disabled camera before issuing a token', async () => {
+    const { service, cameras } = makeService({ id: 'camera-a', organizationId: 'org-a', siteId: 'site-a', isEnabled: false });
+
+    await expect(service.issue(user, 'camera-a', 'playback')).rejects.toBeInstanceOf(NotFoundException);
+    expect(cameras.findOne).toHaveBeenCalledWith({ where: { id: 'camera-a', organizationId: 'org-a' } });
+  });
+
   it('fails closed when the gateway signing secret is missing', async () => {
     const { service } = makeService(undefined, '');
 
