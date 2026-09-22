@@ -94,3 +94,17 @@ def test_gateway_accepts_only_matching_camera_and_tenant_scope(monkeypatch):
         assert error.status_code == 404
     else:
         raise AssertionError('cross-tenant camera scope was accepted')
+
+    try:
+        asyncio.run(dependency('camera-a', f'Bearer {make_scoped_token(siteId="site-b")}'))
+    except HTTPException as error:
+        assert error.status_code == 404
+    else:
+        raise AssertionError('cross-site camera scope was accepted')
+
+    try:
+        asyncio.run(dependency('camera-b', f'Bearer {make_scoped_token()}'))
+    except HTTPException as error:
+        assert error.status_code == 403
+    else:
+        raise AssertionError('wrong-camera scope was accepted')
