@@ -39,4 +39,32 @@ describe('CamerasService', () => {
     expect(camera).not.toHaveProperty('streamUrl');
     expect(camera).not.toHaveProperty('username');
   });
+
+  it('returns only stream fields to the internal gateway and never decrypts credentials', async () => {
+    const repository: any = {
+      find: jest.fn(async () => [{
+        id: 'camera-1',
+        organizationId: 'org-1',
+        siteId: 'site-1',
+        streamUrl: 'rtsp://camera/live',
+        isEnabled: true,
+        username: 'operator',
+        passwordEncrypted: 'encrypted-secret',
+      }]),
+    };
+    const encryption = { decrypt: jest.fn() };
+    const service = new CamerasService(repository, encryption as any, {} as any, {} as any);
+
+    await expect(service.findAllInternal()).resolves.toEqual([{
+      id: 'camera-1',
+      organizationId: 'org-1',
+      siteId: 'site-1',
+      streamUrl: 'rtsp://camera/live',
+      isEnabled: true,
+    }]);
+    expect(repository.find).toHaveBeenCalledWith({
+      select: { id: true, organizationId: true, siteId: true, streamUrl: true, isEnabled: true },
+    });
+    expect(encryption.decrypt).not.toHaveBeenCalled();
+  });
 });

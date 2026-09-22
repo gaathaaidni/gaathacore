@@ -77,3 +77,9 @@ VPS impact: **NONE**. Production readiness: **NOT READY**. Sentira and Core data
 ## Recommended next phase
 
 First approve and implement a tenant-aware Stream Gateway service contract, replace the all-tenant decrypted camera fetch with a least-privilege scoped contract, and verify MediaMTX/WebRTC authorization. Then normalize and approve Sentira permission names and connector-token controls. Only after those controls pass two-organization tests should a separate Core mapping phase be considered.
+
+## Phase 14 handoff addendum - 2026-09-22
+
+Phase 14 removed encrypted and decrypted camera credential fields from the internal gateway response and added regression coverage proving the API does not select or decrypt them. The production Compose template now requires `AI_WORKER_INGEST_TOKEN` for both worker and gateway services.
+
+The gateway still loads all enabled cameras and uses an unscoped shared control token. MediaMTX/WebRTC authorization remains absent or unverified, and connector token expiry/rate-limit semantics remain undecided. Full details are in `GAATHACORE_PHASE_14_REPORT.md` and `GAATHACORE_SENTIRA_STREAM_SECURITY_ASSESSMENT.md`. Core mapping remains blocked.

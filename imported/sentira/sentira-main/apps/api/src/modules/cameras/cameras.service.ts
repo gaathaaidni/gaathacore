@@ -77,17 +77,18 @@ export class CamerasService {
     return cameras.map((camera) => this.publicCamera(camera));
   }
 
-  /**
-   * Secure method for internal services to get all camera configs, including decrypted passwords.
-   */
-  async findAllInternal(): Promise<Camera[]> {
-    const cameras = await this.camerasRepository.find();
-    return cameras.map((camera) => {
-      if (camera.passwordEncrypted) {
-        camera['password'] = this.encryptionService.decrypt(camera.passwordEncrypted);
-      }
-      return camera;
+  /** Returns only fields currently consumed by the stream manager. */
+  async findAllInternal(): Promise<Array<Pick<Camera, 'id' | 'organizationId' | 'siteId' | 'streamUrl' | 'isEnabled'>>> {
+    const cameras = await this.camerasRepository.find({
+      select: {
+        id: true,
+        organizationId: true,
+        siteId: true,
+        streamUrl: true,
+        isEnabled: true,
+      },
     });
+    return cameras.map(({ id, organizationId, siteId, streamUrl, isEnabled }) => ({ id, organizationId, siteId, streamUrl, isEnabled }));
   }
 
   /**
