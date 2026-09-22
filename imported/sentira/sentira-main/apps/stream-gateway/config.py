@@ -29,6 +29,7 @@ class Settings:
     WEBRTC_ENABLED = os.getenv("WEBRTC_ENABLED", "true").lower() == "true"
     WEBRTC_PROVIDER = os.getenv("WEBRTC_PROVIDER", "mediamtx")
     HLS_ENABLED = os.getenv("HLS_ENABLED", "true").lower() == "true"
+    CAMERA_REFRESH_SECONDS = int(os.getenv("CAMERA_REFRESH_SECONDS", "5"))
 
 settings = Settings()
 # Phase 7 reliability defaults

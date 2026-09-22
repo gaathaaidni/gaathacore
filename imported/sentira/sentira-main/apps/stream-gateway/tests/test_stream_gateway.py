@@ -156,3 +156,43 @@ def test_media_auth_accepts_only_configured_publication_token(monkeypatch):
         assert error.status_code == 403
     else:
         raise AssertionError('invalid publication token was accepted')
+
+
+def test_media_auth_isolates_two_tenants_and_rechecks_current_mapping(monkeypatch):
+    monkeypatch.setattr(module.settings, 'STREAM_GATEWAY_AUTH_SECRET', 'stream-authorization-secret-that-is-long-enough')
+    cameras = {
+        'camera-a': {'id': 'camera-a', 'organizationId': 'org-a', 'siteId': 'site-a', 'isEnabled': True},
+        'camera-b': {'id': 'camera-b', 'organizationId': 'org-b', 'siteId': 'site-b', 'isEnabled': True},
+    }
+    monkeypatch.setattr(module, '_current_camera', lambda camera_id: asyncio.sleep(0, result=cameras.get(camera_id)))
+    token_a = make_scoped_token(cameraId='camera-a', organizationId='org-a', siteId='site-a')
+    token_b = make_scoped_token(cameraId='camera-b', organizationId='org-b', siteId='site-b')
+
+    for token, path in (
+        (token_a, 'sentira/org-a/site-a/camera-a'),
+        (token_b, 'sentira/org-b/site-b/camera-b'),
+    ):
+        assert asyncio.run(authorize_media(MediaAuthRequest(token=token, action='read', protocol='hls', path=path))) is None
+
+    for token, path in (
+        (token_a, 'sentira/org-b/site-b/camera-b'),
+        (token_b, 'sentira/org-a/site-a/camera-a'),
+        ('', 'sentira/org-a/site-a/camera-a'),
+        (make_scoped_token(exp=datetime.now(timezone.utc) - timedelta(seconds=1)), 'sentira/org-a/site-a/camera-a'),
+    ):
+        try:
+            asyncio.run(authorize_media(MediaAuthRequest(token=token, action='read', protocol='hls', path=path)))
+        except HTTPException as error:
+            assert error.status_code in (401, 403)
+        else:
+            raise AssertionError('cross-tenant or invalid media authorization was accepted')
+
+    cameras['camera-a'] = {
+        'id': 'camera-a', 'organizationId': 'org-b', 'siteId': 'site-b', 'isEnabled': True,
+    }
+    try:
+        asyncio.run(authorize_media(MediaAuthRequest(token=token_a, action='read', protocol='hls', path='sentira/org-a/site-a/camera-a')))
+    except HTTPException as error:
+        assert error.status_code == 403
+    else:
+        raise AssertionError('stale tenant authorization survived camera reassignment')

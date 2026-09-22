@@ -70,7 +70,7 @@ def scoped_authorization(operation: str) -> Callable:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Stream Gateway starting up...")
-    asyncio.create_task(stream_manager.load_and_start_cameras())
+    asyncio.create_task(stream_manager.run_discovery())
     yield
     logger.info("Stream Gateway shutting down...")
     await stream_manager.stop_all_streams()

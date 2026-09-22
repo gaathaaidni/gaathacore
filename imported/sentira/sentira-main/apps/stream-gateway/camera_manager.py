@@ -24,6 +24,7 @@ class CameraStreamManager:
     def __init__(self):
         self.streams: Dict[str, asyncio.Task] = {}; self.camera_configs: Dict[str, dict] = {}; self.statuses: Dict[str, CameraRuntimeStatus] = {}
         self.processes: Dict[str, list[asyncio.subprocess.Process]] = {}
+        self.discovery_task: Optional[asyncio.Task] = None
         self.max_reconnect_delay = int(settings.STREAM_MAX_RECONNECT_DELAY_SECONDS); self.stream_timeout = int(settings.STREAM_TIMEOUT_SECONDS)
 
     async def _fetch_all_cameras(self):
@@ -34,9 +35,36 @@ class CameraStreamManager:
         except aiohttp.ClientError as exc: logger.error("camera discovery unavailable: %s", exc); return []
 
     async def load_and_start_cameras(self):
-        for camera in await self._fetch_all_cameras():
+        cameras = await self._fetch_all_cameras()
+        incoming_ids = {camera['id'] for camera in cameras}
+        for camera in cameras:
+            previous = self.camera_configs.get(camera['id'])
+            identity_changed = previous and any(previous.get(key) != camera.get(key) for key in ('organizationId', 'siteId'))
             self.camera_configs[camera['id']] = camera
-            if camera.get('isEnabled') and camera.get('aiEnabled', True): await self.start_stream_by_id(camera['id'])
+            if identity_changed and camera['id'] in self.streams:
+                await self.stop_stream_by_id(camera['id'])
+            if camera.get('isEnabled') and camera.get('aiEnabled', True):
+                await self.start_stream_by_id(camera['id'])
+            elif camera['id'] in self.streams:
+                await self.stop_stream_by_id(camera['id'])
+                self.statuses[camera['id']].state = 'DISABLED'
+            elif not camera.get('isEnabled') and camera['id'] in self.statuses:
+                self.statuses[camera['id']].state = 'DISABLED'
+
+        for camera_id in set(self.camera_configs) - incoming_ids:
+            await self.stop_stream_by_id(camera_id)
+            self.camera_configs.pop(camera_id, None)
+
+    async def run_discovery(self):
+        self.discovery_task = asyncio.current_task()
+        try:
+            while True:
+                await self.load_and_start_cameras()
+                await asyncio.sleep(settings.CAMERA_REFRESH_SECONDS)
+        except asyncio.CancelledError:
+            raise
+        finally:
+            self.discovery_task = None
 
     async def start_stream_by_id(self, camera_id: str) -> bool:
         if camera_id in self.streams and not self.streams[camera_id].done(): return True
@@ -111,5 +139,10 @@ class CameraStreamManager:
         task = self.streams.get(camera_id)
         if not task or task.done(): return False
         task.cancel(); await asyncio.gather(task, return_exceptions=True); await self._terminate_processes(camera_id); self.streams.pop(camera_id, None); self.statuses[camera_id].state = 'OFFLINE'; return True
-    async def stop_all_streams(self): await asyncio.gather(*(self.stop_stream_by_id(cid) for cid in list(self.streams)), return_exceptions=True)
+    async def stop_all_streams(self):
+        discovery_task = self.discovery_task
+        if discovery_task and discovery_task is not asyncio.current_task():
+            discovery_task.cancel()
+            await asyncio.gather(discovery_task, return_exceptions=True)
+        await asyncio.gather(*(self.stop_stream_by_id(cid) for cid in list(self.streams)), return_exceptions=True)
     def get_all_statuses(self): return {cid: asdict(status) for cid, status in self.statuses.items()}
