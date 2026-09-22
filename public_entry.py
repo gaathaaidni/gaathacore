@@ -1,47 +1,86 @@
-"""A dependency-free, fail-closed public entry page for GaathaCore.
+"""Dependency-free, fail-closed public entry page for the four Gaatha products.
 
-This module deliberately does not probe or proxy product services.  A product
-link is only rendered after an operator supplies an approved public HTTPS URL;
-otherwise the page makes the unavailable/not-connected state explicit.
+This directory never probes, proxies, or grants access to a product.  An
+operator-supplied URL is necessary but not sufficient for a link: the static
+product exposure policy must also explicitly approve public entry.
 """
 from __future__ import annotations
 
 import html
 import os
 from dataclasses import dataclass
+from enum import Enum
 from typing import Callable, Iterable
 from urllib.parse import urlparse
 
 
+class PublicEntryState(str, Enum):
+    READY = "READY FOR PUBLIC ENTRY"
+    CONDITIONAL = "CONDITIONAL / DEPLOYMENT VALIDATION REQUIRED"
+    NOT_READY = "NOT READY / DO NOT EXPOSE"
+
+
 @dataclass(frozen=True)
-class PublicProduct:
+class ProductExposurePolicy:
+    key: str
     name: str
     description: str
+    state: PublicEntryState
+    reason: str
+    required_deployment_validation: str
+    url_environment_variable: str | None
+    public_entry_approved: bool = False
+
+    @property
+    def permits_public_entry(self) -> bool:
+        """Only an explicit, code-reviewed READY approval permits a link."""
+        return self.state is PublicEntryState.READY and self.public_entry_approved
+
+
+@dataclass(frozen=True)
+class PublicProduct:
+    policy: ProductExposurePolicy
     entry_url: str | None
 
     @property
+    def name(self) -> str:
+        return self.policy.name
+
+    @property
+    def description(self) -> str:
+        return self.policy.description
+
+    @property
     def status(self) -> str:
-        return "Entry configured" if self.entry_url else "Not yet connected"
+        return self.policy.state.value
 
 
-PRODUCTS = (
-    ("Gaatha Suite", "Business-management tools for organization operations.", "SUITE"),
-    ("Gaatha POS", "Restaurant point-of-sale tools for day-to-day operations.", "POS"),
-    ("Sentira", "Visual monitoring and event-awareness tools for authorized teams.", "SENTIRA"),
-    ("PostPilot", "Content publishing workflow tools for authorized teams.", "POSTPILOT"),
+# This immutable catalog is deliberately the only public product inventory.
+# None is READY: source review is not deployment/runtime evidence.
+PRODUCT_POLICIES = (
+    ProductExposurePolicy("suite", "Gaatha Suite", "Business-management tools for organization operations.", PublicEntryState.CONDITIONAL,
+        "Authentication and organization-aware controls exist in source, but route-wide tenant isolation and the deployed public handoff are not proven.",
+        "Validate the HTTPS entry path, unauthenticated login handoff, and two-organization negative access checks across deployed protected routes.", "GAATHA_SUITE_PUBLIC_URL"),
+    ProductExposurePolicy("pos", "Gaatha POS", "Restaurant point-of-sale tools for day-to-day operations.", PublicEntryState.CONDITIONAL,
+        "Flask login, restaurant ownership, and RBAC evidence exists in source, but deployed routing and complete tenant-negative coverage are unverified.",
+        "Validate the HTTPS entry path, login redirect/API unauthorized behavior, and two-restaurant negative checks for POS, KDS, admin, and API routes.", "GAATHA_POS_PUBLIC_URL"),
+    ProductExposurePolicy("sentira", "Sentira", "Visual monitoring and event-awareness tools for authorized teams.", PublicEntryState.CONDITIONAL,
+        "Phase 21 preserves a live-media gate; static/API evidence does not prove deployed media isolation or browser playback.",
+        "Validate MediaMTX authentication, HLS, WHEP, browser playback, two-tenant live isolation, lifecycle/revocation, and real/remote camera behavior.", "GAATHA_SENTIRA_PUBLIC_URL"),
+    ProductExposurePolicy("postpilot", "PostPilot", "Content publishing workflow tools for authorized teams.", PublicEntryState.NOT_READY,
+        "Active posting, upload, status, and automation-control routes have no sufficiently evidenced authentication, tenant isolation, RBAC, or authorization boundary.",
+        "Do not configure a public entry. Implement and test product-owned authentication, authorization, tenant isolation, and safe deployment controls first.", None),
 )
 PUBLIC_PATHS = {"/", "/about", "/contact", "/terms", "/privacy", "/user-policy", "/healthz"}
 
 
 def approved_public_url(value: str | None) -> str | None:
-    """Accept only an explicit HTTPS public URL, never a local/internal URL."""
+    """Accept only an explicit HTTPS URL on the public launch host."""
     if not value:
         return None
     parsed = urlparse(value.strip())
     if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
         return None
-    # The launch surface is explicitly app.gaatha.tech. Limiting entries to this
-    # host prevents an environment value from publishing an internal endpoint.
     if parsed.hostname.lower() != "app.gaatha.tech":
         return None
     return value.strip()
@@ -50,25 +89,24 @@ def approved_public_url(value: str | None) -> str | None:
 def configured_products(environ: dict[str, str] | None = None) -> tuple[PublicProduct, ...]:
     environ = os.environ if environ is None else environ
     return tuple(
-        PublicProduct(name, description, approved_public_url(environ.get(f"GAATHA_{key}_PUBLIC_URL")))
-        for name, description, key in PRODUCTS
+        PublicProduct(policy, approved_public_url(environ.get(policy.url_environment_variable)) if policy.permits_public_entry and policy.url_environment_variable else None)
+        for policy in PRODUCT_POLICIES
     )
 
 
 def _page(title: str, body: str) -> bytes:
     navigation = " ".join(f'<a href="{path}">{label}</a>' for path, label in (
-        ("/", "Products"), ("/about", "About"), ("/contact", "Contact"),
-        ("/terms", "Terms"), ("/privacy", "Privacy"), ("/user-policy", "User Policy"),
+        ("/", "Products"), ("/about", "About"), ("/contact", "Contact"), ("/terms", "Terms"), ("/privacy", "Privacy"), ("/user-policy", "User Policy"),
     ))
-    return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{html.escape(title)} | GaathaCore</title><style>body{{font-family:system-ui,sans-serif;max-width:960px;margin:auto;padding:2rem;color:#172033;background:#f7f9fc}}header,footer{{padding:1rem 0}}a{{color:#1557a6}}.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}}article{{background:white;border:1px solid #d8e0eb;border-radius:12px;padding:1.25rem}}.status{{font-weight:600;color:#4f3b00}}.button{{display:inline-block;background:#1557a6;color:white;padding:.65rem .9rem;border-radius:6px;text-decoration:none}}</style></head><body><header><strong>GaathaCore</strong><p>One public starting point for Gaatha products. Product access remains controlled by each product's own authentication and authorization boundary.</p></header><main>{body}</main><footer><nav aria-label="Public pages">{navigation}</nav><p>GaathaCore does not display service health or internal deployment details on this public page.</p></footer></body></html>""".encode("utf-8")
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{html.escape(title)} | GaathaCore</title><style>body{{font-family:system-ui,sans-serif;max-width:960px;margin:auto;padding:2rem;color:#172033;background:#f7f9fc}}header,footer{{padding:1rem 0}}a{{color:#1557a6}}.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}}article{{background:white;border:1px solid #d8e0eb;border-radius:12px;padding:1.25rem}}.status{{font-weight:600;color:#4f3b00}}.button{{display:inline-block;background:#1557a6;color:white;padding:.65rem .9rem;border-radius:6px;text-decoration:none}}</style></head><body><header><strong>GaathaCore</strong><p>One public starting point for Gaatha products. Product access remains controlled by each product's own authentication and authorization boundary.</p></header><main>{body}</main><footer><nav aria-label="Public pages">{navigation}</nav><p>GaathaCore does not display service health or internal deployment details on this public page.</p></footer></body></html>'''.encode("utf-8")
 
 
 def render_home(products: Iterable[PublicProduct]) -> bytes:
     cards = []
     for product in products:
-        link = f'<a class="button" href="{html.escape(product.entry_url, quote=True)}">Open product</a>' if product.entry_url else "<p>No public entry has been connected for this product.</p>"
-        cards.append(f"<article><h2>{html.escape(product.name)}</h2><p>{html.escape(product.description)}</p><p class=\"status\">{product.status}</p>{link}</article>")
-    return _page("Products", "<h1>Gaatha products</h1><p>Select a connected product entry. A configured link indicates only that an approved public entry URL is present; it is not a live service-health claim.</p><section class=\"grid\">" + "".join(cards) + "</section>")
+        link = f'<a class="button" href="{html.escape(product.entry_url, quote=True)}">Open product</a>' if product.entry_url else "<p>Public entry is not available.</p>"
+        cards.append(f'<article><h2>{html.escape(product.name)}</h2><p>{html.escape(product.description)}</p><p class="status">{html.escape(product.status)}</p>{link}</article>')
+    return _page("Products", "<h1>Gaatha products</h1><p>Public entry is enabled only after explicit policy approval and deployment validation. This directory does not make a product availability claim.</p><section class=\"grid\">" + "".join(cards) + "</section>")
 
 
 def public_entry_app(environ: dict[str, str], start_response: Callable) -> list[bytes]:
@@ -80,10 +118,10 @@ def public_entry_app(environ: dict[str, str], start_response: Callable) -> list[
         start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
         return [b"Not found"]
     content = {
-        "/about": ("About", "<h1>About GaathaCore</h1><p>GaathaCore provides a unified public starting point while products retain their independent services, data stores, and access controls.</p>"),
-        "/contact": ("Contact", "<h1>Contact</h1><p>Contact and support channels are not configured here. Use the support or administrator channel provided by your organization.</p>"),
-        "/terms": ("Terms", "<h1>Terms</h1><p>Product terms are provided by the relevant product where available. This entry page does not make additional legal claims.</p>"),
-        "/privacy": ("Privacy", "<h1>Privacy</h1><p>Privacy information is provided by the relevant product where available. This entry page does not collect product data.</p>"),
+        "/about": ("About", "<h1>About GaathaCore</h1><p>GaathaCore provides a unified public starting point while products retain independent services, data stores, and access controls.</p>"),
+        "/contact": ("Contact", "<h1>Contact</h1><p>Use the support or administrator channel provided by your organization.</p>"),
+        "/terms": ("Terms", "<h1>Terms</h1><p>Product terms are provided by the relevant product where available.</p>"),
+        "/privacy": ("Privacy", "<h1>Privacy</h1><p>Privacy information is provided by the relevant product where available.</p>"),
         "/user-policy": ("User Policy", "<h1>User Policy</h1><p>Use only the product access assigned to you and do not attempt to bypass authentication or authorization controls.</p>"),
     }
     payload = render_home(configured_products(environ)) if path == "/" else _page(*content[path])
