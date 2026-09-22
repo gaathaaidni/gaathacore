@@ -48,7 +48,7 @@ services:
   mediamtx:
     image: bluenviron/mediamtx:latest
     restart: unless-stopped
-    ports: ["8554:8554", "8889:8889"]
+    ports: ["8554:8554", "8888:8888", "8889:8889"]
     healthcheck:
       # The upstream image has no shell or HTTP client; verify the native binary
       # can execute rather than invoking a missing /bin/sh.
@@ -136,7 +136,7 @@ services:
   rtsp-fixture:
     build:
       context: ./apps/stream-gateway
-    command: ["python", "fixture_publisher.py", "--host", "mediamtx", "--path", "fixture"]
+    command: ["python", "fixture_publisher.py", "--host", "mediamtx", "--organization-id", "fixture-org", "--site-id", "fixture-site", "--camera-id", "fixture-camera"]
     restart: unless-stopped
     depends_on:
       mediamtx: { condition: service_healthy }
