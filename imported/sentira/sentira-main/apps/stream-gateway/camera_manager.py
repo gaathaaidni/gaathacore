@@ -34,12 +34,30 @@ class CameraStreamManager:
                     return await response.json() if response.status == 200 else []
         except aiohttp.ClientError as exc: logger.error("camera discovery unavailable: %s", exc); return []
 
+    @staticmethod
+    def _valid_camera_projection(cameras) -> bool:
+        if not isinstance(cameras, list):
+            return False
+        for camera in cameras:
+            if not isinstance(camera, dict):
+                return False
+            if not all(isinstance(camera.get(field), str) and camera[field] for field in ('id', 'organizationId', 'siteId')):
+                return False
+            if not isinstance(camera.get('isEnabled'), bool):
+                return False
+            if camera.get('streamUrl') is not None and not isinstance(camera['streamUrl'], str):
+                return False
+        return True
+
     async def load_and_start_cameras(self):
         cameras = await self._fetch_all_cameras()
+        if not self._valid_camera_projection(cameras):
+            logger.error("camera discovery returned an invalid projection; stopping managed streams")
+            cameras = []
         incoming_ids = {camera['id'] for camera in cameras}
         for camera in cameras:
             previous = self.camera_configs.get(camera['id'])
-            identity_changed = previous and any(previous.get(key) != camera.get(key) for key in ('organizationId', 'siteId'))
+            identity_changed = previous and any(previous.get(key) != camera.get(key) for key in ('organizationId', 'siteId', 'streamUrl'))
             self.camera_configs[camera['id']] = camera
             if identity_changed and camera['id'] in self.streams:
                 await self.stop_stream_by_id(camera['id'])
