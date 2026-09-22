@@ -90,4 +90,12 @@ Existing unrelated worktree changes were preserved. No product source or product
 
 ## Phase 12 recommendation
 
-Do not begin product adapters or production deployment. Phase 12 may begin only as an approved local/staging validation phase that closes the `[TBD]` ownership and infrastructure controls, verifies product-specific migrations/backups/readiness independently, and preserves all stop conditions above.
+### Phase 12 handoff addendum - 2026-09-22
+
+Phase 12 inspected Sentira's actual organization-rooted identity and resource model, its independent PostgreSQL migrations, native JWT/RBAC authorization, worker, stream gateway, object-storage, health, and Compose boundaries. Sentira remains independently authenticated and persisted. No Core schema, Sentira business record, production credential, VPS, DNS, Nginx, or deployment was changed.
+
+Two narrow API fixes were implemented and locally verified: inactive users are rejected during JWT validation using current database state, and connector command creation now requires native JWT authentication plus `camera.create`. The full assessment is in `GAATHACORE_SENTIRA_INTEGRATION_ASSESSMENT.md`.
+
+The Sentira-to-Core adapter remains designed only. Explicit mappings require opaque source IDs, operator-owned lifecycle, and Core module access for `sentira`; no mapping is inferred and no Sentira data is copied into Core. Remaining blockers include unauthenticated AI frame ingress, shared-token all-tenant stream control, broad internal decrypted-camera retrieval, selected missing route permission guards, and unapproved site-to-project mapping semantics.
+
+Phase 13 should not begin PostPilot integration, billing, or production deployment until these boundaries and mapping controls are approved and tested.

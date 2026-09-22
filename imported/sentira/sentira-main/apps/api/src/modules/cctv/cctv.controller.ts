@@ -39,6 +39,8 @@ export class CctvController {
 
   @Post('connectors/discover') discoverThroughConnector(@Body() dto: DiscoverCamerasDto) { return this.service.discoverThroughConnector(dto); }
 
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('camera.create')
   @Post('connectors/:id/commands') createConnectorCommand(@CurrentUser() user: CurrentUserDto, @Param('id') id: string, @Body() dto: CreateConnectorCommandDto) { return this.service.createConnectorCommand(user, { ...dto, connectorId: id }); }
 
   @Get('connectors/me/commands') pollConnectorCommands(@Query() dto: PollConnectorCommandsDto) { return this.service.getConnectorCommandsForPolling(dto.connectorId || '', dto.registrationToken || '', dto.limit || 5, dto.wait || 0); }
