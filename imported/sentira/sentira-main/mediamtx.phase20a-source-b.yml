@@ -1,0 +1,13 @@
+logLevel: warn
+rtmp: false
+hls: false
+webrtc: false
+srt: false
+moq: false
+rtsp: true
+rtspAddress: :8556
+rtpAddress: :8200
+rtcpAddress: :8201
+paths:
+  all_others:
+    source: publisher

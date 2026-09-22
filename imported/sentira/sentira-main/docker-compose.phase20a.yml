@@ -1,0 +1,83 @@
+services:
+  mediamtx:
+    image: bluenviron/mediamtx:latest
+    command: ["/mediamtx.yml"]
+    network_mode: host
+    volumes: ["./mediamtx.phase20a-main.yml:/mediamtx.yml:ro"]
+
+  source-a:
+    image: bluenviron/mediamtx:latest
+    command: ["/mediamtx-source.yml"]
+    network_mode: host
+    volumes: ["./mediamtx.phase20a-source-a.yml:/mediamtx-source.yml:ro"]
+    healthcheck:
+      test: ["CMD", "/mediamtx", "--version"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  source-b:
+    image: bluenviron/mediamtx:latest
+    command: ["/mediamtx-source.yml"]
+    network_mode: host
+    volumes: ["./mediamtx.phase20a-source-b.yml:/mediamtx-source.yml:ro"]
+    healthcheck:
+      test: ["CMD", "/mediamtx", "--version"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  local-api:
+    build:
+      context: ./apps/stream-gateway
+    image: phase20a-stream-gateway:local
+    command: ["python", "/runtime/phase20a_stub_api.py"]
+    network_mode: host
+    volumes: ["./scripts/phase20a_stub_api.py:/runtime/phase20a_stub_api.py:ro"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4000/health')"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  source-publisher-a:
+    image: phase20a-stream-gateway:local
+    network_mode: host
+    command: ["ffmpeg", "-nostdin", "-loglevel", "error", "-re", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=10", "-f", "lavfi", "-i", "sine=frequency=880", "-c:v", "libx264", "-g", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://127.0.0.1:8555/live-a"]
+    depends_on:
+      source-a: { condition: service_healthy }
+
+  source-publisher-b:
+    image: phase20a-stream-gateway:local
+    network_mode: host
+    command: ["ffmpeg", "-nostdin", "-loglevel", "error", "-re", "-f", "lavfi", "-i", "smptebars=size=640x360:rate=10", "-f", "lavfi", "-i", "sine=frequency=660", "-c:v", "libx264", "-g", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-f", "rtsp", "-rtsp_transport", "tcp", "rtsp://127.0.0.1:8556/live-b"]
+    depends_on:
+      source-b: { condition: service_healthy }
+
+  stream-gateway:
+    build:
+      context: ./apps/stream-gateway
+    image: phase20a-stream-gateway:local
+    network_mode: host
+    environment:
+      SENTIRA_API_URL: http://127.0.0.1:4000/api
+      AI_WORKER_URL: http://127.0.0.1:4000
+      MEDIAMTX_RTSP_URL: rtsp://127.0.0.1:8554
+      STREAM_GATEWAY_INTERNAL_TOKEN: phase20a-internal-token
+      STREAM_GATEWAY_AUTH_SECRET: phase20a-stream-auth-secret-32-characters
+      AI_WORKER_INGEST_TOKEN: phase20a-ai-token
+      SENTIRA_MEDIA_PUBLISH_TOKEN: phase20a-publish-token
+      BUFFER_ROOT: /var/lib/sentira/buffer
+      CAMERA_REFRESH_SECONDS: "2"
+      SEGMENT_SECONDS: "2"
+      BUFFER_RETENTION_SECONDS: "20"
+      STREAM_TIMEOUT_SECONDS: "5"
+    volumes: ["phase20a_stream_buffer:/var/lib/sentira/buffer"]
+    depends_on:
+      local-api: { condition: service_healthy }
+      mediamtx: { condition: service_started }
+      source-publisher-a: { condition: service_started }
+      source-publisher-b: { condition: service_started }
+
+volumes:
+  phase20a_stream_buffer: {}
