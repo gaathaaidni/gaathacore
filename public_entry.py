@@ -1,4 +1,4 @@
-"""Dependency-free, fail-closed public entry page for the four Gaatha products.
+"""Dependency-free, fail-closed public entry page for public Gaatha products.
 
 This directory never probes, proxies, or grants access to a product.  An
 operator-supplied URL is necessary but not sufficient for a link: the static
@@ -57,6 +57,12 @@ class PublicProduct:
 
 # This immutable catalog is deliberately the only public product inventory.
 # None is READY: source review is not deployment/runtime evidence.
+# The bare public hostname is deliberate.  ``app.gaatha.tech`` is not an
+# accepted alias: accepting it could accidentally direct a user to a separate
+# deployment with a different access-control boundary.
+PUBLIC_ENTRY_HOST = "gaatha.tech"
+
+
 PRODUCT_POLICIES = (
     ProductExposurePolicy("suite", "Gaatha Suite", "Business-management tools for organization operations.", PublicEntryState.CONDITIONAL,
         "Authentication and organization-aware controls exist in source, but route-wide tenant isolation and the deployed public handoff are not proven.",
@@ -67,9 +73,6 @@ PRODUCT_POLICIES = (
     ProductExposurePolicy("sentira", "Sentira", "Visual monitoring and event-awareness tools for authorized teams.", PublicEntryState.CONDITIONAL,
         "Phase 21 preserves a live-media gate; static/API evidence does not prove deployed media isolation or browser playback.",
         "Validate MediaMTX authentication, HLS, WHEP, browser playback, two-tenant live isolation, lifecycle/revocation, and real/remote camera behavior.", "GAATHA_SENTIRA_PUBLIC_URL"),
-    ProductExposurePolicy("postpilot", "PostPilot", "Content publishing workflow tools for authorized teams.", PublicEntryState.NOT_READY,
-        "Active posting, upload, status, and automation-control routes have no sufficiently evidenced authentication, tenant isolation, RBAC, or authorization boundary.",
-        "Do not configure a public entry. Implement and test product-owned authentication, authorization, tenant isolation, and safe deployment controls first.", None),
 )
 PUBLIC_PATHS = {"/", "/about", "/contact", "/terms", "/privacy", "/user-policy", "/healthz"}
 
@@ -81,7 +84,7 @@ def approved_public_url(value: str | None) -> str | None:
     parsed = urlparse(value.strip())
     if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
         return None
-    if parsed.hostname.lower() != "app.gaatha.tech":
+    if parsed.hostname.lower() != PUBLIC_ENTRY_HOST:
         return None
     return value.strip()
 
