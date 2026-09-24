@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  public_entry:
+    build:
+      context: .
+      dockerfile: Dockerfile.public-entry
+    image: gaathacore-public-entry
+    ports:
+      - "127.0.0.1:8765:8765"
+    restart: unless-stopped
+
   # === UNIFIED POSTGRESQL ===
   postgres:
     image: postgres:16-alpine
