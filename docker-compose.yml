@@ -1,0 +1,336 @@
+version: '3.8'
+
+services:
+  # === UNIFIED POSTGRESQL ===
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      CORE_POSTGRES_USER: ${CORE_POSTGRES_USER:?set CORE_POSTGRES_USER}
+      CORE_POSTGRES_PASSWORD: ${CORE_POSTGRES_PASSWORD:?set CORE_POSTGRES_PASSWORD}
+      SUITE_POSTGRES_USER: ${SUITE_POSTGRES_USER:?set SUITE_POSTGRES_USER}
+      SUITE_POSTGRES_PASSWORD: ${SUITE_POSTGRES_PASSWORD:?set SUITE_POSTGRES_PASSWORD}
+      POS_POSTGRES_USER: ${POS_POSTGRES_USER:?set POS_POSTGRES_USER}
+      POS_POSTGRES_PASSWORD: ${POS_POSTGRES_PASSWORD:?set POS_POSTGRES_PASSWORD}
+      SENTIRA_POSTGRES_USER: ${SENTIRA_POSTGRES_USER:?set SENTIRA_POSTGRES_USER}
+      SENTIRA_POSTGRES_PASSWORD: ${SENTIRA_POSTGRES_PASSWORD:?set SENTIRA_POSTGRES_PASSWORD}
+      POSTPILOT_POSTGRES_USER: ${POSTPILOT_POSTGRES_USER:?set POSTPILOT_POSTGRES_USER}
+      POSTPILOT_POSTGRES_PASSWORD: ${POSTPILOT_POSTGRES_PASSWORD:?set POSTPILOT_POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    # PostgreSQL is deliberately NOT exposed to the host
+
+  # === GAATHA SUITE ===
+  suite_web:
+    build:
+      context: ./imported/gaathasuite/gaathasuite-main
+      dockerfile: Dockerfile
+    image: gaatha:prod
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_URL: postgresql+asyncpg://${SUITE_POSTGRES_USER}:${SUITE_POSTGRES_PASSWORD}@postgres:5432/gaathasuite
+      SECRET_KEY: ${SUITE_SECRET_KEY:?set SUITE_SECRET_KEY}
+      REDIS_URL: redis://suite_redis:6379/0
+      APP_ENV: production
+      CORS_ORIGINS: ${SUITE_CORS_ORIGINS:?set SUITE_CORS_ORIGINS}
+      BASE_URL: ${SUITE_BASE_URL:?set SUITE_BASE_URL}
+    volumes:
+      - suite_uploads:/app/backend/static/uploads
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      suite_redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/ready')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+
+  suite_redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # === GAATHA POS ===
+  pos_web:
+    build:
+      context: ./imported/gaathapos/gaathapos-main
+      dockerfile: Dockerfile
+    image: gaathapos-app
+    ports:
+      - "127.0.0.1:3006:3006"
+    environment:
+      FLASK_ENV: production
+      FLASK_APP: app.py
+      APP_ENV: production
+      SECRET_KEY: ${POS_SECRET_KEY:?set POS_SECRET_KEY}
+      DATABASE_URL: postgresql://${POS_POSTGRES_USER}:${POS_POSTGRES_PASSWORD}@postgres:5432/gaathapos
+      RATELIMIT_STORAGE_URI: redis://pos_redis:6379/0
+      REDIS_URL: redis://pos_redis:6379/0
+      SESSION_COOKIE_SECURE: "true"
+      PREFERRED_URL_SCHEME: https
+      TRUSTED_HOSTS: localhost,127.0.0.1,0.0.0.0
+      PYTHONUNBUFFERED: "1"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pos_redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  pos_redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  pos_worker:
+    image: gaathapos-app
+    command: celery -A celery_app worker -l info
+    user: "app"
+    environment:
+      FLASK_ENV: production
+      APP_ENV: production
+      SECRET_KEY: ${POS_SECRET_KEY:?set POS_SECRET_KEY}
+      DATABASE_URL: postgresql://${POS_POSTGRES_USER}:${POS_POSTGRES_PASSWORD}@postgres:5432/gaathapos
+      RATELIMIT_STORAGE_URI: redis://pos_redis:6379/0
+      REDIS_URL: redis://pos_redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pos_redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  pos_beat:
+    image: gaathapos-app
+    command: celery -A celery_app beat -l info
+    user: "app"
+    environment:
+      FLASK_ENV: production
+      APP_ENV: production
+      SECRET_KEY: ${POS_SECRET_KEY:?set POS_SECRET_KEY}
+      DATABASE_URL: postgresql://${POS_POSTGRES_USER}:${POS_POSTGRES_PASSWORD}@postgres:5432/gaathapos
+      RATELIMIT_STORAGE_URI: redis://pos_redis:6379/0
+      REDIS_URL: redis://pos_redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pos_redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # === SENTIRA ===
+  sentira_redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${SENTIRA_REDIS_PASSWORD:?set SENTIRA_REDIS_PASSWORD}"]
+    volumes:
+      - sentira_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${SENTIRA_REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  sentira_rabbitmq:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${SENTIRA_RABBITMQ_USER:?set SENTIRA_RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${SENTIRA_RABBITMQ_PASSWORD:?set SENTIRA_RABBITMQ_PASSWORD}
+    volumes:
+      - sentira_rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  sentira_minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${SENTIRA_MINIO_ROOT_USER:?set SENTIRA_MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${SENTIRA_MINIO_ROOT_PASSWORD:?set SENTIRA_MINIO_ROOT_PASSWORD}
+    volumes:
+      - sentira_minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  sentira_mediamtx:
+    image: bluenviron/mediamtx:latest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/mediamtx", "--version"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  sentira_api:
+    build:
+      context: ./imported/sentira/sentira-main
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      API_PORT: "4000"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: ${SENTIRA_POSTGRES_USER}
+      DB_PASSWORD: ${SENTIRA_POSTGRES_PASSWORD}
+      DB_NAME: sentira
+      DB_SSL: "false"
+      REDIS_URL: redis://:${SENTIRA_REDIS_PASSWORD}@sentira_redis:6379
+      RABBITMQ_URL: amqp://${SENTIRA_RABBITMQ_USER}:${SENTIRA_RABBITMQ_PASSWORD}@sentira_rabbitmq:5672/%2F
+      MINIO_ENDPOINT: sentira_minio
+      MINIO_PORT: "9000"
+      MINIO_ACCESS_KEY: ${SENTIRA_MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${SENTIRA_MINIO_ROOT_PASSWORD}
+      JWT_SECRET: ${SENTIRA_JWT_SECRET:?set SENTIRA_JWT_SECRET}
+      CAMERA_CREDENTIAL_ENCRYPTION_KEY: ${SENTIRA_CAMERA_CREDENTIAL_ENCRYPTION_KEY:?set key}
+      STREAM_GATEWAY_INTERNAL_TOKEN: ${SENTIRA_STREAM_GATEWAY_INTERNAL_TOKEN:?set key}
+      STREAM_GATEWAY_AUTH_SECRET: ${SENTIRA_STREAM_GATEWAY_AUTH_SECRET:?set key}
+      LEGAL_ENTITY_NAME: ${SENTIRA_LEGAL_ENTITY_NAME:?set key}
+      LEGAL_ENTITY_ADDRESS: ${SENTIRA_LEGAL_ENTITY_ADDRESS:?set key}
+      PRIVACY_EMAIL: ${SENTIRA_PRIVACY_EMAIL:?set key}
+      DPO_EMAIL: ${SENTIRA_DPO_EMAIL:?set key}
+      LEGAL_EMAIL: ${SENTIRA_LEGAL_EMAIL:?set key}
+      SUPPORT_EMAIL: ${SENTIRA_SUPPORT_EMAIL:?set key}
+      GOVERNING_LAW: ${SENTIRA_GOVERNING_LAW:?set key}
+      JURISDICTION: ${SENTIRA_JURISDICTION:?set key}
+      COMPANY_REGISTRATION: ${SENTIRA_COMPANY_REGISTRATION:?set key}
+      CORS_ORIGINS: https://sentira.gaatha.tech
+    ports:
+      - "127.0.0.1:4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      sentira_redis:
+        condition: service_healthy
+      sentira_rabbitmq:
+        condition: service_healthy
+      sentira_minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:4000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+
+  sentira_ai_worker:
+    build:
+      context: ./imported/sentira/sentira-main/apps/ai-worker
+    restart: unless-stopped
+    environment:
+      RABBITMQ_URL: amqp://${SENTIRA_RABBITMQ_USER}:${SENTIRA_RABBITMQ_PASSWORD}@sentira_rabbitmq:5672/%2F
+      AI_PROVIDER: ${SENTIRA_AI_PROVIDER:-deterministic}
+      AI_WORKER_INGEST_TOKEN: ${SENTIRA_AI_WORKER_INGEST_TOKEN:?set key}
+    depends_on:
+      sentira_rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  sentira_stream_gateway:
+    build:
+      context: ./imported/sentira/sentira-main/apps/stream-gateway
+    restart: unless-stopped
+    environment:
+      SENTIRA_API_URL: http://sentira_api:4000/api
+      AI_WORKER_URL: http://sentira_ai_worker:8002
+      MEDIAMTX_URL: http://sentira_mediamtx:8889
+      REDIS_URL: redis://:${SENTIRA_REDIS_PASSWORD}@sentira_redis:6379
+      STREAM_GATEWAY_INTERNAL_TOKEN: ${SENTIRA_STREAM_GATEWAY_INTERNAL_TOKEN}
+      STREAM_GATEWAY_AUTH_SECRET: ${SENTIRA_STREAM_GATEWAY_AUTH_SECRET}
+      AI_WORKER_INGEST_TOKEN: ${SENTIRA_AI_WORKER_INGEST_TOKEN}
+      BUFFER_ROOT: /var/lib/sentira/buffer
+    volumes:
+      - sentira_stream_buffer:/var/lib/sentira/buffer
+    depends_on:
+      sentira_api:
+        condition: service_healthy
+      sentira_ai_worker:
+        condition: service_healthy
+      sentira_mediamtx:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  sentira_web:
+    build:
+      context: ./imported/sentira/sentira-main
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://sentira.gaatha.tech/api
+        NEXT_PUBLIC_WS_URL: https://sentira.gaatha.tech
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3010:3000"
+
+  # === POSTPILOT ===
+  postpilot_web:
+    build:
+      context: ./imported/postpilot/postpilot-main
+    environment:
+      FLASK_ENV: production
+      PYTHONUNBUFFERED: "1"
+      DATABASE_URL: postgresql://${POSTPILOT_POSTGRES_USER}:${POSTPILOT_POSTGRES_PASSWORD}@postgres:5432/postpilot
+    volumes:
+      - postpilot_posts:/app/posts
+      - postpilot_images:/app/images
+      - postpilot_uploads:/app/uploads
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Deliberately NOT exposing ports to the host
+
+volumes:
+  postgres_data:
+  suite_uploads:
+  sentira_redis_data:
+  sentira_rabbitmq_data:
+  sentira_minio_data:
+  sentira_stream_buffer:
+  postpilot_posts:
+  postpilot_images:
+  postpilot_uploads:
