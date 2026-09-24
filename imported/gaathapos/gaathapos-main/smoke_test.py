@@ -16,13 +16,15 @@ if not os.environ.get('RUN_SMOKE_TESTS'):
     import pytest
     pytest.skip("Smoke tests disabled by default; set RUN_SMOKE_TESTS=1 to enable", allow_module_level=True)
 
-BASE_URL = "http://localhost:5001"
+BASE_URL = "http://localhost:3006"
 SESSION = requests.Session()
 
 def get_csrf_token(url):
-    """Extract CSRF token from HTML form"""
+    """Extract CSRF token from HTML form or meta tag"""
     response = SESSION.get(url)
     match = re.search(r'name="csrf_token"\s+value="([^"]+)"', response.text)
+    if not match:
+        match = re.search(r'name="csrf-token"\s+content="([^"]+)"', response.text)
     if match:
         return match.group(1)
     return None
@@ -91,7 +93,7 @@ def test_restaurant_signup():
             "username": "sizzle_owner",
             "password": "SizzlePass123!",
             "restaurant_name": "Sizzlecraft",
-            "email": "owner@sizzlecraft.com",
+            "restaurant_email": "owner@sizzlecraft.com",
             "csrf_token": csrf_token
         }, allow_redirects=True)
         assert response.status_code in [200, 201, 302], f"Signup failed: {response.status_code}"
@@ -117,12 +119,16 @@ def test_create_restaurant_users():
     # Login as owner first
     login("sizzle_owner", "SizzlePass123!")
     
+    # Get CSRF token from a protected page
+    csrf_token = get_csrf_token(f"{BASE_URL}/admin/")
+    headers = {"X-CSRFToken": csrf_token} if csrf_token else {}
+    
     # Create manager
     response = SESSION.post(f"{BASE_URL}/admin/api/users", json={
         "username": "sizzle_manager",
         "password": "ManagerPass123!",
         "role": "manager"
-    }, allow_redirects=True)
+    }, headers=headers, allow_redirects=True)
     assert response.status_code in [200, 201, 400], f"Manager creation failed: {response.status_code}"
     print("  ✓ Manager user created/attempted")
     
@@ -131,7 +137,7 @@ def test_create_restaurant_users():
         "username": "sizzle_waiter",
         "password": "WaiterPass123!",
         "role": "waiter"
-    }, allow_redirects=True)
+    }, headers=headers, allow_redirects=True)
     assert response.status_code in [200, 201, 400], f"Waiter creation failed: {response.status_code}"
     print("  ✓ Waiter user created/attempted")
     
@@ -140,7 +146,7 @@ def test_create_restaurant_users():
         "username": "sizzle_chef",
         "password": "ChefPass123!",
         "role": "kitchen"
-    }, allow_redirects=True)
+    }, headers=headers, allow_redirects=True)
     assert response.status_code in [200, 201, 400], f"Chef creation failed: {response.status_code}"
     print("  ✓ Chef user created/attempted")
 

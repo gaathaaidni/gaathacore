@@ -125,13 +125,22 @@ def api_update_user(user_id):
         u = _user_in_current_restaurant(user_id)
         if u is None:
             return jsonify({'error': 'User not found'}), 404
+        if u.role in {"admin", "super_admin"} and not getattr(current_user, "is_super_admin", False):
+            return jsonify({'error': 'Unauthorized to modify platform admins'}), 403
+        if u.role == "restaurant_admin" and not (getattr(current_user, "is_super_admin", False) or current_user.role == "restaurant_admin"):
+            return jsonify({'error': 'Unauthorized to modify restaurant admins'}), 403
         changed = []
         if 'username' in data and data.get('username') != u.username:
             changed.append(f'username: {u.username} -> {data.get("username")}')
             u.username = data.get('username')
         if 'role' in data and data.get('role') != u.role:
-            changed.append(f'role: {u.role} -> {data.get("role")}')
-            u.role = data.get('role')
+            new_role = data.get('role')
+            if new_role not in {"waiter", "kitchen", "manager", "cashier", "restaurant_admin"}:
+                return jsonify({'error': 'invalid role'}), 400
+            if new_role == "restaurant_admin" and not (getattr(current_user, "is_super_admin", False) or current_user.role == "restaurant_admin"):
+                 return jsonify({'error': 'Cannot escalate to restaurant_admin'}), 403
+            changed.append(f'role: {u.role} -> {new_role}')
+            u.role = new_role
         db.session.commit()
         if changed:
             log = AuditLog(user_id=getattr(current_user,'id',None), username=getattr(current_user,'username',None), action='update', object_type='user', object_id=u.id, details='; '.join(changed))
@@ -531,6 +540,10 @@ def api_reset_password(user_id):
         u = _user_in_current_restaurant(user_id)
         if u is None:
             return jsonify({'error': 'User not found'}), 404
+        if u.role in {"admin", "super_admin"} and not getattr(current_user, "is_super_admin", False):
+            return jsonify({'error': 'Unauthorized to modify platform admins'}), 403
+        if u.role == "restaurant_admin" and not (getattr(current_user, "is_super_admin", False) or current_user.role == "restaurant_admin"):
+            return jsonify({'error': 'Unauthorized to modify restaurant admins'}), 403
         u.password_hash = generate_password_hash(newpw)
         db.session.commit()
         log = AuditLog(user_id=getattr(current_user,'id',None), username=getattr(current_user,'username',None), action='reset_password', object_type='user', object_id=u.id, details='password reset')
@@ -552,6 +565,10 @@ def api_delete_user(user_id):
             return jsonify({'error': 'User not found'}), 404
         if u.id == current_user.id:
             return jsonify({'error': 'Cannot delete the current user'}), 400
+        if u.role in {"admin", "super_admin"} and not getattr(current_user, "is_super_admin", False):
+            return jsonify({'error': 'Unauthorized to modify platform admins'}), 403
+        if u.role == "restaurant_admin" and not (getattr(current_user, "is_super_admin", False) or current_user.role == "restaurant_admin"):
+            return jsonify({'error': 'Unauthorized to modify restaurant admins'}), 403
         username = u.username
         db.session.delete(u)
         db.session.commit()

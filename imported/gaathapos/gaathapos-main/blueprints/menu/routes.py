@@ -1,5 +1,5 @@
 from flask import render_template, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 from models import MenuItem
 from . import menu_bp
 
@@ -7,7 +7,7 @@ from . import menu_bp
 @login_required
 def show_menu():
     try:
-        items = MenuItem.query.filter_by(available=True).all()
+        items = MenuItem.query.filter_by(restaurant_id=current_user.restaurant_id, available=True).all()
         return render_template("menu.html", items=items)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -17,7 +17,7 @@ def show_menu():
 def get_menu_items_api():
     """API endpoint to fetch menu items as JSON"""
     try:
-        items = MenuItem.query.filter_by(available=True).all()
+        items = MenuItem.query.filter_by(restaurant_id=current_user.restaurant_id, available=True).all()
         return jsonify({
             "items": [
                 {

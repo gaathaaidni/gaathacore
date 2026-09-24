@@ -28,7 +28,9 @@ def permission_required(permission):
 
             # Fallback defaults when RolePermission rows are not yet created
             defaults = {
+                'super_admin': True,
                 'admin': True,
+                'restaurant_admin': True,
                 'manager': True,
                 'waiter': permission == 'manage_orders',
                 'kitchen': permission == 'manage_orders'
