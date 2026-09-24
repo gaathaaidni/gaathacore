@@ -327,3 +327,161 @@ def test_same_restaurant_pos_workflow_still_works():
         content_type="application/json",
     )
     assert assign_resp.status_code == 200, assign_resp.get_data(as_text=True)
+
+def test_api_routes_isolation():
+    app = build_app()
+    with app.app_context():
+        restaurant_a = make_restaurant(app, "API A", "api_a")
+        restaurant_b = make_restaurant(app, "API B", "api_b")
+
+        menu_item_a = MenuItem(
+            restaurant_id=restaurant_a["restaurant_id"],
+            name="API A Menu Item",
+            price=15.0,
+            available=True
+        )
+        db.session.add(menu_item_a)
+
+        menu_item_b = MenuItem(
+            restaurant_id=restaurant_b["restaurant_id"],
+            name="API B Menu Item",
+            price=20.0,
+            available=True
+        )
+        db.session.add(menu_item_b)
+        db.session.commit()
+
+    client = app.test_client()
+
+    # Test unauthenticated access is rejected
+    unauth_resp1 = client.get("/api/menu")
+    assert unauth_resp1.status_code in [401, 302]
+
+    unauth_resp2 = client.get("/api/menu-items")
+    assert unauth_resp2.status_code in [401, 302]
+
+    # Test authenticated access
+    login_as(client, restaurant_a["user_id"])
+
+    resp = client.get("/api/menu")
+    data = resp.get_json()
+    assert len(data) == 1
+    assert data[0]["name"] == "API A Menu Item"
+
+    resp = client.get("/api/menu-items")
+    data = resp.get_json()
+    assert len(data["items"]) == 1
+    assert data["items"][0]["name"] == "API A Menu Item"
+
+def test_role_update_privilege_escalation():
+    app = build_app()
+    with app.app_context():
+        restaurant_a = make_restaurant(app, "Priv A", "priv_a")
+        # create another user in a
+        user_waiter = User(
+            username="waiter_a",
+            password_hash=generate_password_hash("pass"),
+            role="waiter",
+            restaurant_id=restaurant_a["restaurant_id"],
+            is_super_admin=False
+        )
+        db.session.add(user_waiter)
+        db.session.commit()
+        waiter_id = user_waiter.id
+
+    client = app.test_client()
+    login_as(client, restaurant_a["user_id"]) # user_id is a manager
+
+    resp = client.put(f"/admin/api/users/{waiter_id}", json={"role": "restaurant_admin"})
+    assert resp.status_code == 403
+    assert b"Cannot escalate" in resp.data
+
+    resp = client.put(f"/admin/api/users/{waiter_id}", json={"role": "super_admin"})
+    assert resp.status_code == 400
+    assert b"invalid role" in resp.data
+
+
+
+def test_vertical_hierarchy_protection():
+    app = build_app()
+    with app.app_context():
+        restaurant = make_restaurant(app, "Hierarchy", "owner")
+        owner_id = restaurant['user_id']
+
+        owner = db.session.get(User, owner_id)
+        owner.role = "restaurant_admin"
+
+        # We need a manager
+        manager = User(
+            username="manager_user",
+            password_hash=generate_password_hash("pass"),
+            role="manager",
+            restaurant_id=restaurant['restaurant_id'],
+            is_super_admin=False
+        )
+        db.session.add(manager)
+
+        # We need a waiter
+        waiter = User(
+            username="waiter_user",
+            password_hash=generate_password_hash("pass"),
+            role="waiter",
+            restaurant_id=restaurant['restaurant_id'],
+            is_super_admin=False
+        )
+        db.session.add(waiter)
+
+        # We need a second restaurant to test cross-restaurant protection
+        restaurant2 = make_restaurant(app, "Hierarchy 2", "owner2")
+        owner2_id = restaurant2['user_id']
+
+        owner2 = db.session.get(User, owner2_id)
+        owner2.role = "restaurant_admin"
+
+        db.session.commit()
+
+        manager_id = manager.id
+        waiter_id = waiter.id
+
+    client = app.test_client()
+
+    # 1. Unauthenticated access rejected
+    assert client.put(f"/admin/api/users/{waiter_id}", json={"role": "cashier"}).status_code in [401, 302]
+
+    # Login as manager
+    login_as(client, manager_id)
+
+    # 2. Manager cannot demote owner
+    resp = client.put(f"/admin/api/users/{owner_id}", json={"role": "waiter"})
+    assert resp.status_code == 403
+
+    # 3. Manager cannot reset owner password
+    resp = client.put(f"/admin/api/users/{owner_id}/password", json={"password": "hacked"})
+    assert resp.status_code == 403
+
+    # 4. Manager cannot delete owner
+    resp = client.delete(f"/admin/api/users/{owner_id}")
+    assert resp.status_code == 403
+
+    # 5. Manager CAN modify a waiter (ordinary staff)
+    resp = client.put(f"/admin/api/users/{waiter_id}", json={"role": "cashier"})
+    assert resp.status_code == 200
+
+    # 6. Existing role-escalation protection remains intact (manager cannot escalate to restaurant_admin)
+    resp = client.put(f"/admin/api/users/{waiter_id}", json={"role": "restaurant_admin"})
+    assert resp.status_code == 403
+
+    # 7. Cross-restaurant access remains forbidden (manager cannot access owner2)
+    resp = client.delete(f"/admin/api/users/{owner2_id}")
+    assert resp.status_code == 404
+
+    # Login as owner
+    login_as(client, owner_id)
+
+    # 8. restaurant_admin can manage ordinary staff in their own restaurant
+    resp = client.put(f"/admin/api/users/{waiter_id}", json={"username": "new_waiter"})
+    assert resp.status_code == 200
+
+    # Owner CANNOT cross-restaurant access
+    resp = client.put(f"/admin/api/users/{owner2_id}", json={"role": "waiter"})
+    assert resp.status_code == 404

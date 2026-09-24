@@ -1,11 +1,13 @@
 from flask import jsonify
+from flask_login import login_required, current_user
 from models import MenuItem
 from . import api_bp
 
 @api_bp.route("/menu")
+@login_required
 def menu_json():
     try:
-        items = MenuItem.query.all()
+        items = MenuItem.query.filter_by(restaurant_id=current_user.restaurant_id).all()
         return jsonify([
             {"id": m.id, "name": m.name, "price": m.price, "available": m.available}
             for m in items
@@ -14,10 +16,11 @@ def menu_json():
         return jsonify({"error": str(e)}), 500
 
 @api_bp.route("/menu-items")
+@login_required
 def get_menu_items():
     """Fetch available menu items for POS"""
     try:
-        items = MenuItem.query.filter_by(available=True).all()
+        items = MenuItem.query.filter_by(restaurant_id=current_user.restaurant_id, available=True).all()
         return jsonify({
             "items": [
                 {
