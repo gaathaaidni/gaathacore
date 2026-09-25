@@ -18,6 +18,8 @@ depends_on = None
 
 def upgrade():
     bind = op.get_bind()
+    if bind.dialect.name == 'postgresql':
+        op.execute(sa.text("ALTER TABLE alembic_version ALTER COLUMN version_num TYPE VARCHAR(64)"))
     inspector = sa.inspect(bind)
     existing_tables = set(inspector.get_table_names())
 
