@@ -17,10 +17,18 @@ depends_on = None
 
 
 def upgrade():
-    # Add currency column to user table
-    op.add_column('user', sa.Column('currency', sa.String(3), nullable=True, server_default='USD'))
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    if inspector.has_table('user'):
+        existing_cols = {col['name'] for col in inspector.get_columns('user')}
+        if 'currency' not in existing_cols:
+            op.add_column('user', sa.Column('currency', sa.String(3), nullable=True, server_default='USD'))
 
 
 def downgrade():
-    # Remove currency column from user table
-    op.drop_column('user', 'currency')
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    if inspector.has_table('user'):
+        existing_cols = {col['name'] for col in inspector.get_columns('user')}
+        if 'currency' in existing_cols:
+            op.drop_column('user', 'currency')

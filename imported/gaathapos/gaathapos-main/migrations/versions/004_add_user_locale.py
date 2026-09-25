@@ -17,8 +17,18 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column('user', sa.Column('locale', sa.String(10), nullable=True))
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    if inspector.has_table('user'):
+        existing_cols = {col['name'] for col in inspector.get_columns('user')}
+        if 'locale' not in existing_cols:
+            op.add_column('user', sa.Column('locale', sa.String(10), nullable=True))
 
 
 def downgrade():
-    op.drop_column('user', 'locale')
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    if inspector.has_table('user'):
+        existing_cols = {col['name'] for col in inspector.get_columns('user')}
+        if 'locale' in existing_cols:
+            op.drop_column('user', 'locale')

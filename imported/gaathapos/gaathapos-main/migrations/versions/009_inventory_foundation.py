@@ -78,12 +78,16 @@ def upgrade():
                 )
             batch_op.alter_column("restaurant_id", existing_type=sa.Integer(), nullable=False)
 
-        op.create_index(
-            "uq_inventory_item_id_restaurant",
-            "inventory_item",
-            ["id", "restaurant_id"],
-            unique=True,
-        )
+        if not any(
+            ix.get("name") == "uq_inventory_item_id_restaurant"
+            for ix in inspector.get_indexes("inventory_item")
+        ):
+            op.create_index(
+                "uq_inventory_item_id_restaurant",
+                "inventory_item",
+                ["id", "restaurant_id"],
+                unique=True,
+            )
 
     if inspector.has_table("product"):
         if not any(column["name"] == "stock_mode" for column in inspector.get_columns("product")):
@@ -103,69 +107,75 @@ def upgrade():
                     ["inventory_item_id", "restaurant_id"],
                     ["id", "restaurant_id"],
                 )
-        op.create_index(
-            "uq_product_id_restaurant",
-            "product",
-            ["id", "restaurant_id"],
-            unique=True,
+        if not any(
+            ix.get("name") == "uq_product_id_restaurant"
+            for ix in inspector.get_indexes("product")
+        ):
+            op.create_index(
+                "uq_product_id_restaurant",
+                "product",
+                ["id", "restaurant_id"],
+                unique=True,
+            )
+
+    if not inspector.has_table("product_recipe"):
+        op.create_table(
+            "product_recipe",
+            sa.Column("id", sa.Integer(), nullable=False),
+            sa.Column("restaurant_id", sa.Integer(), nullable=False),
+            sa.Column("product_id", sa.Integer(), nullable=False),
+            sa.Column("inventory_item_id", sa.Integer(), nullable=False),
+            sa.Column("quantity", sa.Float(), nullable=False),
+            sa.ForeignKeyConstraint(["restaurant_id"], ["restaurant.id"]),
+            sa.ForeignKeyConstraint(
+                ["product_id", "restaurant_id"],
+                ["product.id", "product.restaurant_id"],
+                name="fk_product_recipe_product_restaurant",
+            ),
+            sa.ForeignKeyConstraint(
+                ["inventory_item_id", "restaurant_id"],
+                ["inventory_item.id", "inventory_item.restaurant_id"],
+                name="fk_product_recipe_inventory_restaurant",
+            ),
+            sa.CheckConstraint("quantity > 0", name="ck_product_recipe_positive_quantity"),
+            sa.PrimaryKeyConstraint("id"),
+            sa.UniqueConstraint(
+                "restaurant_id", "product_id", "inventory_item_id",
+                name="uq_product_recipe_ingredient",
+            ),
         )
 
-    op.create_table(
-        "product_recipe",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("restaurant_id", sa.Integer(), nullable=False),
-        sa.Column("product_id", sa.Integer(), nullable=False),
-        sa.Column("inventory_item_id", sa.Integer(), nullable=False),
-        sa.Column("quantity", sa.Float(), nullable=False),
-        sa.ForeignKeyConstraint(["restaurant_id"], ["restaurant.id"]),
-        sa.ForeignKeyConstraint(
-            ["product_id", "restaurant_id"],
-            ["product.id", "product.restaurant_id"],
-            name="fk_product_recipe_product_restaurant",
-        ),
-        sa.ForeignKeyConstraint(
-            ["inventory_item_id", "restaurant_id"],
-            ["inventory_item.id", "inventory_item.restaurant_id"],
-            name="fk_product_recipe_inventory_restaurant",
-        ),
-        sa.CheckConstraint("quantity > 0", name="ck_product_recipe_positive_quantity"),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint(
-            "restaurant_id", "product_id", "inventory_item_id",
-            name="uq_product_recipe_ingredient",
-        ),
-    )
-
-    op.create_table(
-        "inventory_movement",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("restaurant_id", sa.Integer(), nullable=False),
-        sa.Column("inventory_item_id", sa.Integer(), nullable=False),
-        sa.Column("quantity_delta", sa.Float(), nullable=False),
-        sa.Column("movement_type", sa.String(32), nullable=False),
-        sa.Column("reference_type", sa.String(32), nullable=True),
-        sa.Column("reference_id", sa.String(128), nullable=True),
-        sa.Column("reason", sa.Text(), nullable=True),
-        sa.Column("created_by", sa.Integer(), nullable=True),
-        sa.Column("created_at", sa.DateTime(), nullable=False),
-        sa.ForeignKeyConstraint(["restaurant_id"], ["restaurant.id"]),
-        sa.ForeignKeyConstraint(
-            ["inventory_item_id", "restaurant_id"],
-            ["inventory_item.id", "inventory_item.restaurant_id"],
-            name="fk_inventory_movement_item_restaurant",
-        ),
-        sa.ForeignKeyConstraint(["created_by"], ["user.id"]),
-        sa.PrimaryKeyConstraint("id"),
-        sa.CheckConstraint(
-            "(movement_type <> 'sale') OR (reference_type IS NOT NULL AND reference_id IS NOT NULL)",
-            name="ck_inventory_movement_sale_reference_required",
-        ),
-        sa.UniqueConstraint(
-            "restaurant_id", "inventory_item_id", "movement_type",
-            "reference_type", "reference_id",
-            name="uq_inventory_movement_reference",
-        ),
-    )
+    if not inspector.has_table("inventory_movement"):
+        op.create_table(
+            "inventory_movement",
+            sa.Column("id", sa.Integer(), nullable=False),
+            sa.Column("restaurant_id", sa.Integer(), nullable=False),
+            sa.Column("inventory_item_id", sa.Integer(), nullable=False),
+            sa.Column("quantity_delta", sa.Float(), nullable=False),
+            sa.Column("movement_type", sa.String(32), nullable=False),
+            sa.Column("reference_type", sa.String(32), nullable=True),
+            sa.Column("reference_id", sa.String(128), nullable=True),
+            sa.Column("reason", sa.Text(), nullable=True),
+            sa.Column("created_by", sa.Integer(), nullable=True),
+            sa.Column("created_at", sa.DateTime(), nullable=False),
+            sa.ForeignKeyConstraint(["restaurant_id"], ["restaurant.id"]),
+            sa.ForeignKeyConstraint(
+                ["inventory_item_id", "restaurant_id"],
+                ["inventory_item.id", "inventory_item.restaurant_id"],
+                name="fk_inventory_movement_item_restaurant",
+            ),
+            sa.ForeignKeyConstraint(["created_by"], ["user.id"]),
+            sa.PrimaryKeyConstraint("id"),
+            sa.CheckConstraint(
+                "(movement_type <> 'sale') OR (reference_type IS NOT NULL AND reference_id IS NOT NULL)",
+                name="ck_inventory_movement_sale_reference_required",
+            ),
+            sa.UniqueConstraint(
+                "restaurant_id", "inventory_item_id", "movement_type",
+                "reference_type", "reference_id",
+                name="uq_inventory_movement_reference",
+            ),
+        )
 
 
 def downgrade():

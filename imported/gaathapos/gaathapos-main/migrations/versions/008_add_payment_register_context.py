@@ -14,22 +14,36 @@ depends_on = None
 
 
 def upgrade():
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    cols = {col['name'] for col in inspector.get_columns('payment_transaction')}
+    fks = {fk.get('name') for fk in inspector.get_foreign_keys('payment_transaction')}
+
     with op.batch_alter_table("payment_transaction") as batch_op:
-        batch_op.add_column(sa.Column("cash_register_id", sa.Integer(), nullable=True))
-        batch_op.add_column(sa.Column("cashier_id", sa.Integer(), nullable=True))
-        batch_op.add_column(sa.Column("restaurant_id", sa.Integer(), nullable=True))
-        batch_op.create_foreign_key(
-            "fk_payment_transaction_cash_register", "cash_register", ["cash_register_id"], ["id"]
-        )
-        batch_op.create_foreign_key(
-            "fk_payment_transaction_cashier", "cashier_account", ["cashier_id"], ["id"]
-        )
-        batch_op.create_foreign_key(
-            "fk_payment_transaction_restaurant", "restaurant", ["restaurant_id"], ["id"]
-        )
+        if "cash_register_id" not in cols:
+            batch_op.add_column(sa.Column("cash_register_id", sa.Integer(), nullable=True))
+        if "cashier_id" not in cols:
+            batch_op.add_column(sa.Column("cashier_id", sa.Integer(), nullable=True))
+        if "restaurant_id" not in cols:
+            batch_op.add_column(sa.Column("restaurant_id", sa.Integer(), nullable=True))
+
+        if "fk_payment_transaction_cash_register" not in fks:
+            batch_op.create_foreign_key(
+                "fk_payment_transaction_cash_register", "cash_register", ["cash_register_id"], ["id"]
+            )
+        if "fk_payment_transaction_cashier" not in fks:
+            batch_op.create_foreign_key(
+                "fk_payment_transaction_cashier", "cashier_account", ["cashier_id"], ["id"]
+            )
+        if "fk_payment_transaction_restaurant" not in fks:
+            batch_op.create_foreign_key(
+                "fk_payment_transaction_restaurant", "restaurant", ["restaurant_id"], ["id"]
+            )
+
     op.execute(sa.text(
         'UPDATE payment_transaction SET restaurant_id = '
-        '(SELECT restaurant_id FROM "order" WHERE "order".id = payment_transaction.order_id)'
+        '(SELECT restaurant_id FROM "order" WHERE "order".id = payment_transaction.order_id) '
+        'WHERE restaurant_id IS NULL'
     ))
 
     connection = op.get_bind()
@@ -69,22 +83,38 @@ def upgrade():
         seen_references.add((payment["restaurant_id"], normalized_reference))
         used_references.add((payment["restaurant_id"], normalized_reference))
 
-    op.create_index(
-        "uq_payment_transaction_restaurant_reference",
-        "payment_transaction",
-        ["restaurant_id", "reference_id"],
-        unique=True,
-        sqlite_where=sa.text("reference_id IS NOT NULL AND reference_id <> ''"),
-        postgresql_where=sa.text("reference_id IS NOT NULL AND reference_id <> ''"),
-    )
+    indexes = {ix['name'] for ix in inspector.get_indexes('payment_transaction')}
+    if "uq_payment_transaction_restaurant_reference" not in indexes:
+        op.create_index(
+            "uq_payment_transaction_restaurant_reference",
+            "payment_transaction",
+            ["restaurant_id", "reference_id"],
+            unique=True,
+            sqlite_where=sa.text("reference_id IS NOT NULL AND reference_id <> ''"),
+            postgresql_where=sa.text("reference_id IS NOT NULL AND reference_id <> ''"),
+        )
 
 
 def downgrade():
-    op.drop_index("uq_payment_transaction_restaurant_reference", table_name="payment_transaction")
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    indexes = {ix['name'] for ix in inspector.get_indexes('payment_transaction')}
+    if "uq_payment_transaction_restaurant_reference" in indexes:
+        op.drop_index("uq_payment_transaction_restaurant_reference", table_name="payment_transaction")
+
+    cols = {col['name'] for col in inspector.get_columns('payment_transaction')}
+    fks = {fk.get('name') for fk in inspector.get_foreign_keys('payment_transaction')}
+
     with op.batch_alter_table("payment_transaction") as batch_op:
-        batch_op.drop_constraint("fk_payment_transaction_restaurant", type_="foreignkey")
-        batch_op.drop_constraint("fk_payment_transaction_cashier", type_="foreignkey")
-        batch_op.drop_constraint("fk_payment_transaction_cash_register", type_="foreignkey")
-        batch_op.drop_column("restaurant_id")
-        batch_op.drop_column("cashier_id")
-        batch_op.drop_column("cash_register_id")
+        if "fk_payment_transaction_restaurant" in fks:
+            batch_op.drop_constraint("fk_payment_transaction_restaurant", type_="foreignkey")
+        if "fk_payment_transaction_cashier" in fks:
+            batch_op.drop_constraint("fk_payment_transaction_cashier", type_="foreignkey")
+        if "fk_payment_transaction_cash_register" in fks:
+            batch_op.drop_constraint("fk_payment_transaction_cash_register", type_="foreignkey")
+        if "restaurant_id" in cols:
+            batch_op.drop_column("restaurant_id")
+        if "cashier_id" in cols:
+            batch_op.drop_column("cashier_id")
+        if "cash_register_id" in cols:
+            batch_op.drop_column("cash_register_id")

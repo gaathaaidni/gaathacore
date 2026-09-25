@@ -17,14 +17,20 @@ depends_on = None
 
 
 def upgrade():
-    op.create_table(
-        'exchange_rate',
-        sa.Column('id', sa.Integer(), primary_key=True),
-        sa.Column('currency', sa.String(3), nullable=False, index=True),
-        sa.Column('rate', sa.Float(), nullable=False),
-        sa.Column('updated_at', sa.DateTime(), nullable=True),
-    )
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    if not inspector.has_table('exchange_rate'):
+        op.create_table(
+            'exchange_rate',
+            sa.Column('id', sa.Integer(), primary_key=True),
+            sa.Column('currency', sa.String(3), nullable=False, index=True),
+            sa.Column('rate', sa.Float(), nullable=False),
+            sa.Column('updated_at', sa.DateTime(), nullable=True),
+        )
 
 
 def downgrade():
-    op.drop_table('exchange_rate')
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    if inspector.has_table('exchange_rate'):
+        op.drop_table('exchange_rate')

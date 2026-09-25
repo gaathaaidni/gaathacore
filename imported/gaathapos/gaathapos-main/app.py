@@ -17,16 +17,39 @@ def initialize_database(app):
     """Create the database schema on startup and repair known schema mismatches."""
     with app.app_context():
         try:
-            db.create_all()
-        except Exception as exc:
-            app.logger.warning("Database initialization skipped: %s", exc)
+            engine_url = str(db.engine.url).lower()
+        except Exception:
+            engine_url = str(app.config.get("SQLALCHEMY_DATABASE_URI") or "").lower()
+
+        auto_create = app.config.get("AUTO_CREATE_SCHEMA")
+        if isinstance(auto_create, str):
+            if auto_create.strip().lower() in {"1", "true", "yes", "on"}:
+                auto_create = True
+            elif auto_create.strip().lower() in {"0", "false", "no", "off"}:
+                auto_create = False
+            else:
+                auto_create = None
+
+        if auto_create is True:
+            should_create = True
+        elif auto_create is False:
+            should_create = False
+        else:
+            should_create = engine_url.startswith("sqlite")
+
+        if should_create:
+            try:
+                db.create_all()
+            except Exception as exc:
+                app.logger.warning("Database initialization skipped: %s", exc)
 
         try:
-            engine_url = str(db.engine.url).lower()
-            if engine_url.startswith("postgresql"):
-                from sqlalchemy import text
-                db.session.execute(text('ALTER TABLE "user" ALTER COLUMN password_hash TYPE VARCHAR(512)'))
-                db.session.commit()
+            if engine_url.startswith(("postgresql", "postgres")):
+                from sqlalchemy import inspect, text
+                inspector = inspect(db.engine)
+                if inspector.has_table("user"):
+                    db.session.execute(text('ALTER TABLE "user" ALTER COLUMN password_hash TYPE VARCHAR(512)'))
+                    db.session.commit()
         except Exception as exc:
             db.session.rollback()
             app.logger.warning("Password hash column repair skipped: %s", exc)
