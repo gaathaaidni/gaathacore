@@ -106,6 +106,7 @@ def run_migrations_online():
         with context.begin_transaction():
             if connection.dialect.name == 'postgresql':
                 try:
+                    connection.execute(sa.text("CREATE TABLE IF NOT EXISTS alembic_version (version_num VARCHAR(64) NOT NULL PRIMARY KEY)"))
                     connection.execute(sa.text("ALTER TABLE alembic_version ALTER COLUMN version_num TYPE VARCHAR(64)"))
                 except Exception:
                     pass
