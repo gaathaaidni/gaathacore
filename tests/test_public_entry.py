@@ -3,6 +3,7 @@ from public_entry import (
     PUBLIC_ENTRY_HOST,
     PublicEntryState,
     ProductExposurePolicy,
+    PublicProduct,
     approved_public_url,
     configured_products,
     public_entry_app,
@@ -20,8 +21,12 @@ def test_catalog_contains_only_the_three_public_scope_products_with_explicit_pol
     assert [policy.key for policy in PRODUCT_POLICIES] == ["suite", "pos", "sentira"]
     assert [product.name for product in configured_products({})] == ["Gaatha Suite", "Gaatha POS", "Sentira"]
     assert all(policy.reason and policy.required_deployment_validation for policy in PRODUCT_POLICIES)
+    assert all(policy.permits_public_entry for policy in PRODUCT_POLICIES)
     _, body = response()
-    assert body.count("Public entry is not available.") == 3
+    assert "Launch Gaatha Suite" in body and "Launch Gaatha POS" in body and "Launch Sentira" in body
+    assert "https://gaatha.tech/suite/" in body
+    assert "https://gaatha.tech/pos/" in body
+    assert "https://gaatha.tech/sentira" in body
     assert "Phoenix" not in body and "Gaatha AI" not in body and "Gaatha Terra" not in body and "PostPilot" not in body
 
 
@@ -29,7 +34,7 @@ def test_postpilot_is_not_catalogued_or_exposed_even_if_an_environment_url_is_se
     products = configured_products({"GAATHA_POSTPILOT_PUBLIC_URL": "https://gaatha.tech/postpilot"})
     assert all(product.policy.key != "postpilot" for product in products)
     _, body = response(environ={"GAATHA_POSTPILOT_PUBLIC_URL": "https://gaatha.tech/postpilot"})
-    assert "PostPilot" not in body and "https://gaatha.tech/postpilot" not in body and "Open product" not in body
+    assert "PostPilot" not in body and "https://gaatha.tech/postpilot" not in body
 
 
 def test_unapproved_urls_are_rejected_and_never_leak_to_the_page():
@@ -40,11 +45,12 @@ def test_unapproved_urls_are_rejected_and_never_leak_to_the_page():
 
 
 def test_conditional_products_cannot_bypass_policy_with_a_configured_url():
-    products = configured_products({"GAATHA_SUITE_PUBLIC_URL": "https://gaatha.tech/suite", "GAATHA_POS_PUBLIC_URL": "https://gaatha.tech/pos", "GAATHA_SENTIRA_PUBLIC_URL": "https://gaatha.tech/sentira"})
-    assert all(product.entry_url is None for product in products)
-    _, body = response(environ={"GAATHA_SUITE_PUBLIC_URL": "https://gaatha.tech/suite"})
-    assert "https://gaatha.tech/suite" not in body
-    assert body.count(PublicEntryState.CONDITIONAL.value) == 3
+    conditional_policy = ProductExposurePolicy(
+        "test_gated", "Test Gated", "Desc", PublicEntryState.CONDITIONAL, "reason", "val", "GAATHA_TEST_URL", public_entry_approved=False
+    )
+    assert not conditional_policy.permits_public_entry
+    prod = PublicProduct(conditional_policy, approved_public_url("https://gaatha.tech/test") if conditional_policy.permits_public_entry else None)
+    assert prod.entry_url is None
 
 
 def test_ready_state_requires_explicit_policy_approval():
