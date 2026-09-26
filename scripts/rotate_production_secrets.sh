@@ -52,13 +52,16 @@ set -a
 source .env
 set +a
 
+ADMIN_PG_USER="${POSTGRES_USER:-gaathacore}"
+ADMIN_PG_DB="${POSTGRES_DB:-gaathacore}"
+
 # Database Snapshots (custom-format dumps)
-echo "-> Dumping 5 PostgreSQL databases into ${BACKUP_DIR}/..."
-docker compose exec -T postgres pg_dump -U postgres -d gaathacore_core --format=custom --no-owner > "${BACKUP_DIR}/gaathacore_core_${TIMESTAMP}.dump"
-docker compose exec -T postgres pg_dump -U postgres -d gaathasuite --format=custom --no-owner > "${BACKUP_DIR}/gaathasuite_${TIMESTAMP}.dump"
-docker compose exec -T postgres pg_dump -U postgres -d gaathapos --format=custom --no-owner > "${BACKUP_DIR}/gaathapos_${TIMESTAMP}.dump"
-docker compose exec -T postgres pg_dump -U postgres -d sentira --format=custom --no-owner > "${BACKUP_DIR}/sentira_${TIMESTAMP}.dump"
-docker compose exec -T postgres pg_dump -U postgres -d postpilot --format=custom --no-owner > "${BACKUP_DIR}/postpilot_${TIMESTAMP}.dump"
+echo "-> Dumping 5 PostgreSQL databases into ${BACKUP_DIR}/ using user '${ADMIN_PG_USER}'..."
+docker compose exec -T postgres pg_dump -U "${ADMIN_PG_USER}" -d gaathacore_core --format=custom --no-owner > "${BACKUP_DIR}/gaathacore_core_${TIMESTAMP}.dump"
+docker compose exec -T postgres pg_dump -U "${ADMIN_PG_USER}" -d gaathasuite --format=custom --no-owner > "${BACKUP_DIR}/gaathasuite_${TIMESTAMP}.dump"
+docker compose exec -T postgres pg_dump -U "${ADMIN_PG_USER}" -d gaathapos --format=custom --no-owner > "${BACKUP_DIR}/gaathapos_${TIMESTAMP}.dump"
+docker compose exec -T postgres pg_dump -U "${ADMIN_PG_USER}" -d sentira --format=custom --no-owner > "${BACKUP_DIR}/sentira_${TIMESTAMP}.dump"
+docker compose exec -T postgres pg_dump -U "${ADMIN_PG_USER}" -d postpilot --format=custom --no-owner > "${BACKUP_DIR}/postpilot_${TIMESTAMP}.dump"
 echo "-> Verified: All 5 database snapshots written successfully."
 
 # ------------------------------------------------------------------------------
@@ -66,7 +69,7 @@ echo "-> Verified: All 5 database snapshots written successfully."
 # ------------------------------------------------------------------------------
 echo -e "\n[Step 3/6] Inspecting Sentira Camera Credential Database State..."
 
-CAMERA_AUDIT=$(docker compose exec -T postgres psql -U postgres -d sentira -tAc '
+CAMERA_AUDIT=$(docker compose exec -T postgres psql -U "${ADMIN_PG_USER}" -d sentira -tAc '
     SELECT 
         COUNT(*) || ":" || 
         COUNT("passwordEncrypted") 
@@ -120,12 +123,12 @@ NEW_SENTIRA_RABBITMQ_PASSWORD=$(gen_alphanumeric)
 NEW_SENTIRA_MINIO_ROOT_PASSWORD=$(gen_alphanumeric)
 
 # 4A. Update PostgreSQL in-engine credentials
-echo "-> Synchronizing in-engine PostgreSQL user passwords..."
-docker compose exec -T postgres psql -U postgres -c "ALTER USER \"${CORE_POSTGRES_USER}\" WITH PASSWORD '${NEW_CORE_POSTGRES_PASSWORD}';"
-docker compose exec -T postgres psql -U postgres -c "ALTER USER \"${SUITE_POSTGRES_USER}\" WITH PASSWORD '${NEW_SUITE_POSTGRES_PASSWORD}';"
-docker compose exec -T postgres psql -U postgres -c "ALTER USER \"${POS_POSTGRES_USER}\" WITH PASSWORD '${NEW_POS_POSTGRES_PASSWORD}';"
-docker compose exec -T postgres psql -U postgres -c "ALTER USER \"${SENTIRA_POSTGRES_USER}\" WITH PASSWORD '${NEW_SENTIRA_POSTGRES_PASSWORD}';"
-docker compose exec -T postgres psql -U postgres -c "ALTER USER \"${POSTPILOT_POSTGRES_USER}\" WITH PASSWORD '${NEW_POSTPILOT_POSTGRES_PASSWORD}';"
+echo "-> Synchronizing in-engine PostgreSQL user passwords using admin '${ADMIN_PG_USER}'..."
+docker compose exec -T postgres psql -U "${ADMIN_PG_USER}" -d "${ADMIN_PG_DB}" -c "ALTER USER \"${CORE_POSTGRES_USER}\" WITH PASSWORD '${NEW_CORE_POSTGRES_PASSWORD}';"
+docker compose exec -T postgres psql -U "${ADMIN_PG_USER}" -d "${ADMIN_PG_DB}" -c "ALTER USER \"${SUITE_POSTGRES_USER}\" WITH PASSWORD '${NEW_SUITE_POSTGRES_PASSWORD}';"
+docker compose exec -T postgres psql -U "${ADMIN_PG_USER}" -d "${ADMIN_PG_DB}" -c "ALTER USER \"${POS_POSTGRES_USER}\" WITH PASSWORD '${NEW_POS_POSTGRES_PASSWORD}';"
+docker compose exec -T postgres psql -U "${ADMIN_PG_USER}" -d "${ADMIN_PG_DB}" -c "ALTER USER \"${SENTIRA_POSTGRES_USER}\" WITH PASSWORD '${NEW_SENTIRA_POSTGRES_PASSWORD}';"
+docker compose exec -T postgres psql -U "${ADMIN_PG_USER}" -d "${ADMIN_PG_DB}" -c "ALTER USER \"${POSTPILOT_POSTGRES_USER}\" WITH PASSWORD '${NEW_POSTPILOT_POSTGRES_PASSWORD}';"
 echo "-> PostgreSQL role passwords successfully updated in-engine."
 
 # 4B. Update RabbitMQ in-engine credentials
