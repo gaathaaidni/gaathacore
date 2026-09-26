@@ -205,6 +205,7 @@ def create_app():
         return render_template("public_info.html", page="user-policy")
 
     @app.route("/health")
+    @limiter.exempt
     def health_check():
         try:
             db.session.execute(text('SELECT 1'))
@@ -214,6 +215,7 @@ def create_app():
             return {"status": "unhealthy", "database": "disconnected"}, 503
 
     @app.route("/api/v1/health")
+    @limiter.exempt
     def api_health_check():
         try:
             db.session.execute(text('SELECT 1'))
@@ -232,6 +234,7 @@ def create_app():
 
     @app.route("/ready")
     @app.route("/readyz")
+    @limiter.exempt
     def readiness_check():
         checks = {"database": False, "redis": "disabled"}
         try:

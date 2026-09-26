@@ -16,6 +16,12 @@ except Exception:
             def _decorator(f):
                 return f
             return _decorator
+        def exempt(self, obj=None):
+            if obj is None:
+                def _decorator(f):
+                    return f
+                return _decorator
+            return obj
     Limiter = _NoopLimiter
     def get_remote_address():
         from flask import request
