@@ -46,14 +46,37 @@ cp .env "${BACKUP_DIR}/pre_rotation.env.bak"
 cp docker-compose.yml "${BACKUP_DIR}/pre_rotation.docker-compose.yml.bak"
 chmod 600 "${BACKUP_DIR}/pre_rotation.env.bak"
 
-# Source current .env for database credentials
-set -a
-# shellcheck disable=SC1091
-source .env
-set +a
+# Parse variables safely from .env without sourcing to avoid unquoted space syntax errors
+get_env() {
+    python3 -c "
+import sys
+target = sys.argv[1]
+default_val = sys.argv[2] if len(sys.argv) > 2 else ''
+result = default_val
+try:
+    with open('.env', 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith('#') or '=' not in line:
+                continue
+            k, v = line.split('=', 1)
+            if k.strip() == target:
+                result = v.strip().strip('\"\'')
+                break
+except Exception:
+    pass
+print(result)
+" "$1" "${2:-}"
+}
 
-ADMIN_PG_USER="${POSTGRES_USER:-gaathacore}"
-ADMIN_PG_DB="${POSTGRES_DB:-gaathacore}"
+ADMIN_PG_USER=$(get_env "POSTGRES_USER" "gaathacore")
+ADMIN_PG_DB=$(get_env "POSTGRES_DB" "gaathacore")
+CORE_POSTGRES_USER=$(get_env "CORE_POSTGRES_USER" "gaathacore_core")
+SUITE_POSTGRES_USER=$(get_env "SUITE_POSTGRES_USER" "gaathasuite")
+POS_POSTGRES_USER=$(get_env "POS_POSTGRES_USER" "gaathapos")
+SENTIRA_POSTGRES_USER=$(get_env "SENTIRA_POSTGRES_USER" "sentira")
+POSTPILOT_POSTGRES_USER=$(get_env "POSTPILOT_POSTGRES_USER" "postpilot")
+SENTIRA_RABBITMQ_USER=$(get_env "SENTIRA_RABBITMQ_USER" "sentira")
 
 # Database Snapshots (custom-format dumps)
 echo "-> Dumping 5 PostgreSQL databases into ${BACKUP_DIR}/ using user '${ADMIN_PG_USER}'..."
@@ -143,11 +166,25 @@ cp .env .env.tmp
 update_env_var() {
     local key="$1"
     local val="$2"
-    if grep -q "^${key}=" .env.tmp; then
-        sed -i "s|^${key}=.*|${key}=${val}|" .env.tmp
-    else
-        echo "${key}=${val}" >> .env.tmp
-    fi
+    python3 -c "
+import sys
+target_key = sys.argv[1]
+new_val = sys.argv[2]
+lines = []
+found = False
+with open('.env.tmp', 'r', encoding='utf-8') as f:
+    for line in f:
+        trimmed = line.strip()
+        if not trimmed.startswith('#') and trimmed.startswith(target_key + '='):
+            lines.append(f'{target_key}={new_val}\n')
+            found = True
+        else:
+            lines.append(line)
+if not found:
+    lines.append(f'{target_key}={new_val}\n')
+with open('.env.tmp', 'w', encoding='utf-8') as f:
+    f.writelines(lines)
+" "$key" "$val"
 }
 
 update_env_var "CORE_POSTGRES_PASSWORD" "${NEW_CORE_POSTGRES_PASSWORD}"
