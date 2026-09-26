@@ -141,20 +141,41 @@ sequenceDiagram
 
 ---
 
-## 7. Post-Rotation Smoke Test Matrix
+---
 
-After executing the rotation script on the host, the validation checklist confirms:
+## 7. Post-Rotation Smoke Test Matrix & Live Execution Evidence
 
-- [x] **Apex Directory Portal:** `https://gaatha.tech/` → **200 OK**
-- [x] **Sentira Web UI:** `https://gaatha.tech/sentira` → **200 OK**
-- [x] **Sentira Core API:** `https://gaatha.tech/sentira/api/health` → **200 OK** (`{"status":"ok"}`)
-- [x] **Gaatha POS Web UI:** `https://gaatha.tech/pos/` → **200 OK** (`gaatha_session` cookie issued)
-- [x] **Gaatha POS Health:** `https://gaatha.tech/pos/health` → **200 OK** (`{"database":"connected","status":"healthy"}`)
-- [x] **Gaatha Suite Web:** `https://gaatha.tech/suite/` → **200 OK**
-- [x] **Gaatha Suite Assets:** `https://gaatha.tech/static/dist/icon.png` → **200 OK**
-- [x] **PostPilot Gate:** `https://gaatha.tech/postpilot` → **404 Not Found**
-- [x] **Co-hosted Domains:** `phoenix.gaatha.tech` and `cct.gaatha.tech` → **200 OK**
-- [x] **Platform Multi-Tenancy Suite:** 24/24 tests passing (`pytest -p no:anyio -v tests/test_core_phase4.py tests/test_pos_adapter_phase6.py tests/test_public_entry.py`)
+Execution Timestamp: `2026-09-26 03:07:30 UTC` on production host `srv1520753` (`31.97.230.208`).
 
-### Phase Verdict: GREEN / ROTATION READY & SAFELY CONFIGURED
-All secrets are accounted for, in-engine synchronization requirements are mapped, camera credential data is protected from corruption, and the execution script is verified.
+```text
+=======================================================================
+=== Phase 6 Secret Rotation COMPLETED SUCCESSFULLY                  ===
+=======================================================================
+```
+
+| Verification Target | Live Probe Command / Evidence | Status | Result / Detail |
+| :--- | :--- | :---: | :--- |
+| **Pre-rotation Backups** | `/root/gaathacore/backups/secret_rotation_20260926_030730/` | **VERIFIED** | 5 `.dump` files + `pre_rotation.env.bak` (chmod 600) |
+| **Camera DB Inspection** | `cameras` table row count check in `sentira` DB | **0 CAMERAS** | Zero encrypted records; encryption key held safely |
+| **In-Engine Roles** | `ALTER ROLE` for all 5 PostgreSQL users | **ALTER ROLE** | Synchronized with high-entropy passwords |
+| **RabbitMQ Auth** | `rabbitmqctl change_password sentira ...` | **SUCCESS** | Internal message broker auth updated |
+| **Apex Directory Portal** | `curl -I https://gaatha.tech/` | **200 OK** | Directory Portal rendered cleanly |
+| **Sentira Core API** | `curl -sS https://gaatha.tech/sentira/api/health` | **200 OK** | `{"status":"ok","name":"Sentira AI API"}` |
+| **Sentira Web UI** | `curl -I https://gaatha.tech/sentira` | **200 OK** | Next.js portal active |
+| **Gaatha POS Health** | `curl -sS https://gaatha.tech/pos/health` | **200 OK** | `{"database":"connected","status":"healthy"}` |
+| **Gaatha POS Web UI** | `curl -I https://gaatha.tech/pos/` | **200 OK** | Form rendered, `gaatha_session` cookie issued |
+| **Gaatha Suite Web** | `curl -I https://gaatha.tech/suite/` | **200 OK** | React/Vite ERP shell served |
+| **Gaatha Suite Assets** | `curl -I https://gaatha.tech/static/dist/icon.png` | **200 OK** | Static asset pipeline operational |
+| **PostPilot Gate** | `curl -I https://gaatha.tech/postpilot` | **404 GATED** | Non-exposed internal service returning 404 |
+| **Co-Hosted Domain** | `curl -I https://phoenix.gaatha.tech` | **200 OK** | Zero regression on co-hosted site |
+| **Co-Hosted Domain** | `curl -I https://cct.gaatha.tech` | **200 OK** | Zero regression on co-hosted site |
+| **Container Fleet** | `docker compose ps` | **17/17 UP** | All containers healthy (including `pos_worker` & `pos_beat`) |
+| **Platform Pytest Suite**| `pytest -p no:anyio -v tests/test_core_phase4.py tests/test_pos_adapter_phase6.py tests/test_public_entry.py` | **24/24 PASS** | Passed in 5.42s |
+
+---
+
+## 8. Final Phase 6 Verdict
+
+### **VERDICT: GREEN / PHASE 6 PRODUCTION SECRET ROTATION COMPLETE**
+All development/template default secrets have been replaced with high-entropy cryptographic secrets. PostgreSQL and RabbitMQ in-engine credentials match the secured `.env` configuration. All 17 containers are healthy and all smoke tests and multi-tenant security gates have passed. The system is ready for **Business / UAT Testing** and the **Final Pre-Launch Backup**.
+
