@@ -387,3 +387,122 @@ def render_blog_article(slug: str) -> Optional[tuple[str, str, str, str]]:
 </div>
 """
     return title, body, meta_desc, extra_head
+
+
+def render_leadership_page() -> tuple[str, str, str, str]:
+    title = "Executive Leadership & Governance"
+    meta_desc = "Meet the executive leadership of GAATHA Ventures Sh.P.K.: Hardikkumar Gajjar (Founder / Architect) and Mr. Jaygiri Kamleshgiri Gosai (Co-Administrator)."
+    crumbs = [("Home", "/"), ("About", "/about"), ("Leadership", "/leadership")]
+
+    extra_head = f"""<script type="application/ld+json">
+{{
+  "@context": "https://schema.org",
+  "@graph": [
+    {build_breadcrumbs_json_ld(crumbs)},
+    {{
+      "@type": "Person",
+      "@id": "https://gaatha.tech/#hardikkumar-gajjar",
+      "name": "Hardikkumar Gajjar",
+      "jobTitle": "Founder / Developer / Architect",
+      "worksFor": {{
+        "@type": "Organization",
+        "name": "GAATHA Ventures Sh.P.K.",
+        "url": "https://gaatha.tech/"
+      }},
+      "description": "System architect and creator of the GaathaCore multi-module ecosystem (Gaatha Suite, Gaatha POS, Sentira Visual AI)."
+    }},
+    {{
+      "@type": "Person",
+      "@id": "https://gaatha.tech/#jaygiri-gosai",
+      "name": "Jaygiri Kamleshgiri Gosai",
+      "jobTitle": "Co-Administrator, GAATHA Ventures Sh.P.K.",
+      "worksFor": {{
+        "@type": "Organization",
+        "name": "GAATHA Ventures Sh.P.K.",
+        "url": "https://gaatha.tech/"
+      }},
+      "description": "Co-Administrator directing corporate governance, administrative infrastructure, and cross-border commercial coordination."
+    }}
+  ]
+}}
+</script>"""
+
+    body = """
+<div class="page-wrapper">
+    <nav class="breadcrumb-nav">
+        <a href="/">Home</a> / <a href="/about">About</a> / <span>Leadership</span>
+    </nav>
+    <div class="badge-tag mb-3">Executive Governance</div>
+    <h1>Corporate & Engineering <span class="hero-gradient">Leadership</span></h1>
+    <p class="lead">Meet the executive leadership guiding system architecture, corporate governance, and cross-border commercial operations for GAATHA Ventures Sh.P.K.</p>
+    <hr style="border-color:var(--border-card);margin:1.5rem 0;">
+
+    <div class="solution-grid">
+        <!-- Hardikkumar Gajjar -->
+        <div class="solution-card" style="padding:2.25rem;">
+            <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg, #1e1b4b 0%, #4338ca 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:700;margin-bottom:1.25rem;">
+                HG
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">
+                <div>
+                    <h2 style="font-size:1.45rem;font-weight:700;color:var(--text-main);margin-bottom:0.25rem;">Hardikkumar Gajjar</h2>
+                    <span class="badge-tag">Founder / Developer / Architect</span>
+                </div>
+            </div>
+            <p style="color:var(--text-muted);font-size:0.92rem;line-height:1.6;margin-bottom:1rem;">
+                System architect and creator of the GaathaCore multi-module enterprise ecosystem. Responsible for conceptualizing, developing, and engineering the core platform architecture across Gaatha Suite (cloud ERP), Gaatha POS (restaurant point of sale), and Sentira (computer vision video intelligence).
+            </p>
+            <h4 style="font-size:0.85rem;text-transform:uppercase;color:var(--text-main);letter-spacing:0.5px;margin-bottom:0.5rem;">Core Mandates & Scope:</h4>
+            <ul style="padding-left:1.25rem;font-size:0.88rem;color:var(--text-body);margin-bottom:1.25rem;">
+                <li style="margin-bottom:0.35rem;">Platform software engineering, API gateway design, and container orchestration.</li>
+                <li style="margin-bottom:0.35rem;">Multi-tenant database isolation and data sovereignty architecture.</li>
+                <li style="margin-bottom:0.35rem;">Real-time RTSP/ONVIF computer vision ingestion algorithms for Sentira.</li>
+                <li style="margin-bottom:0.35rem;">Double-entry ledger accounting and high-velocity POS transaction engines.</li>
+            </ul>
+            <div style="background:#f8fafc;padding:0.85rem 1rem;border-radius:10px;border:1px solid var(--border-card);font-size:0.82rem;color:var(--text-dim);font-style:italic;">
+                "Code developed and architected by Hardikkumar Gajjar."
+            </div>
+        </div>
+
+        <!-- Jaygiri Kamleshgiri Gosai -->
+        <div class="solution-card" style="padding:2.25rem;">
+            <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg, #065f46 0%, #059669 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:700;margin-bottom:1.25rem;">
+                JG
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">
+                <div>
+                    <h2 style="font-size:1.45rem;font-weight:700;color:var(--text-main);margin-bottom:0.25rem;">Mr. Jaygiri Kamleshgiri Gosai</h2>
+                    <span class="badge-tag" style="background:#ecfdf5;color:#047857;border-color:#a7f3d0;">Co-Administrator, GAATHA Ventures Sh.P.K.</span>
+                </div>
+            </div>
+            <p style="color:var(--text-muted);font-size:0.92rem;line-height:1.6;margin-bottom:1rem;">
+                Appointed Co-Administrator of GAATHA Ventures Sh.P.K. in Tirana, Albania (effective September 1, 2026), and serves as Head of Administrative Operations at associated entity Aidni Global LLP (India). Directs administrative infrastructure, corporate governance, and facilities management across domestic and international operations.
+            </p>
+            <h4 style="font-size:0.85rem;text-transform:uppercase;color:var(--text-main);letter-spacing:0.5px;margin-bottom:0.5rem;">Documented Mandates & Responsibilities:</h4>
+            <ul style="padding-left:1.25rem;font-size:0.88rem;color:var(--text-body);margin-bottom:1.25rem;">
+                <li style="margin-bottom:0.35rem;">Directing administrative infrastructure, internal governance, and facilities management.</li>
+                <li style="margin-bottom:0.35rem;">Managing cross-border establishment protocols for GAATHA Ventures Sh.P.K. (NUIS: <code>M62118505B</code>) at Durana Tech Park in Tirana, Republic of Albania.</li>
+                <li style="margin-bottom:0.35rem;">Institutional representation before administrative agencies, commercial banks, and technology park authorities.</li>
+                <li style="margin-bottom:0.35rem;">Coordinating international vendor contracts, office leasing, and commercial business development.</li>
+                <li style="margin-bottom:0.35rem;">Executing designated cross-border commercial and administrative mandates abroad.</li>
+            </ul>
+            <div style="background:#f8fafc;padding:0.85rem 1rem;border-radius:10px;border:1px solid var(--border-card);font-size:0.82rem;color:var(--text-body);">
+                <strong>Corporate Roles:</strong> Co-Administrator, GAATHA Ventures Sh.P.K. (Albania) &bull; Head of Administrative Operations, Aidni Global LLP (India).
+            </div>
+        </div>
+    </div>
+
+    <!-- Corporate Entity Notice -->
+    <div style="background:var(--bg-card);border:1px solid var(--border-card);border-radius:16px;padding:1.75rem;margin-top:2.5rem;">
+        <h4 style="margin-top:0;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);">Corporate Governance & Cross-Border Framework</h4>
+        <p style="font-size:0.92rem;color:var(--text-body);margin-bottom:0.5rem;">
+            GaathaCore is owned, operated, and governed by <strong>GAATHA Ventures Sh.P.K.</strong> (NIPT: <code>M62118505B</code>), registered and domiciled in the Republic of Albania, located at Durana Tech Park, Albania.
+        </p>
+        <p style="font-size:0.92rem;color:var(--text-body);margin-bottom:0;">
+            For international administrative coordination, commercial development, and technology operations, GAATHA Ventures Sh.P.K. collaborates with associated entity <strong>Aidni Global LLP</strong> (Ahmedabad, India), with operational and administrative mandates directed by Mr. Jaygiri Gosai.
+        </p>
+    </div>
+</div>
+"""
+    return title, body, meta_desc, extra_head
+

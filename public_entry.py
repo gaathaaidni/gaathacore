@@ -116,6 +116,8 @@ PRODUCT_POLICIES = (
 PUBLIC_PATHS = {
     "/",
     "/about",
+    "/leadership",
+    "/about/leadership",
     "/contact",
     "/terms",
     "/privacy",
@@ -997,6 +999,7 @@ def _page(title: str, body: str, canonical_path: str = "/", meta_description: st
     nav_links = (
         ("/", "Products"),
         ("/solutions/business-management", "Solutions"),
+        ("/leadership", "Leadership"),
         ("/blog", "Insights & Blog"),
         ("/about", "About"),
         ("/contact", "Contact"),
@@ -1006,6 +1009,7 @@ def _page(title: str, body: str, canonical_path: str = "/", meta_description: st
     footer_nav_links = (
         ("/", "Products"),
         ("/solutions/business-management", "Solutions"),
+        ("/leadership", "Leadership"),
         ("/blog", "Insights & Blog"),
         ("/about", "About"),
         ("/contact", "Contact"),
@@ -1240,6 +1244,7 @@ Sitemap: https://gaatha.tech/sitemap.xml
         urls = [
             {"loc": f"{base_url}/", "changefreq": "daily", "priority": "1.0", "lastmod": "2026-09-28"},
             {"loc": f"{base_url}/about", "changefreq": "monthly", "priority": "0.7", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/leadership", "changefreq": "monthly", "priority": "0.8", "lastmod": "2026-09-28"},
             {"loc": f"{base_url}/contact", "changefreq": "monthly", "priority": "0.7", "lastmod": "2026-09-28"},
             {"loc": f"{base_url}/solutions/business-management", "changefreq": "weekly", "priority": "0.9", "lastmod": "2026-09-28"},
             {"loc": f"{base_url}/solutions/restaurant-pos", "changefreq": "weekly", "priority": "0.9", "lastmod": "2026-09-28"},
@@ -1323,6 +1328,13 @@ Sitemap: https://gaatha.tech/sitemap.xml
         start_response("200 OK", [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "public, max-age=3600")])
         return [payload]
 
+    # Leadership routes
+    if path in ("/leadership", "/about/leadership"):
+        title, body, meta_desc, extra_head = gsr.render_leadership_page()
+        payload = _page(title, body, canonical_path="/leadership", meta_description=meta_desc, extra_head=extra_head)
+        start_response("200 OK", [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "public, max-age=3600")])
+        return [payload]
+
     # Blog routes
     if path in ("/blog", "/blog/"):
         title, body, meta_desc, extra_head = gsr.render_blog_index()
@@ -1374,6 +1386,9 @@ Sitemap: https://gaatha.tech/sitemap.xml
             '</ul>'
             '<h3>Corporate Governance</h3>'
             '<p>GaathaCore and its underlying software modules are owned, operated, and governed by <strong>GAATHA Ventures Sh.P.K.</strong>, incorporated in the Republic of Albania (NIPT: <code>M62118505B</code>), located at Durana Tech Park, Albania.</p>'
+            '<h3>Executive Leadership</h3>'
+            '<p>GaathaCore is steered by <strong>Hardikkumar Gajjar</strong> (Founder / Developer / Architect) and <strong>Mr. Jaygiri Kamleshgiri Gosai</strong> (Co-Administrator, GAATHA Ventures Sh.P.K.; Head of Administrative Operations, Aidni Global LLP). Explore our leadership profiles, administrative infrastructure mandates, and cross-border commercial governance.</p>'
+            '<p><a href="/leadership" class="btn-primary" style="display:inline-block;margin-top:0.5rem;text-decoration:none;">View Executive Leadership &rarr;</a></p>'
             '</div>',
         ),
         "/contact": (
