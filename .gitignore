@@ -1,1 +1,14 @@
 .env
+
+# Bytecode & Caches
+__pycache__/
+*.py[cod]
+*.class
+.pytest_cache/
+
+# Runtime & Backups
+backups/
+*.db
+*.sqlite3
+*.log
+.DS_Store

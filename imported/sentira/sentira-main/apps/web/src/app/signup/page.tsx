@@ -63,7 +63,7 @@ export default function SignupPage() {
       <form className="auth-card" onSubmit={submit}>
         <div className="auth-head">
           <span className="brand-mark">
-            <img src="/logo.png" alt="Sentira AI" width={40} height={40} />
+            <img src="/sentira/logo.png" alt="Sentira AI" width={40} height={40} />
           </span>
           <h1>Get Started</h1>
         </div>

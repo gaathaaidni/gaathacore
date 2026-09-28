@@ -14,7 +14,9 @@ FROM node:20-bookworm-slim
 WORKDIR /workspace/apps/web
 ENV NODE_ENV=production PORT=3000
 COPY --from=build /workspace/apps/web/package.json ./package.json
+COPY --from=build /workspace/apps/web/next.config.js ./next.config.js
 COPY --from=build /workspace/apps/web/.next ./.next
+COPY --from=build /workspace/apps/web/public ./public
 COPY --from=build /workspace/node_modules /workspace/node_modules
 EXPOSE 3000
 CMD ["node", "/workspace/node_modules/next/dist/bin/next", "start"]

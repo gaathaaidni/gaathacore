@@ -23,7 +23,9 @@ database_url = os.environ.get("DATABASE_URL")
 if not database_url:
     raise RuntimeError("DATABASE_URL is required to run Alembic migrations")
 
-sync_database_url = database_url.replace("postgresql+asyncpg://", "postgresql://")
+sync_database_url = database_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://")
+if sync_database_url.startswith("postgresql://"):
+    sync_database_url = sync_database_url.replace("postgresql://", "postgresql+psycopg2://", 1)
 config.set_main_option("sqlalchemy.url", sync_database_url.replace("%", "%%"))
 target_metadata = Base.metadata
 

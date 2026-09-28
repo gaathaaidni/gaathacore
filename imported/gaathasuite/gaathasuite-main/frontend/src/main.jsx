@@ -5144,27 +5144,27 @@ const PublicInfoPage = ({ page }) => {
     about: {
       label: 'About Gaatha Suite',
       title: 'A practical workspace for growing organizations.',
-      paragraphs: ['Gaatha Suite brings organization-aware business workflows into one application, with supported surfaces for finance, CRM, inventory, people operations, vendors, invoices, approvals, and reporting.', 'The product is developed and owned by: Architect, Developer, Owner, Founder — Hardikkumar Gajjar.'],
+      paragraphs: ['Gaatha Suite brings organization-aware business workflows into one application, with supported surfaces for finance, CRM, inventory, people operations, vendors, invoices, approvals, and reporting.', 'Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B), registered at Durana Tech Park, Albania.', 'Contact & Operations: gaatha.ro.tech@gmail.com | Legal: nexora.gaatha@gmail.com'],
     },
     contact: {
-      label: 'Contact',
+      label: 'Contact & Support Desk',
       title: 'Support for your Gaatha workspace.',
-      paragraphs: ['Use the support or administrator channel provided by your organization.', 'No public contact address or message-delivery endpoint is configured in this application, so this page does not claim to send a message. Administration identity: Admin — Jaygiri Gosai.'],
+      paragraphs: ['Verified enterprise support and administrative communication channels for Gaatha Suite organizations.', 'Operating Entity: GAATHA Ventures Sh.P.K., Durana Tech Park, Albania (NIPT: M62118505B).', 'Customer Support & Operations: gaatha.ro.tech@gmail.com', 'Legal, Privacy & Compliance Desk: nexora.gaatha@gmail.com'],
     },
     terms: {
       label: 'Terms and Conditions',
       title: 'Use the workspace responsibly.',
-      paragraphs: ['Last Updated: September 21, 2026', 'Use Gaatha Suite only for lawful business operations and only with the access granted to you. Keep account credentials private, review records before relying on them, and do not attempt to access another organization’s data.', 'Do not misuse the application, interfere with its operation, upload harmful content, or use it to violate another person’s rights. Availability and features may change. This product information is not legal advice.'],
+      paragraphs: ['Last Updated: September 2026 | Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)', 'Use Gaatha Suite only for lawful business operations and only with the access granted to you. Keep account credentials private, review records before relying on them, and do not attempt to access another organization’s data.', 'Do not misuse the application, interfere with its operation, upload harmful content, or use it to violate another person’s rights. Availability and features may change. Governing Law: Albania.'],
     },
     privacy: {
       label: 'Privacy Policy',
       title: 'Information used to run business workflows.',
-      paragraphs: ['Last Updated: September 21, 2026', 'Gaatha Suite can process account and organization details, authentication information, business records, application activity, uploads, downloads, logs, and configured integration data needed to provide its enabled workflows.', 'This information supports authentication, organization-scoped access, business operations, notifications, audit activity, and application security. Specific retention periods, recipients, jurisdiction, and deletion procedures are not established by repository evidence and are intentionally not stated here.'],
+      paragraphs: ['Last Updated: September 2026 | Data Controller: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)', 'Gaatha Suite processes account and organization details, authentication information, business records, application activity, uploads, downloads, logs, and configured integration data needed to provide its enabled workflows.', 'This information supports authentication, organization-scoped access, business operations, notifications, audit activity, and application security. Data inquiries may be directed to nexora.gaatha@gmail.com.'],
     },
     'user-policy': {
       label: 'User Policy',
       title: 'Responsible use for every team member.',
-      paragraphs: ['Last Updated: September 21, 2026', 'Keep accounts secure, use only assigned permissions, and handle business, employee, customer, and financial information carefully.', 'Do not use Gaatha Suite for unlawful activity, unauthorized access, fraud, abusive behavior, destructive testing, or attempts to bypass access controls. Report suspected security, privacy, or data-integrity issues to your organization administrator.'],
+      paragraphs: ['Last Updated: September 2026 | Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)', 'Keep accounts secure, use only assigned permissions, and handle business, employee, customer, and financial information carefully.', 'Do not use Gaatha Suite for unlawful activity, unauthorized access, fraud, abusive behavior, destructive testing, or attempts to bypass access controls. Report suspected security, privacy, or data-integrity issues to gaatha.ro.tech@gmail.com.'],
     },
   };
   const selected = content[page] || content.about;

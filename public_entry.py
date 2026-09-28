@@ -110,7 +110,22 @@ PRODUCT_POLICIES = (
         public_entry_approved=True,
     ),
 )
-PUBLIC_PATHS = {"/", "/about", "/contact", "/terms", "/privacy", "/user-policy", "/healthz"}
+PUBLIC_PATHS = {
+    "/",
+    "/about",
+    "/contact",
+    "/terms",
+    "/privacy",
+    "/cookie-policy",
+    "/disclaimer",
+    "/refund-policy",
+    "/acceptable-use",
+    "/ai-disclaimer",
+    "/user-policy",
+    "/health",
+    "/healthz",
+    "/logo.png",
+}
 
 
 def approved_public_url(value: str | None) -> str | None:
@@ -563,6 +578,11 @@ def _page(title: str, body: str) -> bytes:
             ("/contact", "Contact"),
             ("/terms", "Terms"),
             ("/privacy", "Privacy"),
+            ("/cookie-policy", "Cookies"),
+            ("/disclaimer", "Disclaimer"),
+            ("/refund-policy", "Refunds"),
+            ("/acceptable-use", "Acceptable Use"),
+            ("/ai-disclaimer", "AI Notice"),
             ("/user-policy", "User Policy"),
         )
     )
@@ -596,7 +616,7 @@ def _page(title: str, body: str) -> bytes:
         '<footer><div class="container footer-content">'
         f'<nav aria-label="Public pages">{navigation}</nav>'
         '<p class="footer-note">GaathaCore does not display service health or internal deployment details on this public page. Product access is sovereign and mediated exclusively through native product authentication boundaries.</p>'
-        '<p class="footer-note" style="color:#94a3b8;font-size:0.75rem;">&copy; 2026 Gaatha. All product rights reserved.</p>'
+        '<p class="footer-note" style="color:#94a3b8;font-size:0.75rem;">&copy; 2026 GAATHA Ventures Sh.P.K. (NIPT: M62118505B), Durana Tech Park, Albania. All rights reserved.</p>'
         '</div></footer>'
         '</body></html>'
     )
@@ -700,54 +720,210 @@ def render_home(products: Iterable[PublicProduct]) -> bytes:
 
 def public_entry_app(environ: dict[str, str], start_response: Callable) -> list[bytes]:
     path = environ.get("PATH_INFO", "/")
-    if path == "/healthz":
+    
+    # Health endpoints
+    if path in ("/healthz", "/health"):
         start_response("200 OK", [("Content-Type", "application/json"), ("Cache-Control", "no-store")])
-        return [b'{"status":"available"}']
+        return [b'{"status":"available","platform":"GaathaCore","entity":"GAATHA Ventures Sh.P.K.","jurisdiction":"Albania"}']
+        
+    # Logo serving
+    if path == "/logo.png":
+        if os.path.exists(_LOGO_FILE):
+            with open(_LOGO_FILE, "rb") as lf:
+                logo_bytes = lf.read()
+            start_response("200 OK", [("Content-Type", "image/png"), ("Cache-Control", "public, max-age=86400")])
+            return [logo_bytes]
+        start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
+        return [b"Logo not found"]
+
     if path not in PUBLIC_PATHS:
         start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
         return [b"Not found"]
+
     content = {
         "/about": (
-            "About",
+            "About GaathaCore",
             '<div class="page-wrapper">'
+            '<div class="badge-tag mb-3">Enterprise Multi-Module Architecture</div>'
             '<h1>About GaathaCore</h1>'
-            '<p>GaathaCore provides a unified, hardened public starting point while each underlying application retains sovereign services, isolated PostgreSQL databases, and distinct authorization boundaries.</p>'
-            '<p>Our ecosystem unites mission-critical enterprise workflows: <strong>Gaatha Suite</strong> for enterprise resource planning, <strong>Gaatha POS</strong> for point-of-sale restaurant and retail management, and <strong>Sentira</strong> for next-generation visual intelligence and security.</p>'
+            '<p class="lead">GaathaCore is an integrated, hardened enterprise cloud ecosystem engineered and maintained by <strong>GAATHA Ventures Sh.P.K.</strong></p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<h3>Our Architectural Paradigm</h3>'
+            '<p>Modern enterprises require disparate mission-critical capabilities without compromising operational boundaries. GaathaCore unites specialized solutions under a single apex domain (<code>https://gaatha.tech</code>) while strictly isolating service containers, persistent databases, and authorization domains:</p>'
+            '<ul>'
+            '<li><strong>Gaatha Suite:</strong> Comprehensive enterprise resource planning encompassing double-entry financial accounting, client invoicing, CRM deal pipelines, inventory governance, and HR payroll workflows.</li>'
+            '<li><strong>Gaatha POS:</strong> High-performance restaurant and retail point-of-sale supporting multi-register order processing, live kitchen display systems (KDS), real-time recipe-level stock deduction, and split payments.</li>'
+            '<li><strong>Sentira Visual AI:</strong> Advanced video intelligence platform offering sub-second low-latency camera stream ingestion, rule-based perimeter event detection, and multi-tenant security operations.</li>'
+            '<li><strong>PostPilot (Internal / Gated):</strong> Proprietary backend postal routing engine strictly excluded from public launch and maintained behind zero-trust internal network boundaries.</li>'
+            '</ul>'
+            '<h3>Corporate Governance</h3>'
+            '<p>GaathaCore and its underlying software modules are owned, operated, and governed by <strong>GAATHA Ventures Sh.P.K.</strong>, incorporated in the Republic of Albania (NIPT: <code>M62118505B</code>), located at Durana Tech Park, Albania.</p>'
             '</div>',
         ),
         "/contact": (
-            "Contact",
+            "Contact & Corporate Notice",
             '<div class="page-wrapper">'
-            '<h1>Contact Support</h1>'
-            '<p>Use the designated support or administrator channel provided by your organization.</p>'
-            '<p>For administrative or infrastructure inquiries, reach out to your account administrator or primary organization support team.</p>'
+            '<div class="badge-tag mb-3">Corporate Identification</div>'
+            '<h1>Contact & Legal Notice</h1>'
+            '<p class="lead">Official administrative, legal, and operational communication channels for GaathaCore.</p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1.5rem;margin-bottom:2rem;">'
+            '<div style="background:var(--bg-card);padding:1.5rem;border-radius:12px;border:1px solid var(--border-card);">'
+            '<h4 style="margin-top:0;color:var(--primary);">Corporate Entity</h4>'
+            '<p style="margin-bottom:0.5rem;"><strong>Company Name:</strong> GAATHA Ventures Sh.P.K.</p>'
+            '<p style="margin-bottom:0.5rem;"><strong>Registration (NIPT):</strong> M62118505B</p>'
+            '<p style="margin-bottom:0.5rem;"><strong>Registered Office:</strong> Durana Tech Park, Albania</p>'
+            '<p style="margin-bottom:0;"><strong>Jurisdiction:</strong> Republic of Albania</p>'
+            '</div>'
+            '<div style="background:var(--bg-card);padding:1.5rem;border-radius:12px;border:1px solid var(--border-card);">'
+            '<h4 style="margin-top:0;color:var(--primary);">Electronic Mail Desks</h4>'
+            '<p style="margin-bottom:0.5rem;"><strong>Legal & Regulatory:</strong> <a href="mailto:nexora.gaatha@gmail.com">nexora.gaatha@gmail.com</a></p>'
+            '<p style="margin-bottom:0.5rem;"><strong>Privacy & Data Protection:</strong> <a href="mailto:gaatha.ro.tech@gmail.com">gaatha.ro.tech@gmail.com</a></p>'
+            '<p style="margin-bottom:0.5rem;"><strong>DPO Channel:</strong> <a href="mailto:nexora.gaatha@gmail.com">nexora.gaatha@gmail.com</a></p>'
+            '<p style="margin-bottom:0;"><strong>General Technical Support:</strong> <a href="mailto:gaatha.ro.tech@gmail.com">gaatha.ro.tech@gmail.com</a></p>'
+            '</div>'
+            '</div>'
+            '<h3>Product Inquiries</h3>'
+            '<p>Each sovereign module maintains dedicated internal support queues. Registered enterprise tenants may also reach technical administrators through their respective organizational portal.</p>'
             '</div>',
         ),
         "/terms": (
-            "Terms",
+            "Terms of Service",
             '<div class="page-wrapper">'
+            '<div class="badge-tag mb-3">Legal Agreement</div>'
             '<h1>Terms of Service</h1>'
-            '<p>Product terms are provided by the relevant product where available.</p>'
-            '<p>Access to individual services is conditioned upon acceptable organization use policies and verified credential ownership.</p>'
+            '<p class="lead">Effective Date: September 28, 2026 · Operator: <strong>GAATHA Ventures Sh.P.K.</strong> (NIPT: M62118505B), Albania.</p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<h3>1. Scope and Acceptance</h3>'
+            '<p>These Terms of Service govern access to and use of the GaathaCore platform (<code>https://gaatha.tech</code>) and its public modules: Gaatha Suite, Gaatha POS, and Sentira. By logging into, configuring, or interacting with any service, you and the business entity you represent agree to be bound by these terms.</p>'
+            '<h3>2. Sovereign Multi-Module Architecture</h3>'
+            '<p>GaathaCore mediates authenticated access to distinct business applications. Customers acknowledge that:</p>'
+            '<ul>'
+            '<li>Each product maintains isolated database instances and dedicated role-based permission sets.</li>'
+            '<li>Cross-product data synchronization occurs strictly through authenticated APIs and does not merge database ownership.</li>'
+            '<li>PostPilot is an internal utility not licensed or exposed for public customer use.</li>'
+            '</ul>'
+            '<h3>3. Customer Responsibilities</h3>'
+            '<p>Customers are responsible for: maintaining secure credentials, configuring appropriate user role assignments, ensuring lawful deployment of POS transactions and CCTV monitoring feeds, obtaining necessary workforce or customer consent, and ensuring all uploaded content complies with applicable laws.</p>'
+            '<h3>4. Sentira Monitoring & AI Advisory Notice</h3>'
+            '<p>Sentira provides software tooling for visual intelligence and event awareness. Detections, bounding boxes, and alert notifications are probabilistic automated summaries. Sentira does NOT make binding legal, employment, or governmental determinations. Customers retain full responsibility for human review prior to taking any disciplinary, regulatory, or operational actions.</p>'
+            '<h3>5. Availability, Disclaimers, and Limitation of Liability</h3>'
+            '<p>Services are provided on an "as is" and "as available" basis. To the maximum extent permitted under Albanian law, GAATHA Ventures Sh.P.K. disclaims all implied warranties. In no event shall GAATHA Ventures Sh.P.K. be liable for indirect, incidental, special, or consequential damages resulting from downtime, CCTV connectivity failure, or data loss.</p>'
+            '<h3>6. Governing Law and Jurisdiction</h3>'
+            '<p>These Terms are governed by and construed in accordance with the laws of the Republic of Albania. All disputes arising hereunder shall be subject to the exclusive jurisdiction of the competent courts of Tirana, Albania.</p>'
             '</div>',
         ),
         "/privacy": (
-            "Privacy",
+            "Privacy Policy",
             '<div class="page-wrapper">'
+            '<div class="badge-tag mb-3">Data Protection</div>'
             '<h1>Privacy Policy</h1>'
-            '<p>Privacy information is provided by the relevant product where available.</p>'
-            '<p>Tenant data is strictly partitioned across sovereign database clusters with zero cross-tenant querying or shared data access.</p>'
+            '<p class="lead">Effective Date: September 28, 2026 · Data Fiduciary: <strong>GAATHA Ventures Sh.P.K.</strong> (NIPT: M62118505B), Durana Tech Park, Albania.</p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<h3>1. Regulatory Compliance Framework</h3>'
+            '<p>GAATHA Ventures Sh.P.K. complies with Republic of Albania Law No. 9887 "On the Protection of Personal Data" (as amended) and adheres to European Union General Data Protection Regulation (GDPR) standards for cross-border enterprise processing.</p>'
+            '<h3>2. Categories of Processed Data</h3>'
+            '<ul>'
+            '<li><strong>Account & Identity Data:</strong> Usernames, business email addresses, salted password hashes, organization associations, and granular RBAC role assignments.</li>'
+            '<li><strong>Business & Transaction Records:</strong> Invoices, purchase orders, chart of accounts, restaurant receipts, inventory records, and employee rosters entered into Gaatha Suite and Gaatha POS.</li>'
+            '<li><strong>Visual Streams & Event Metadata:</strong> RTSP/HLS stream connection URLs, device IP addresses, motion/object detection metadata, timestamps, and alert snapshots captured via Sentira.</li>'
+            '<li><strong>Telemetry & Security Logs:</strong> IP addresses, HTTP request methods, session identifiers, TLS negotiation telemetry, and audit event logs.</li>'
+            '</ul>'
+            '<h3>3. Roles: Controller vs. Processor</h3>'
+            '<p>For administrative account data and platform telemetry, GAATHA Ventures Sh.P.K. acts as Data Controller. For tenant business records, customer transaction data, and CCTV camera video ingested through Sentira, the subscribing enterprise customer acts as Data Controller and GAATHA Ventures Sh.P.K. acts strictly as Data Processor.</p>'
+            '<h3>4. Data Subject Rights</h3>'
+            '<p>Data subjects have the right to request access, rectification, erasure, restriction of processing, data portability, and objection to processing under Law No. 9887. Inquiries and DPO requests should be submitted to <a href="mailto:nexora.gaatha@gmail.com">nexora.gaatha@gmail.com</a>.</p>'
+            '</div>',
+        ),
+        "/cookie-policy": (
+            "Cookie Policy",
+            '<div class="page-wrapper">'
+            '<div class="badge-tag mb-3">Storage & Session Policy</div>'
+            '<h1>Cookie Policy</h1>'
+            '<p class="lead">Effective Date: September 28, 2026 · <strong>GAATHA Ventures Sh.P.K.</strong></p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<h3>Technical Storage Mechanisms</h3>'
+            '<p>GaathaCore utilizes essential HTTP-only cookies and local storage tokens strictly necessary for secure authentication, cross-site request forgery prevention, and subpath session isolation:</p>'
+            '<ul>'
+            '<li><code>gaatha_session</code>: Encrypted session cookie maintaining state across Gaatha POS and administrative interactions.</li>'
+            '<li><code>csrf_token</code>: Security token protecting state-changing POST/PUT requests against Cross-Site Request Forgery.</li>'
+            '<li><code>sentiraCookieConsent</code>: Local browser storage record preserving user privacy choices for optional analytics.</li>'
+            '</ul>'
+            '<p>We do not deploy third-party advertising cookies or cross-site behavioral tracking networks.</p>'
+            '</div>',
+        ),
+        "/disclaimer": (
+            "Platform Disclaimer",
+            '<div class="page-wrapper">'
+            '<div class="badge-tag mb-3">Operational Advisory</div>'
+            '<h1>Platform Disclaimer</h1>'
+            '<p class="lead">Effective Date: September 28, 2026 · <strong>GAATHA Ventures Sh.P.K.</strong>, Albania.</p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<h3>1. Software Tools vs. Professional Legal Advice</h3>'
+            '<p>GaathaCore provides software infrastructure. No feature in Gaatha Suite (tax computation, invoicing, financial reporting), Gaatha POS (fiscal receipts, inventory valuation), or Sentira (CCTV security) constitutes licensed legal, accounting, tax, or law-enforcement advice. Subscribing organizations are solely responsible for ensuring compliance with applicable regional tax codes and surveillance laws.</p>'
+            '<h3>2. Sentira Visual AI Limitations</h3>'
+            '<p>Sentira computer vision analyses (motion detection, zone violation, object classification) are machine-learning heuristics. They may produce false positives or false negatives due to lighting conditions, occlusion, camera resolution, or network jitter. Sentira makes no biometric identification, facial recognition, or law-enforcement certification claims.</p>'
+            '</div>',
+        ),
+        "/refund-policy": (
+            "Refund Policy",
+            '<div class="page-wrapper">'
+            '<div class="badge-tag mb-3">Commercial Terms</div>'
+            '<h1>Refund & Cancellation Policy</h1>'
+            '<p class="lead">Effective Date: September 28, 2026 · <strong>GAATHA Ventures Sh.P.K.</strong></p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<p>GaathaCore services are enterprise SaaS solutions billed on agreed commercial contract terms:</p>'
+            '<ul>'
+            '<li><strong>Subscription Renewals:</strong> Monthly or annual enterprise subscriptions may be cancelled prior to the renewal date. Upon cancellation, services continue until the end of the current billing cycle.</li>'
+            '<li><strong>Service Credits:</strong> In the event of documented, unscheduled platform downtime exceeding SLA commitments, enterprise accounts may request service fee credits by contacting <a href="mailto:gaatha.ro.tech@gmail.com">gaatha.ro.tech@gmail.com</a>.</li>'
+            '</ul>'
+            '</div>',
+        ),
+        "/acceptable-use": (
+            "Acceptable Use Policy",
+            '<div class="page-wrapper">'
+            '<div class="badge-tag mb-3">Security & Compliance</div>'
+            '<h1>Acceptable Use Policy</h1>'
+            '<p class="lead">Effective Date: September 28, 2026 · <strong>GAATHA Ventures Sh.P.K.</strong></p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<p>All users accessing GaathaCore services must strictly adhere to the following standards:</p>'
+            '<ul>'
+            '<li>Do NOT use Sentira to conduct covert or unlawful surveillance in violation of regional privacy rights.</li>'
+            '<li>Do NOT attempt to bypass tenant isolation boundaries, probe container networks, or exploit database connections.</li>'
+            '<li>Do NOT execute automated vulnerability scanning, denial-of-service tests, or destructive load testing on production hosts.</li>'
+            '<li>Do NOT inject malicious payloads, trojans, or unauthorized scripts into invoice, menu, or camera configuration fields.</li>'
+            '</ul>'
+            '<p>Violations will result in immediate suspension, contract termination, and referral to judicial authorities.</p>'
+            '</div>',
+        ),
+        "/ai-disclaimer": (
+            "AI Systems Disclaimer",
+            '<div class="page-wrapper">'
+            '<div class="badge-tag mb-3">Machine Learning Governance</div>'
+            '<h1>AI & Automated Systems Disclaimer</h1>'
+            '<p class="lead">Effective Date: September 28, 2026 · <strong>GAATHA Ventures Sh.P.K.</strong></p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<p>GaathaCore deploys automated intelligence models in select public modules, specifically the Sentira computer vision pipeline:</p>'
+            '<ul>'
+            '<li><strong>Nature of Models:</strong> Edge and cloud inference engines evaluate video frames to detect motion vectors, bounding boxes, and predefined spatial rule violations.</li>'
+            '<li><strong>Probabilistic Nature:</strong> AI inferences are probabilistic estimates and should not be relied upon as absolute evidence without independent human confirmation.</li>'
+            '<li><strong>No Biometric Categorization:</strong> Sentira does not conduct biometric identification, facial matching, or emotional profiling.</li>'
+            '<li><strong>Human Oversight:</strong> Critical security interventions and facility management decisions must always involve human review and judgment.</li>'
+            '</ul>'
             '</div>',
         ),
         "/user-policy": (
-            "User Policy",
+            "User Access Policy",
             '<div class="page-wrapper">'
+            '<div class="badge-tag mb-3">Enterprise Governance</div>'
             '<h1>User Access Policy</h1>'
-            '<p>Use only the product access assigned to you and do not attempt to bypass authentication or authorization controls.</p>'
-            '<p>All administrative mutations and access events are recorded in immutable audit logs.</p>'
+            '<p class="lead">Effective Date: September 28, 2026 · <strong>GAATHA Ventures Sh.P.K.</strong></p>'
+            '<hr style="border-color:var(--border-card);margin:1.5rem 0;">'
+            '<p>Use only the product credentials and organizational roles assigned to you. Do not share authentication secrets. All access attempts, database mutations, and camera stream views are logged in immutable audit trails to preserve data integrity and tenant security.</p>'
             '</div>',
         ),
     }
+
     payload = render_home(configured_products(environ)) if path == "/" else _page(*content[path])
     start_response(
         "200 OK",

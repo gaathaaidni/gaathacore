@@ -1,0 +1,9 @@
+.git
+.pytest_cache
+__pycache__
+*.db
+*.sqlite3
+node_modules
+imported/**/node_modules
+imported/**/test-results
+imported/**/.git

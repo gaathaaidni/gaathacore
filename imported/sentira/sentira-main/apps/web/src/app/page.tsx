@@ -84,7 +84,7 @@ export default function HomePage() {
         <div className="site-header-inner">
           <Link href="/" className="brand" aria-label="Sentira AI home">
             <span className="brand-mark">
-              <img src="/logo.png" alt="Sentira AI logo" width={40} height={40} />
+              <img src="/sentira/logo.png" alt="Sentira AI logo" width={40} height={40} />
             </span>
             <span className="brand-text">Sentira AI</span>
           </Link>
@@ -388,7 +388,7 @@ export default function HomePage() {
           <div>
             <div className="brand footer-brand">
               <span className="brand-mark">
-                <img src="/logo.png" alt="Sentira AI logo" width={40} height={40} />
+                <img src="/sentira/logo.png" alt="Sentira AI logo" width={40} height={40} />
               </span>
               <span className="brand-text">Sentira AI</span>
             </div>
@@ -405,8 +405,8 @@ export default function HomePage() {
               <Link href="#security">Security</Link>
               <Link href="/login">Login</Link>
               <Link href="/signup">Sign Up</Link>
-              <Link href="#top">Privacy Policy</Link>
-              <Link href="#top">Terms of Service</Link>
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms of Service</Link>
             </div>
           </div>
         </div>

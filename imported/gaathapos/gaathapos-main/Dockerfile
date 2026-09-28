@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-COPY requirements*.txt ./
+COPY imported/gaathapos/gaathapos-main/requirements*.txt ./
 RUN if [ -f requirements-production.txt ]; then pip install --no-cache-dir -r requirements-production.txt; else pip install -r requirements.txt; fi
 RUN pip install --no-cache-dir gunicorn psycopg2-binary
 
@@ -33,7 +33,8 @@ WORKDIR /app
 RUN addgroup --system app && adduser --system --group app
 
 COPY --from=builder /opt/venv /opt/venv
-COPY . .
+COPY imported/gaathapos/gaathapos-main/ .
+COPY core/ ./core/
 
 RUN chown -R app:app /app /opt/venv
 USER app

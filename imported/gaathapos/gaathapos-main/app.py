@@ -204,6 +204,34 @@ def create_app():
     def user_policy():
         return render_template("public_info.html", page="user-policy")
 
+    @app.route("/cookie-policy")
+    def cookie_policy():
+        return render_template("public_info.html", page="cookie-policy")
+
+    @app.route("/disclaimer")
+    def disclaimer():
+        return render_template("public_info.html", page="disclaimer")
+
+    @app.route("/refund-policy")
+    def refund_policy():
+        return render_template("public_info.html", page="refund-policy")
+
+    @app.route("/acceptable-use")
+    def acceptable_use():
+        return render_template("public_info.html", page="acceptable-use")
+
+    @app.route("/ai-disclaimer")
+    def ai_disclaimer():
+        return render_template("public_info.html", page="ai-disclaimer")
+
+    @app.route("/login")
+    def login_redirect():
+        return redirect(url_for("auth.login"))
+
+    @app.route("/signup")
+    def signup_redirect():
+        return redirect(url_for("auth.signup"))
+
     @app.route("/health")
     @limiter.exempt
     def health_check():

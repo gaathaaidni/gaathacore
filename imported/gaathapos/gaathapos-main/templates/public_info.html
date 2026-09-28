@@ -1,48 +1,134 @@
 {% extends "base.html" %}
-{% block title %}{% if page == 'about' %}About{% elif page == 'contact' %}Contact{% elif page == 'terms' %}Terms and Conditions{% elif page == 'privacy' %}Privacy Policy{% else %}User Policy{% endif %} - Gaatha POS{% endblock %}
+{% block title %}{% if page == 'about' %}About{% elif page == 'contact' %}Contact & Support{% elif page == 'terms' %}Terms and Conditions{% elif page == 'privacy' %}Privacy Policy{% elif page == 'cookie-policy' %}Cookie Policy{% elif page == 'disclaimer' %}Disclaimer{% elif page == 'refund-policy' %}Refund Policy{% elif page == 'acceptable-use' %}Acceptable Use Policy{% elif page == 'ai-disclaimer' %}AI Disclaimer{% else %}User Policy{% endif %} - Gaatha POS (GAATHA Ventures Sh.P.K.){% endblock %}
 {% block content %}
 <div class="container py-4">
-    <div class="dashboard-card p-4 p-md-5 mx-auto" style="max-width: 900px;">
+    <div class="dashboard-card p-4 p-md-5 mx-auto" style="max-width: 900px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
         {% if page == 'about' %}
-            <p class="text-uppercase small text-muted mb-2">About Gaatha POS</p>
-            <h1 class="mb-3">Restaurant operations, in one workspace.</h1>
-            <p class="lead">Gaatha POS supports restaurant teams with order entry, menu operations, kitchen workflows, payments, inventory, and operational reporting.</p>
-            <p>It is built for restaurants and their authorized staff. The product is developed and owned by:</p>
-            <p class="fw-semibold">Architect, Developer, Owner, Founder — Hardikkumar Gajjar</p>
+            <p class="text-uppercase small text-muted mb-2 font-monospace">About Gaatha POS</p>
+            <h1 class="mb-3 fw-bold">Cloud Point of Sale & Restaurant Operations</h1>
+            <p class="lead text-secondary">Gaatha POS empowers food service, retail, and hospitality enterprises with order dispatch, multi-terminal synchronisation, kitchen display integrations, real-time inventory reconciliation, and financial analytics.</p>
+            <hr class="my-4">
+            <h4 class="h5 fw-bold mb-3">Operating Entity & Corporate Identity</h4>
+            <div class="p-3 bg-light rounded-3 border mb-3">
+                <ul class="list-unstyled mb-0">
+                    <li><strong>Operating Company:</strong> GAATHA Ventures Sh.P.K.</li>
+                    <li><strong>Registration / NIPT:</strong> M62118505B</li>
+                    <li><strong>Registered Office:</strong> Durana Tech Park, Albania</li>
+                    <li><strong>Customer Support:</strong> <a href="mailto:gaatha.ro.tech@gmail.com">gaatha.ro.tech@gmail.com</a></li>
+                    <li><strong>Legal & Compliance Desk:</strong> <a href="mailto:nexora.gaatha@gmail.com">nexora.gaatha@gmail.com</a></li>
+                </ul>
+            </div>
+            <p class="small text-muted mb-0">Architected for resilience, offline tolerance, and multi-currency operations under GAATHA Ventures enterprise platform standards.</p>
+
         {% elif page == 'contact' %}
-            <p class="text-uppercase small text-muted mb-2">Contact</p>
-            <h1 class="mb-3">Need help with Gaatha POS?</h1>
-            <p class="lead">Please use the support or administrator channel provided by your organization.</p>
-            <p>No public contact address or message-delivery endpoint is configured in this application, so this page does not claim to send a message.</p>
-            <p>Administration identity: <strong>Admin — Jaygiri Gosai</strong></p>
+            <p class="text-uppercase small text-muted mb-2 font-monospace">Contact & Support Desk</p>
+            <h1 class="mb-3 fw-bold">Need Help with Gaatha POS?</h1>
+            <p class="lead text-secondary">Verified enterprise support and administrative communication channels for Gaatha POS subscribers and restaurant operators.</p>
+            <div class="row g-4 my-2">
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <h5 class="fw-bold mb-2">Technical & POS Operations</h5>
+                        <p class="small text-muted">Inquiries regarding terminal provisioning, sync issues, receipt printers, and day-to-day operations:</p>
+                        <p class="mb-0"><a href="mailto:gaatha.ro.tech@gmail.com" class="fw-semibold">gaatha.ro.tech@gmail.com</a></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light h-100">
+                        <h5 class="fw-bold mb-2">Legal, Compliance & Billing</h5>
+                        <p class="small text-muted">Contracting, corporate invoicing, privacy rights, and corporate inquiries:</p>
+                        <p class="mb-0"><a href="mailto:nexora.gaatha@gmail.com" class="fw-semibold">nexora.gaatha@gmail.com</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 bg-light rounded-3 border mt-3">
+                <h6 class="fw-bold mb-2">Corporate Headquarters</h6>
+                <p class="small mb-0"><strong>GAATHA Ventures Sh.P.K.</strong><br>NIPT: M62118505B<br>Durana Tech Park, Albania</p>
+            </div>
+
         {% elif page == 'terms' %}
-            <p class="text-uppercase small text-muted mb-2">Terms and Conditions</p>
-            <h1 class="mb-3">Use the application responsibly.</h1>
-            <p class="text-muted">Last Updated: September 21, 2026</p>
-            <p>Use Gaatha POS only for lawful restaurant operations and only with the access granted to you. Keep account credentials private, review entries before relying on them, and do not attempt to access another restaurant's data.</p>
-            <p>Do not misuse the application, interfere with its operation, upload harmful content, or use it to violate another person's rights. Availability, integrations, and features may change as the application is maintained.</p>
-            <p>Questions about access or these product terms should be directed through your organization's administrator. This product information is not legal advice.</p>
+            <p class="text-uppercase small text-muted mb-2 font-monospace">Terms & Conditions</p>
+            <h1 class="mb-3 fw-bold">Gaatha POS Master Terms of Service</h1>
+            <p class="text-muted small">Effective: September 2026 | Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)</p>
+            <hr class="my-4">
+            <h5 class="fw-bold">1. Agreement to Terms</h5>
+            <p>These Terms of Service constitute a legally binding agreement between your organization ("Customer" or "Subscriber") and <strong>GAATHA Ventures Sh.P.K.</strong> ("Company"), governing your access to and use of Gaatha POS.</p>
+            <h5 class="fw-bold">2. Permitted Operations & Account Integrity</h5>
+            <p>Gaatha POS must be utilized strictly for legitimate restaurant, bar, and retail operations. You are responsible for ensuring that all terminal operators, cashiers, and store managers adhere to secure credential standards. You may not access or attempt to access another organization's store data or inventory records.</p>
+            <h5 class="fw-bold">3. Financial Transactions & Tax Compliance</h5>
+            <p>Gaatha POS provides software tooling for calculating sales totals, applying configurable tax rules, recording payment methods, and printing receipts. The customer remains exclusively responsible for the fiscal accuracy of tax calculations, compliance with local sales tax/VAT reporting authorities, and merchant processing agreements.</p>
+            <h5 class="fw-bold">4. Governing Law & Jurisdiction</h5>
+            <p>These terms and all operational relationships are governed by the laws of Albania. Any legal proceedings arising hereunder shall be subject to the exclusive jurisdiction of the competent courts of Albania.</p>
+
         {% elif page == 'privacy' %}
-            <p class="text-uppercase small text-muted mb-2">Privacy Policy</p>
-            <h1 class="mb-3">Information used to run restaurant operations.</h1>
-            <p class="text-muted">Last Updated: September 21, 2026</p>
-            <p>Gaatha POS can process account details, restaurant and menu records, orders, payments, inventory activity, audit activity, uploaded imports, and technical information needed to operate the application.</p>
-            <p>This information is used to authenticate users, provide authorized workflows, maintain records, protect the application, and support operational reporting. The application may also use configured email, payment, tax, exchange-rate, or monitoring integrations when enabled by an operator.</p>
-            <p>Specific retention periods, recipients, jurisdiction, and deletion processes are not established by the repository and are intentionally not stated here. Ask your organization administrator for the applicable operational details.</p>
+            <p class="text-uppercase small text-muted mb-2 font-monospace">Data Privacy Policy</p>
+            <h1 class="mb-3 fw-bold">Gaatha POS Privacy & Data Processing Policy</h1>
+            <p class="text-muted small">Effective: September 2026 | Data Controller: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)</p>
+            <hr class="my-4">
+            <h5 class="fw-bold">1. Information We Process</h5>
+            <p>Gaatha POS processes operator credentials, store configuration, menu pricing, transactional histories, inventory movements, customer loyalty phone numbers/names (when entered by operators), and system audit logs necessary to provide robust POS operations.</p>
+            <h5 class="fw-bold">2. Role of the Parties</h5>
+            <p>Customer organizations act as the Data Controller with respect to their customer data and employee records processed through the POS terminals. <strong>GAATHA Ventures Sh.P.K.</strong> operates as a Data Processor providing cloud hosting, database synchronization, and support infrastructure.</p>
+            <h5 class="fw-bold">3. Data Security & Retention</h5>
+            <p>We deploy modern encryption, isolated multi-tenant database partitions, and automated backups. Data is retained for the duration of the active subscription plus required legal accounting retention periods.</p>
+            <h5 class="fw-bold">4. Privacy Rights & Contact</h5>
+            <p>To exercise data access, rectification, or deletion requests, please contact our Data Protection Desk at <a href="mailto:nexora.gaatha@gmail.com">nexora.gaatha@gmail.com</a> with a copy to <a href="mailto:gaatha.ro.tech@gmail.com">gaatha.ro.tech@gmail.com</a>.</p>
+
+        {% elif page == 'cookie-policy' %}
+            <p class="text-uppercase small text-muted mb-2 font-monospace">Cookie & Local Storage Policy</p>
+            <h1 class="mb-3 fw-bold">Cookie & Session Storage Standards</h1>
+            <p class="text-muted small">Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)</p>
+            <hr class="my-4">
+            <p>Gaatha POS employs strictly necessary HTTP session cookies (such as <code>gaatha_session</code>) and local browser storage to manage authentication state, active cash register sessions, and offline cart resiliency. We do not use third-party marketing or profiling trackers across our POS application interface.</p>
+
+        {% elif page == 'disclaimer' %}
+            <p class="text-uppercase small text-muted mb-2 font-monospace">Product & Operational Disclaimer</p>
+            <h1 class="mb-3 fw-bold">Operational & Financial Disclaimer</h1>
+            <p class="text-muted small">Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)</p>
+            <hr class="my-4">
+            <p>Gaatha POS provides operational software tools for restaurant management. <strong>GAATHA Ventures Sh.P.K.</strong> makes no representation that software receipt templates constitute certified fiscal receipts in jurisdictions requiring dedicated hardware fiscal cash registers without appropriate third-party fiscalization modules. Operators are advised to verify local statutory requirements.</p>
+
+        {% elif page == 'refund-policy' %}
+            <p class="text-uppercase small text-muted mb-2 font-monospace">Billing & Refund Policy</p>
+            <h1 class="mb-3 fw-bold">Subscription Billing & Refund Terms</h1>
+            <p class="text-muted small">Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)</p>
+            <hr class="my-4">
+            <p>Software subscriptions for Gaatha POS are billed on monthly or annual recurring schedules. Terminations take effect at the end of the current billing cycle. Inquiries regarding invoice disputes or service credit requests should be submitted within 14 days of billing to <a href="mailto:nexora.gaatha@gmail.com">nexora.gaatha@gmail.com</a>.</p>
+
+        {% elif page == 'acceptable-use' %}
+            <p class="text-uppercase small text-muted mb-2 font-monospace">Acceptable Use Policy</p>
+            <h1 class="mb-3 fw-bold">Acceptable Use Policy for POS Systems</h1>
+            <p class="text-muted small">Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)</p>
+            <hr class="my-4">
+            <p>Users of Gaatha POS agree not to: (a) engage in fraudulent payment capture or credit card manipulation; (b) probe, scan, or breach system security controls; (c) inject malicious payloads into receipt or barcode fields; or (d) resell software licenses without authorized distributor agreements from GAATHA Ventures Sh.P.K.</p>
+
+        {% elif page == 'ai-disclaimer' %}
+            <p class="text-uppercase small text-muted mb-2 font-monospace">AI & Automated Systems</p>
+            <h1 class="mb-3 fw-bold">Automated Forecasting & Analytics Disclaimer</h1>
+            <p class="text-muted small">Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)</p>
+            <hr class="my-4">
+            <p>Any automated sales forecasts, inventory reorder recommendations, or anomaly detection features provided by Gaatha POS are statistical estimations. Store managers must verify inventory physical stock counts before placing commercial supplier orders.</p>
+
         {% else %}
-            <p class="text-uppercase small text-muted mb-2">User Policy</p>
-            <h1 class="mb-3">Responsible use for every team member.</h1>
-            <p class="text-muted">Last Updated: September 21, 2026</p>
+            <p class="text-uppercase small text-muted mb-2 font-monospace">User Policy</p>
+            <h1 class="mb-3 fw-bold">Responsible Team Use & Terminal Protocol</h1>
+            <p class="text-muted small">Operating Entity: GAATHA Ventures Sh.P.K. (NIPT: M62118505B)</p>
+            <hr class="my-4">
             <p>Keep your account secure, use only the permissions assigned to you, and handle customer, employee, payment, and restaurant information carefully.</p>
             <p>Do not use Gaatha POS for unlawful activity, unauthorized access, harassment, fraud, destructive testing, or attempts to bypass access controls. Upload only content and records that your organization is authorized to use.</p>
-            <p>Report suspected security, privacy, or data-integrity issues to your organization administrator. Access may be restricted when misuse or a security risk is identified.</p>
+            <p>Report suspected security, privacy, or data-integrity issues to your organization administrator or to <a href="mailto:gaatha.ro.tech@gmail.com">gaatha.ro.tech@gmail.com</a>.</p>
         {% endif %}
-        <nav class="mt-4 pt-3 border-top d-flex flex-wrap gap-3" aria-label="Public pages">
+
+        <nav class="mt-4 pt-3 border-top d-flex flex-wrap gap-3 small" aria-label="Public pages">
             <a href="{{ url_for('index') }}">Home</a>
             <a href="{{ url_for('about') }}">About</a>
             <a href="{{ url_for('contact') }}">Contact</a>
             <a href="{{ url_for('terms') }}">Terms</a>
             <a href="{{ url_for('privacy') }}">Privacy</a>
+            <a href="{{ url_for('cookie_policy') }}">Cookies</a>
+            <a href="{{ url_for('disclaimer') }}">Disclaimer</a>
+            <a href="{{ url_for('refund_policy') }}">Refunds</a>
+            <a href="{{ url_for('acceptable_use') }}">Acceptable Use</a>
+            <a href="{{ url_for('ai_disclaimer') }}">AI Notice</a>
             <a href="{{ url_for('user_policy') }}">User Policy</a>
         </nav>
     </div>
