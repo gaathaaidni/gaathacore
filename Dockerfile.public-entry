@@ -3,6 +3,8 @@ FROM python:3.12-alpine
 WORKDIR /app
 
 COPY public_entry.py /app/public_entry.py
+COPY gaatha_blog_data.py /app/gaatha_blog_data.py
+COPY gaatha_seo_render.py /app/gaatha_seo_render.py
 COPY logo.png /app/logo.png
 
 EXPOSE 8765

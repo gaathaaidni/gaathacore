@@ -13,6 +13,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Callable, Iterable
 from urllib.parse import urlparse
+import gaatha_blog_data as gbd
+import gaatha_seo_render as gsr
+
 
 # Load optimized logo.png if present alongside this file
 _LOGO_FILE = os.path.join(os.path.dirname(__file__), "logo.png")
@@ -158,6 +161,426 @@ def configured_products(environ: dict[str, str] | None = None) -> tuple[PublicPr
 
 
 CSS_STYLES = """
+/* SEO, Solutions, and Blog Styles */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nav-links a {
+  color: var(--text-body);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: var(--brand-primary);
+}
+
+.breadcrumb-nav {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.breadcrumb-nav a:hover {
+  color: var(--brand-primary);
+  text-decoration: underline;
+}
+
+.solution-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.solution-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.solution-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.solution-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.solution-card p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.cta-banner {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  color: #ffffff;
+  padding: 2.25rem;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.cta-banner h3 {
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.cta-banner p {
+  color: #c7d2fe;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.btn-primary {
+  display: inline-block;
+  background: #4338ca;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.92rem;
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #3730a3;
+  transform: translateY(-2px);
+}
+
+.cat-pills-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cat-pill {
+  display: inline-block;
+  padding: 0.45rem 1rem;
+  background: #ffffff;
+  border: 1px solid var(--border-card);
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-body);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.cat-pill:hover, .cat-pill.active {
+  background: #4338ca;
+  border-color: #4338ca;
+  color: #ffffff;
+}
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.75rem;
+  margin-top: 1.5rem;
+}
+
+.blog-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08);
+}
+
+.blog-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.reading-time {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.blog-card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+}
+
+.blog-card h2 a {
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.blog-card h2 a:hover {
+  color: var(--brand-primary);
+}
+
+.blog-excerpt {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  flex-grow: 1;
+  margin-bottom: 1.25rem;
+}
+
+.blog-footer-meta {
+  border-top: 1px solid var(--border-card);
+  padding-top: 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+/* Article Page */
+.article-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  margin: 1.5rem auto 3rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+  max-width: 900px;
+}
+
+.article-title {
+  font-size: 2.35rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+  margin-bottom: 1.25rem;
+}
+
+.article-meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--border-card);
+  border-bottom: 1px solid var(--border-card);
+  margin-bottom: 2rem;
+}
+
+.toc-box {
+  background: #f8fafc;
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  padding: 1.25rem 1.75rem;
+  margin-bottom: 2.25rem;
+}
+
+.toc-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.toc-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-box li {
+  margin-bottom: 0.45rem;
+}
+
+.toc-box a {
+  color: var(--brand-primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.toc-box a:hover {
+  text-decoration: underline;
+}
+
+.article-body {
+  font-size: 1.08rem;
+  line-height: 1.8;
+  color: #334155;
+}
+
+.article-body h2 {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 2.5rem 0 1rem;
+}
+
+.article-body p {
+  margin-bottom: 1.25rem;
+}
+
+.article-body ul, .article-body ol {
+  margin: 1rem 0 1.5rem 1.75rem;
+}
+
+.article-body li {
+  margin-bottom: 0.5rem;
+}
+
+.callout-box {
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  color: #14532d;
+  margin: 1.75rem 0;
+  font-size: 0.95rem;
+}
+
+.table-content {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.75rem 0;
+  font-size: 0.92rem;
+}
+
+.table-content th, .table-content td {
+  border: 1px solid var(--border-card);
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.table-content th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.disclaimer-card {
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #78350f;
+}
+
+.author-card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: #f8fafc;
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.author-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  flex-shrink: 0;
+}
+
+.author-card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.author-role {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.author-desc {
+  font-size: 0.85rem;
+  color: #475569;
+  margin: 0;
+}
+
+.related-section {
+  border-top: 1px solid var(--border-card);
+  padding-top: 2rem;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.related-card {
+  background: #f8fafc;
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.related-card h4 {
+  font-size: 0.98rem;
+  margin: 0.5rem 0;
+}
+
+.related-card a {
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.related-card a:hover {
+  color: var(--brand-primary);
+}
+
+.trust-box {
+  background: #f8fafc;
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
 :root {
   --bg-page: #f8fafc;
   --bg-card: #ffffff;
@@ -569,23 +992,34 @@ footer a:hover {
 """
 
 
-def _page(title: str, body: str) -> bytes:
-    navigation = " ".join(
-        f'<a href="{path}">{label}</a>'
-        for path, label in (
-            ("/", "Products"),
-            ("/about", "About"),
-            ("/contact", "Contact"),
-            ("/terms", "Terms"),
-            ("/privacy", "Privacy"),
-            ("/cookie-policy", "Cookies"),
-            ("/disclaimer", "Disclaimer"),
-            ("/refund-policy", "Refunds"),
-            ("/acceptable-use", "Acceptable Use"),
-            ("/ai-disclaimer", "AI Notice"),
-            ("/user-policy", "User Policy"),
-        )
+
+def _page(title: str, body: str, canonical_path: str = "/", meta_description: str = "", extra_head: str = "") -> bytes:
+    nav_links = (
+        ("/", "Products"),
+        ("/solutions/business-management", "Solutions"),
+        ("/blog", "Insights & Blog"),
+        ("/about", "About"),
+        ("/contact", "Contact"),
     )
+    nav_header = " ".join(f'<a href="{p}">{l}</a>' for p, l in nav_links)
+
+    footer_nav_links = (
+        ("/", "Products"),
+        ("/solutions/business-management", "Solutions"),
+        ("/blog", "Insights & Blog"),
+        ("/about", "About"),
+        ("/contact", "Contact"),
+        ("/terms", "Terms"),
+        ("/privacy", "Privacy"),
+        ("/cookie-policy", "Cookies"),
+        ("/disclaimer", "Disclaimer"),
+        ("/refund-policy", "Refunds"),
+        ("/acceptable-use", "Acceptable Use"),
+        ("/ai-disclaimer", "AI Notice"),
+        ("/user-policy", "User Policy"),
+    )
+    footer_navigation = " ".join(f'<a href="{path}">{label}</a>' for path, label in footer_nav_links)
+
     logo_img = (
         f'<img class="brand-logo" src="data:image/png;base64,{_LOGO_B64}" alt="Gaatha Logo">'
         if _LOGO_B64
@@ -597,11 +1031,63 @@ def _page(title: str, body: str) -> bytes:
         else ""
     )
 
+    desc = meta_description or "GaathaCore — Enterprise multi-module ecosystem engineered and governed by GAATHA Ventures Sh.P.K., Albania. Sovereign ERP, POS, and visual intelligence."
+
+    schema_org = """
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://gaatha.tech/#organization",
+      "name": "GAATHA Ventures Sh.P.K.",
+      "legalName": "GAATHA Ventures Sh.P.K.",
+      "url": "https://gaatha.tech/",
+      "logo": "https://gaatha.tech/logo.png",
+      "description": "Enterprise cloud ecosystem providing unified ERP business management, modern restaurant POS, and AI video analytics.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Durana Tech Park",
+        "addressLocality": "Tirana",
+        "addressCountry": "AL"
+      },
+      "taxID": "M62118505B"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://gaatha.tech/#website",
+      "name": "GaathaCore",
+      "url": "https://gaatha.tech/",
+      "publisher": {
+        "@id": "https://gaatha.tech/#organization"
+      }
+    }
+  ]
+}
+</script>
+"""
+
     html_content = (
         '<!doctype html><html lang="en"><head>'
         '<meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
         f"<title>{html.escape(title)} | GaathaCore</title>"
+        f'<link rel="canonical" href="https://gaatha.tech{canonical_path}">'
+        f'<meta name="description" content="{html.escape(desc)}">'
+        '<meta name="robots" content="index, follow">'
+        '<meta property="og:site_name" content="GaathaCore">'
+        f'<meta property="og:title" content="{html.escape(title)} | GaathaCore">'
+        f'<meta property="og:description" content="{html.escape(desc)}">'
+        '<meta property="og:type" content="website">'
+        f'<meta property="og:url" content="https://gaatha.tech{canonical_path}">'
+        '<meta property="og:image" content="https://gaatha.tech/logo.png">'
+        '<meta name="twitter:card" content="summary_large_image">'
+        f'<meta name="twitter:title" content="{html.escape(title)} | GaathaCore">'
+        f'<meta name="twitter:description" content="{html.escape(desc)}">'
+        '<meta name="twitter:image" content="https://gaatha.tech/logo.png">'
+        f"{schema_org}"
+        f"{extra_head}"
         f"{favicon_link}"
         '<link rel="preconnect" href="https://fonts.googleapis.com">'
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
@@ -610,11 +1096,12 @@ def _page(title: str, body: str) -> bytes:
         '</head><body>'
         '<header><div class="container header-content">'
         f'<a href="/" class="brand">{logo_img}<span class="brand-title">Gaatha</span></a>'
+        f'<nav class="nav-links" aria-label="Main Navigation">{nav_header}</nav>'
         '<div class="badge-tag">Unified Apex Platform</div>'
         '</div></header>'
         f'<main class="container">{body}</main>'
         '<footer><div class="container footer-content">'
-        f'<nav aria-label="Public pages">{navigation}</nav>'
+        f'<nav aria-label="Public pages">{footer_navigation}</nav>'
         '<p class="footer-note">GaathaCore does not display service health or internal deployment details on this public page. Product access is sovereign and mediated exclusively through native product authentication boundaries.</p>'
         '<p class="footer-note" style="color:#94a3b8;font-size:0.75rem;">&copy; 2026 GAATHA Ventures Sh.P.K. (NIPT: M62118505B), Durana Tech Park, Albania. All rights reserved.</p>'
         '</div></footer>'
@@ -720,12 +1207,85 @@ def render_home(products: Iterable[PublicProduct]) -> bytes:
 
 def public_entry_app(environ: dict[str, str], start_response: Callable) -> list[bytes]:
     path = environ.get("PATH_INFO", "/")
-    
+
     # Health endpoints
     if path in ("/healthz", "/health"):
         start_response("200 OK", [("Content-Type", "application/json"), ("Cache-Control", "no-store")])
         return [b'{"status":"available","platform":"GaathaCore","entity":"GAATHA Ventures Sh.P.K.","jurisdiction":"Albania"}']
-        
+
+    # Robots.txt
+    if path == "/robots.txt":
+        txt = """User-agent: *
+Allow: /
+Allow: /suite
+Allow: /pos
+Allow: /sentira
+Allow: /solutions/
+Allow: /blog
+Allow: /blog/
+Disallow: /postpilot
+Disallow: /postpilot/
+Disallow: /api/
+Disallow: /sentira/api/
+Disallow: /pos/api/
+
+Sitemap: https://gaatha.tech/sitemap.xml
+"""
+        start_response("200 OK", [("Content-Type", "text/plain; charset=utf-8"), ("Cache-Control", "public, max-age=3600")])
+        return [txt.encode("utf-8")]
+
+    # Sitemap.xml
+    if path == "/sitemap.xml":
+        base_url = "https://gaatha.tech"
+        urls = [
+            {"loc": f"{base_url}/", "changefreq": "daily", "priority": "1.0", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/about", "changefreq": "monthly", "priority": "0.7", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/contact", "changefreq": "monthly", "priority": "0.7", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/solutions/business-management", "changefreq": "weekly", "priority": "0.9", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/solutions/restaurant-pos", "changefreq": "weekly", "priority": "0.9", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/solutions/ai-video-analytics", "changefreq": "weekly", "priority": "0.9", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/blog", "changefreq": "daily", "priority": "0.9", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/terms", "changefreq": "monthly", "priority": "0.5", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/privacy", "changefreq": "monthly", "priority": "0.5", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/cookie-policy", "changefreq": "monthly", "priority": "0.5", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/disclaimer", "changefreq": "monthly", "priority": "0.5", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/refund-policy", "changefreq": "monthly", "priority": "0.5", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/acceptable-use", "changefreq": "monthly", "priority": "0.5", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/ai-disclaimer", "changefreq": "monthly", "priority": "0.5", "lastmod": "2026-09-28"},
+            {"loc": f"{base_url}/user-policy", "changefreq": "monthly", "priority": "0.5", "lastmod": "2026-09-28"},
+        ]
+        for c in gbd.get_categories():
+            urls.append({
+                "loc": f"{base_url}/blog/category/{c['slug']}",
+                "changefreq": "weekly",
+                "priority": "0.7",
+                "lastmod": "2026-09-28"
+            })
+        for a in gbd.get_all_posts():
+            urls.append({
+                "loc": f"{base_url}/blog/{a['slug']}",
+                "changefreq": "monthly",
+                "priority": "0.8",
+                "lastmod": a.get("updated_date", a.get("published_date", "2026-09-28"))
+            })
+        xml_lines = [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        ]
+        for u in urls:
+            xml_lines.append('  <url>')
+            xml_lines.append(f'    <loc>{u["loc"]}</loc>')
+            if "lastmod" in u:
+                xml_lines.append(f'    <lastmod>{u["lastmod"]}</lastmod>')
+            if "changefreq" in u:
+                xml_lines.append(f'    <changefreq>{u["changefreq"]}</changefreq>')
+            if "priority" in u:
+                xml_lines.append(f'    <priority>{u["priority"]}</priority>')
+            xml_lines.append('  </url>')
+        xml_lines.append('</urlset>')
+        start_response("200 OK", [("Content-Type", "application/xml; charset=utf-8"), ("Cache-Control", "public, max-age=3600")])
+        return ['\n'.join(xml_lines).encode("utf-8")]
+
     # Logo serving
     if path == "/logo.png":
         if os.path.exists(_LOGO_FILE):
@@ -736,7 +1296,63 @@ def public_entry_app(environ: dict[str, str], start_response: Callable) -> list[
         start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
         return [b"Logo not found"]
 
-    if path not in PUBLIC_PATHS:
+    # Solution redirects
+    if path in ("/solutions/crm", "/solutions/inventory-management", "/solutions/business-automation", "/solutions"):
+        start_response("301 Moved Permanently", [("Location", "/solutions/business-management")])
+        return [b""]
+    if path in ("/solutions/restaurant-management",):
+        start_response("301 Moved Permanently", [("Location", "/solutions/restaurant-pos")])
+        return [b""]
+
+    # Solution pages
+    if path == "/solutions/business-management":
+        title, body, meta_desc, extra_head = gsr.render_solution_business_management()
+        payload = _page(title, body, canonical_path=path, meta_description=meta_desc, extra_head=extra_head)
+        start_response("200 OK", [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "public, max-age=3600")])
+        return [payload]
+
+    if path == "/solutions/restaurant-pos":
+        title, body, meta_desc, extra_head = gsr.render_solution_restaurant_pos()
+        payload = _page(title, body, canonical_path=path, meta_description=meta_desc, extra_head=extra_head)
+        start_response("200 OK", [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "public, max-age=3600")])
+        return [payload]
+
+    if path == "/solutions/ai-video-analytics":
+        title, body, meta_desc, extra_head = gsr.render_solution_ai_video_analytics()
+        payload = _page(title, body, canonical_path=path, meta_description=meta_desc, extra_head=extra_head)
+        start_response("200 OK", [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "public, max-age=3600")])
+        return [payload]
+
+    # Blog routes
+    if path in ("/blog", "/blog/"):
+        title, body, meta_desc, extra_head = gsr.render_blog_index()
+        payload = _page(title, body, canonical_path="/blog", meta_description=meta_desc, extra_head=extra_head)
+        start_response("200 OK", [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "public, max-age=1800")])
+        return [payload]
+
+    if path.startswith("/blog/category/"):
+        cat_slug = path.removeprefix("/blog/category/").strip("/")
+        if not gbd.get_category_by_slug(cat_slug):
+            start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
+            return [b"Category not found"]
+        title, body, meta_desc, extra_head = gsr.render_blog_index(category_slug=cat_slug)
+        payload = _page(title, body, canonical_path=f"/blog/category/{cat_slug}", meta_description=meta_desc, extra_head=extra_head)
+        start_response("200 OK", [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "public, max-age=1800")])
+        return [payload]
+
+    if path.startswith("/blog/"):
+        slug = path.removeprefix("/blog/").strip("/")
+        res = gsr.render_blog_article(slug)
+        if not res:
+            start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
+            return [b"Article not found"]
+        title, body, meta_desc, extra_head = res
+        payload = _page(title, body, canonical_path=f"/blog/{slug}", meta_description=meta_desc, extra_head=extra_head)
+        start_response("200 OK", [("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "public, max-age=3600")])
+        return [payload]
+
+    # PostPilot remains strictly gated/excluded from public launch
+    if path.startswith("/postpilot"):
         start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
         return [b"Not found"]
 
@@ -924,7 +1540,17 @@ def public_entry_app(environ: dict[str, str], start_response: Callable) -> list[
         ),
     }
 
-    payload = render_home(configured_products(environ)) if path == "/" else _page(*content[path])
+
+    if path not in content and path != "/":
+        start_response("404 Not Found", [("Content-Type", "text/plain; charset=utf-8")])
+        return [b"Not found"]
+
+    if path == "/":
+        payload = render_home(configured_products(environ))
+    else:
+        title, page_body = content[path]
+        payload = _page(title, page_body, canonical_path=path)
+
     start_response(
         "200 OK",
         [
